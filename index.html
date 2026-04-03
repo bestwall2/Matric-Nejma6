@@ -106,7 +106,7 @@
             "https://omg10.com/4/10823593"
         ];
 
-        let currentStep = parseInt(localStorage.getItem('matricStep')) || 1;
+        let currentStep = 1;
 
         // العناصر
         const actionBtn = document.getElementById('actionBtn');
@@ -148,7 +148,7 @@
 
                 setTimeout(() => {
                     currentStep++;
-                    localStorage.setItem('matricStep', currentStep);
+                    
                     actionBtn.disabled = false;
                     updateUI();
                 }, 1800);
