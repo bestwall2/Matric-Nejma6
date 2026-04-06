@@ -3,189 +3,999 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    
-    <title>أفضل تطبيقات مشاهدة المباريات 2026: دليل تحميل وتفعيل Matric Nejma</title>
-    <meta name="description" content="اكتشف كيف غيرت تطبيقات البث المباشر تجربة مشجعي كرة القدم في 2026. دليل شامل حول ميزات تطبيق Matric Nejma وكيفية الحصول على كود التفعيل والتحميل الآمن.">
-    <meta name="keywords" content="بث مباشر للمباريات, تحميل تطبيق Matric Nejma, كود تفعيل ماتريك, مشاهدة الدوري الإسباني, تطبيقات أندرويد رياضية 2026, ريال مدريد مباشر">
-    <meta name="author" content="Matric Team">
-    <meta name="robots" content="index, follow">
-
-    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;900&display=swap" rel="stylesheet">
+    <title>أين تشاهد البطولات الكبرى 2026؟ | دليل البث المباشر عبر matricnjm.online</title>
+    <meta name="description" content="تعرف على كيفية مشاهدة كأس العالم 2026، دوري أبطال أوروبا، وكأس أمم أفريقيا بجودة 4K. دليل شامل لتحميل تطبيق Matric Nejma وتشغيله عبر نجمة 6 في المغرب.">
+    <meta name="keywords" content="أين تشاهد كأس العالم 2026، القنوات الناقلة لدوري أبطال أوروبا، بث مباشر كاس امم افريقيا، تطبيق Matric Nejma، نجمة 6 انوي، نجمة 6 اورنج، matricnjm.online">
+    <meta property="og:title" content="Matric Nejma - بث مباشر 4K للبطولات الكبرى 2026">
+    <meta property="og:description" content="شاهد كأس العالم، دوري الأبطال، والكان بجودة 4K عبر تطبيق Matric Nejma ونجمة 6">
+    <meta property="og:url" content="https://matricnjm.online">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;600;700;900&family=Tajawal:wght@400;700;800;900&display=swap" rel="stylesheet">
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
-        body { font-family: 'Cairo', sans-serif; scroll-behavior: smooth; }
-        .glass { background: rgba(255, 255, 255, 0.98); backdrop-filter: blur(20px); }
-        .article-content h2 { color: #1e1b4b; font-size: 1.75rem; font-weight: 800; margin-top: 2rem; border-right: 5px solid #4f46e5; padding-right: 15px; }
-        .article-content p { line-height: 1.9; color: #334155; margin-bottom: 1.5rem; font-size: 1.1rem; }
-        .highlight-box { background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%); border-radius: 1.5rem; padding: 2rem; margin: 2rem 0; border: 1px solid #cbd5e1; }
+        :root {
+            --brand-red: #e11d48;
+            --brand-red-dark: #9f1239;
+            --brand-black: #0a0a0f;
+            --brand-dark: #111118;
+            --brand-card: #16161f;
+            --brand-border: #2a2a3a;
+            --brand-muted: #6b7280;
+            --brand-white: #f8f9ff;
+            --brand-amber: #f59e0b;
+        }
+
+        * { box-sizing: border-box; }
+
+        body {
+            font-family: 'Cairo', 'Tajawal', sans-serif;
+            background-color: var(--brand-black);
+            color: var(--brand-white);
+            line-height: 1.85;
+            overflow-x: hidden;
+        }
+
+        /* ─── NOISE OVERLAY ─── */
+        body::before {
+            content: '';
+            position: fixed;
+            inset: 0;
+            background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.03'/%3E%3C/svg%3E");
+            pointer-events: none;
+            z-index: 9999;
+            opacity: 0.4;
+        }
+
+        /* ─── HERO ─── */
+        .hero {
+            background: radial-gradient(ellipse 80% 60% at 50% -10%, rgba(225,29,72,0.35) 0%, transparent 70%),
+                        linear-gradient(180deg, #0f0f18 0%, var(--brand-black) 100%);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 6rem 1.5rem 10rem;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .hero::after {
+            content: '';
+            position: absolute;
+            bottom: -2px;
+            left: 0; right: 0;
+            height: 120px;
+            background: linear-gradient(to bottom, transparent, var(--brand-black));
+        }
+
+        /* Grid lines */
+        .hero-grid {
+            position: absolute;
+            inset: 0;
+            background-image:
+                linear-gradient(rgba(225,29,72,0.04) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(225,29,72,0.04) 1px, transparent 1px);
+            background-size: 60px 60px;
+            mask-image: radial-gradient(ellipse 80% 80% at center, black 20%, transparent 70%);
+        }
+
+        .badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            background: rgba(225,29,72,0.12);
+            border: 1px solid rgba(225,29,72,0.3);
+            color: #fb7185;
+            padding: 0.4rem 1.2rem;
+            border-radius: 100px;
+            font-size: 0.85rem;
+            font-weight: 800;
+            letter-spacing: 0.03em;
+            margin-bottom: 2rem;
+            backdrop-filter: blur(8px);
+        }
+
+        .hero h1 {
+            font-family: 'Tajawal', sans-serif;
+            font-size: clamp(2.8rem, 7vw, 6rem);
+            font-weight: 900;
+            line-height: 1.1;
+            text-align: center;
+            margin-bottom: 1.5rem;
+            background: linear-gradient(135deg, #fff 30%, rgba(225,29,72,0.8) 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .hero p {
+            font-size: clamp(1rem, 2.5vw, 1.3rem);
+            color: rgba(248,249,255,0.6);
+            text-align: center;
+            max-width: 680px;
+            margin-bottom: 3rem;
+        }
+
+        .btn-primary {
+            background: var(--brand-red);
+            color: white;
+            font-weight: 900;
+            font-size: 1.05rem;
+            padding: 1rem 2.5rem;
+            border-radius: 14px;
+            border: none;
+            cursor: pointer;
+            transition: all 0.25s ease;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.6rem;
+            box-shadow: 0 0 40px rgba(225,29,72,0.35), 0 4px 20px rgba(0,0,0,0.4);
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 0 60px rgba(225,29,72,0.55), 0 8px 30px rgba(0,0,0,0.5);
+            background: #be123c;
+        }
+
+        .btn-secondary {
+            background: rgba(255,255,255,0.06);
+            color: white;
+            font-weight: 800;
+            font-size: 1.05rem;
+            padding: 1rem 2.5rem;
+            border-radius: 14px;
+            border: 1px solid rgba(255,255,255,0.12);
+            cursor: pointer;
+            transition: all 0.25s ease;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.6rem;
+            backdrop-filter: blur(8px);
+        }
+
+        .btn-secondary:hover {
+            background: rgba(255,255,255,0.1);
+            border-color: rgba(255,255,255,0.25);
+            transform: translateY(-2px);
+        }
+
+        /* ─── STATS BAR ─── */
+        .stats-bar {
+            display: flex;
+            justify-content: center;
+            gap: 2rem;
+            flex-wrap: wrap;
+            margin-top: 4rem;
+        }
+
+        .stat-item {
+            text-align: center;
+        }
+
+        .stat-number {
+            display: block;
+            font-family: 'Tajawal', sans-serif;
+            font-size: 2.4rem;
+            font-weight: 900;
+            color: var(--brand-red);
+            line-height: 1;
+        }
+
+        .stat-label {
+            font-size: 0.8rem;
+            color: var(--brand-muted);
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.08em;
+        }
+
+        .stat-divider {
+            width: 1px;
+            background: var(--brand-border);
+            align-self: stretch;
+        }
+
+        /* ─── MAIN LAYOUT ─── */
+        .main-layout {
+            max-width: 1280px;
+            margin: 0 auto;
+            padding: 4rem 1.5rem;
+            display: grid;
+            grid-template-columns: 1fr 360px;
+            gap: 3rem;
+            align-items: start;
+        }
+
+        @media (max-width: 1024px) {
+            .main-layout { grid-template-columns: 1fr; }
+            .sidebar { display: none; }
+            .mobile-cta { display: flex !important; }
+        }
+
+        /* ─── ARTICLE ─── */
+        .article-card {
+            background: var(--brand-card);
+            border: 1px solid var(--brand-border);
+            border-radius: 28px;
+            padding: clamp(1.5rem, 5vw, 4rem);
+        }
+
+        .article-body h2 {
+            font-family: 'Tajawal', sans-serif;
+            font-size: clamp(1.5rem, 3vw, 2rem);
+            font-weight: 900;
+            color: var(--brand-white);
+            margin: 3.5rem 0 1.2rem;
+            padding-right: 1.2rem;
+            border-right: 4px solid var(--brand-red);
+            line-height: 1.3;
+        }
+
+        .article-body h2:first-child { margin-top: 0; }
+
+        .article-body h3 {
+            font-size: 1.3rem;
+            font-weight: 800;
+            color: #fb7185;
+            margin-top: 2rem;
+            margin-bottom: 0.8rem;
+        }
+
+        .article-body p {
+            font-size: 1.05rem;
+            color: rgba(248,249,255,0.7);
+            margin-bottom: 1.6rem;
+            text-align: justify;
+        }
+
+        .article-body strong {
+            color: var(--brand-white);
+            font-weight: 800;
+        }
+
+        /* ─── TOURNAMENT CARDS ─── */
+        .tournament-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1rem;
+            margin: 2.5rem 0;
+        }
+
+        .tournament-card {
+            background: #1a1a24;
+            border: 1px solid var(--brand-border);
+            border-radius: 20px;
+            padding: 1.8rem 1.2rem;
+            text-align: center;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .tournament-card::before {
+            content: '';
+            position: absolute;
+            top: 0; left: 0; right: 0;
+            height: 2px;
+            background: linear-gradient(90deg, transparent, var(--brand-red), transparent);
+            opacity: 0;
+            transition: opacity 0.3s;
+        }
+
+        .tournament-card:hover::before { opacity: 1; }
+        .tournament-card:hover { border-color: rgba(225,29,72,0.4); transform: translateY(-4px); }
+
+        .tournament-emoji { font-size: 3rem; margin-bottom: 1rem; }
+        .tournament-title { font-weight: 900; font-size: 1.1rem; color: var(--brand-white); margin-bottom: 0.6rem; }
+        .tournament-desc { font-size: 0.85rem; color: var(--brand-muted); font-weight: 600; line-height: 1.6; }
+
+        /* ─── TECH SPECS ─── */
+        .spec-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 1rem;
+            margin: 2rem 0;
+        }
+
+        @media (max-width: 600px) { .spec-grid { grid-template-columns: 1fr; } }
+
+        .spec-item {
+            background: #1a1a24;
+            border: 1px solid var(--brand-border);
+            border-radius: 16px;
+            padding: 1.2rem 1.5rem;
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .spec-icon {
+            width: 44px;
+            height: 44px;
+            background: rgba(225,29,72,0.12);
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.3rem;
+            flex-shrink: 0;
+        }
+
+        .spec-label { font-size: 0.78rem; color: var(--brand-muted); font-weight: 700; text-transform: uppercase; letter-spacing: 0.05em; }
+        .spec-value { font-size: 0.95rem; font-weight: 800; color: var(--brand-white); }
+
+        /* ─── CARRIERS BANNER ─── */
+        .carriers-banner {
+            background: linear-gradient(135deg, rgba(225,29,72,0.08), rgba(225,29,72,0.03));
+            border: 1px solid rgba(225,29,72,0.2);
+            border-radius: 20px;
+            padding: 2rem;
+            display: flex;
+            align-items: center;
+            gap: 1.5rem;
+            flex-wrap: wrap;
+            margin: 2rem 0;
+        }
+
+        .carrier-badge {
+            background: rgba(255,255,255,0.06);
+            border: 1px solid rgba(255,255,255,0.1);
+            border-radius: 10px;
+            padding: 0.5rem 1.2rem;
+            font-weight: 900;
+            font-size: 0.9rem;
+            color: var(--brand-white);
+        }
+
+        /* ─── CALLOUT BOX ─── */
+        .callout {
+            background: linear-gradient(135deg, rgba(225,29,72,0.1), rgba(225,29,72,0.04));
+            border: 1px solid rgba(225,29,72,0.25);
+            border-right: 4px solid var(--brand-red);
+            border-radius: 16px;
+            padding: 2rem;
+            margin: 2.5rem 0;
+        }
+
+        .callout h3 { color: #fb7185; margin-top: 0; }
+        .callout p { margin-bottom: 0; color: rgba(248,249,255,0.8); }
+
+        /* ─── SIDEBAR ─── */
+        .sidebar {
+            position: sticky;
+            top: 1.5rem;
+        }
+
+        .sidebar-card {
+            background: var(--brand-card);
+            border: 1px solid var(--brand-border);
+            border-radius: 24px;
+            padding: 2rem;
+            text-align: center;
+        }
+
+        .app-icon {
+            width: 80px;
+            height: 80px;
+            background: linear-gradient(135deg, var(--brand-red) 0%, #9f1239 100%);
+            border-radius: 22px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 1.2rem;
+            font-size: 2.2rem;
+            box-shadow: 0 0 40px rgba(225,29,72,0.4);
+        }
+
+        .sidebar-title { font-family: 'Tajawal', sans-serif; font-size: 1.6rem; font-weight: 900; margin-bottom: 0.3rem; }
+        .sidebar-sub { color: var(--brand-muted); font-size: 0.9rem; margin-bottom: 1.8rem; }
+
+        .sidebar-btn {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.6rem;
+            width: 100%;
+            padding: 0.9rem;
+            border-radius: 12px;
+            font-weight: 900;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: all 0.25s;
+            border: none;
+            margin-bottom: 0.8rem;
+        }
+
+        .sidebar-btn-dl {
+            background: var(--brand-red);
+            color: white;
+            box-shadow: 0 0 30px rgba(225,29,72,0.3);
+            text-decoration: none;
+        }
+
+        .sidebar-btn-dl:hover {
+            background: #be123c;
+            box-shadow: 0 0 50px rgba(225,29,72,0.5);
+            transform: translateY(-2px);
+        }
+
+        .sidebar-btn-code {
+            background: rgba(245,158,11,0.12);
+            color: var(--brand-amber);
+            border: 1px solid rgba(245,158,11,0.25) !important;
+        }
+
+        .sidebar-btn-code:hover {
+            background: rgba(245,158,11,0.2);
+            transform: translateY(-2px);
+        }
+
+        .compat-badge {
+            background: #1a1a24;
+            border: 1px solid var(--brand-border);
+            border-radius: 12px;
+            padding: 0.8rem 1rem;
+            margin-top: 1rem;
+            font-size: 0.8rem;
+            font-weight: 700;
+            color: var(--brand-muted);
+            line-height: 1.7;
+        }
+
+        .live-dot {
+            display: inline-block;
+            width: 8px; height: 8px;
+            background: #22c55e;
+            border-radius: 50%;
+            margin-left: 5px;
+            box-shadow: 0 0 8px #22c55e;
+            animation: pulse-dot 1.5s ease infinite;
+        }
+
+        @keyframes pulse-dot {
+            0%, 100% { opacity: 1; transform: scale(1); }
+            50% { opacity: 0.5; transform: scale(0.7); }
+        }
+
+        /* ─── MOBILE CTA (hidden by default) ─── */
+        .mobile-cta {
+            display: none;
+            flex-direction: column;
+            gap: 0.8rem;
+            padding: 0 1.5rem 2rem;
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+        /* ─── FOOTER ─── */
+        footer {
+            background: var(--brand-dark);
+            border-top: 1px solid var(--brand-border);
+            padding: 3rem 1.5rem;
+            text-align: center;
+        }
+
+        .footer-links {
+            display: flex;
+            justify-content: center;
+            gap: 2rem;
+            flex-wrap: wrap;
+            margin-bottom: 1.5rem;
+        }
+
+        .footer-links a {
+            color: var(--brand-muted);
+            text-decoration: none;
+            font-weight: 700;
+            font-size: 0.9rem;
+            transition: color 0.2s;
+        }
+
+        .footer-links a:hover { color: var(--brand-red); }
+
+        /* ─── MODAL ─── */
+        .modal-overlay {
+            position: fixed;
+            inset: 0;
+            background: rgba(0,0,0,0.85);
+            backdrop-filter: blur(12px);
+            display: none;
+            align-items: center;
+            justify-content: center;
+            z-index: 1000;
+            padding: 1.5rem;
+        }
+
+        .modal-overlay.active { display: flex; }
+
+        .modal-box {
+            background: var(--brand-card);
+            border: 1px solid var(--brand-border);
+            border-radius: 28px;
+            max-width: 400px;
+            width: 100%;
+            padding: 2.5rem;
+            text-align: center;
+            position: relative;
+            box-shadow: 0 40px 80px rgba(0,0,0,0.6);
+        }
+
+        .modal-close {
+            position: absolute;
+            top: 1rem; left: 1rem;
+            background: rgba(255,255,255,0.06);
+            border: 1px solid rgba(255,255,255,0.1);
+            border-radius: 8px;
+            color: white;
+            width: 36px; height: 36px;
+            display: flex; align-items: center; justify-content: center;
+            cursor: pointer;
+            font-size: 1.1rem;
+            transition: all 0.2s;
+        }
+
+        .modal-close:hover { background: rgba(255,255,255,0.12); }
+
+        .code-box {
+            background: #0a0a0f;
+            border: 2px dashed rgba(245,158,11,0.4);
+            border-radius: 16px;
+            padding: 1.5rem;
+            font-family: 'Courier New', monospace;
+            font-size: 2rem;
+            font-weight: 900;
+            color: var(--brand-amber);
+            letter-spacing: 0.15em;
+            margin: 1.5rem 0;
+            user-select: all;
+            cursor: pointer;
+            transition: border-color 0.2s;
+            position: relative;
+        }
+
+        .code-box:hover { border-color: rgba(245,158,11,0.7); }
+
+        .copy-hint {
+            font-size: 0.75rem;
+            color: var(--brand-muted);
+            margin-top: 0.5rem;
+        }
+
+        /* ─── SECTION HEADER ─── */
+        .section-intro {
+            text-align: center;
+            max-width: 700px;
+            margin: 0 auto 3rem;
+        }
+
+        .section-intro .badge { margin-bottom: 1rem; }
+        .section-intro h2 {
+            font-family: 'Tajawal', sans-serif;
+            font-size: clamp(1.8rem, 4vw, 2.8rem);
+            font-weight: 900;
+            margin-bottom: 1rem;
+        }
+
+        /* ─── SCROLL ANIMATIONS ─── */
+        @keyframes fade-up {
+            from { opacity: 0; transform: translateY(30px); }
+            to   { opacity: 1; transform: translateY(0); }
+        }
+
+        .fade-up { animation: fade-up 0.7s ease both; }
+        .delay-1 { animation-delay: 0.1s; }
+        .delay-2 { animation-delay: 0.2s; }
+        .delay-3 { animation-delay: 0.3s; }
+
+        /* ─── HIGHLIGHTS ─── */
+        mark {
+            background: rgba(225,29,72,0.2);
+            color: #fb7185;
+            padding: 0.1em 0.4em;
+            border-radius: 4px;
+        }
+
+        /* ─── SEPARATOR ─── */
+        .sep {
+            border: none;
+            height: 1px;
+            background: linear-gradient(90deg, transparent, var(--brand-border), transparent);
+            margin: 3rem 0;
+        }
     </style>
 </head>
-<body class="bg-slate-50 text-slate-900">
+<body>
 
-    <header class="bg-indigo-900 text-white py-16 px-4 text-center">
-        <div class="max-w-4xl mx-auto">
-            <span class="bg-indigo-500 text-white px-4 py-1 rounded-full text-sm font-bold mb-4 inline-block uppercase tracking-widest">تكنولوجيا الرياضة 2026</span>
-            <h1 class="text-4xl md:text-6xl font-black mb-6 leading-tight">مستقبل المشاهدة الرياضية: دليلك الشامل لتطبيقات الجيل القادم</h1>
-            <p class="text-indigo-200 text-xl max-w-2xl mx-auto leading-relaxed">اكتشف لماذا يعتبر تطبيق Matric Nejma الخيار الأول للمشجعين حول العالم لمتابعة أقوى الدوريات.</p>
+    <!-- ═══════════════ HERO ═══════════════ -->
+    <header class="hero">
+        <div class="hero-grid"></div>
+
+        <div class="badge fade-up">
+            <span class="live-dot"></span>
+            دليل المشاهدة الرسمي 2026
+        </div>
+
+        <h1 class="fade-up delay-1">أين تشاهد أقوى<br>البطولات الكروية؟</h1>
+
+        <p class="fade-up delay-2">
+            دليلك الشامل لمتابعة كأس العالم 2026، دوري أبطال أوروبا، وكأس أمم أفريقيا — بجودة 4K وبدون أدنى تقطع.
+            عبر <strong style="color:var(--brand-white)">matricnjm.online</strong> وتقنية نجمة 6.
+        </p>
+
+        <div class="flex gap-4 flex-wrap justify-center fade-up delay-3">
+            <a href="https://www.mediafire.com/file/15bqlfrrzlzklmi/Matric+Nejma+6+V3.0.apk/file" target="_blank" rel="nofollow" class="btn-primary">
+                <svg width="20" height="20" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"/></svg>
+                تحميل التطبيق — مجاناً
+            </a>
+            <button onclick="openModal()" class="btn-secondary">
+                🔑 كود التفعيل
+            </button>
+        </div>
+
+        <div class="stats-bar fade-up delay-3">
+            <div class="stat-item">
+                <span class="stat-number">4K</span>
+                <span class="stat-label">جودة البث</span>
+            </div>
+            <div class="stat-divider"></div>
+            <div class="stat-item">
+                <span class="stat-number">+100</span>
+                <span class="stat-label">قناة رياضية</span>
+            </div>
+            <div class="stat-divider"></div>
+            <div class="stat-item">
+                <span class="stat-number">&lt;1s</span>
+                <span class="stat-label">تأخير البث</span>
+            </div>
+            <div class="stat-divider"></div>
+            <div class="stat-item">
+                <span class="stat-number">24/7</span>
+                <span class="stat-label">خدمة متواصلة</span>
+            </div>
         </div>
     </header>
 
-    <main class="max-w-5xl mx-auto px-4 py-12">
-        
-       <article class="article-content bg-white p-6 md:p-16 rounded-[3rem] shadow-xl border border-slate-100 mb-16">
-            
-            <p class="text-xl font-medium text-slate-600 italic border-r-4 border-amber-400 pr-4">
-                دليل المشجع العربي لمتابعة أهم البطولات العالمية والقارية لموسم 2026.
-            </p>
+    <!-- ═══════════════ MOBILE CTA ═══════════════ -->
+    <div class="mobile-cta">
+        <a href="https://www.mediafire.com/file/15bqlfrrzlzklmi/Matric+Nejma+6+V3.0.apk/file" target="_blank" rel="nofollow" class="sidebar-btn sidebar-btn-dl">
+            <svg width="18" height="18" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"/></svg>
+            تحميل APK مباشرة
+        </a>
+        <button onclick="openModal()" class="sidebar-btn sidebar-btn-code">
+            🔑 الحصول على كود التفعيل
+        </button>
+    </div>
 
-            <h2>تغطية شاملة لأكبر المحافل الكروية العالمية</h2>
-            <p>
-                مع اقتراب موعد <strong>كأس العالم 2026</strong>، يزداد الطلب على المنصات التي توفر استقراراً في البث وجودة في الصورة. لم يعد المتابع يكتفي بمجرد النتيجة، بل يبحث عن تجربة غامرة تضعه في قلب الحدث. تطبيق <em>Matric Nejma</em> صُمم خصيصاً ليتعامل مع ضغط الملايين أثناء مباريات المونديال، مع توفير تحليلات فورية وإحصائيات دقيقة لكل مباراة.
-            </p>
+    <!-- ═══════════════ MAIN CONTENT ═══════════════ -->
+    <main class="main-layout">
 
-            <div class="highlight-box">
-                <h3 class="text-xl font-bold text-indigo-900 mb-4 text-center">أهم البطولات المدعومة في نظامنا الجديد:</h3>
-                <ul class="grid md:grid-cols-2 gap-4 text-slate-700">
-                    <li class="flex items-center gap-2">🏆 كأس العالم (تغطية حصرية 2026)</li>
-                    <li class="flex items-center gap-2">🌍 كأس أمم أفريقيا (دعم المنتخبات العربية)</li>
-                    <li class="flex items-center gap-2">🇪🇺 دوري أبطال أوروبا (جودة 4K)</li>
-                    <li class="flex items-center gap-2">⚽ الدوريات الكبرى (الإسباني، الإنجليزي)</li>
-                </ul>
+        <!-- ── ARTICLE ── -->
+        <article class="article-card">
+            <div class="article-body">
+
+                <p style="font-size:1.15rem; color:rgba(248,249,255,0.85); font-weight:600; border-bottom:1px solid var(--brand-border); padding-bottom:2rem; margin-bottom:2.5rem;">
+                    مع دخولنا عام 2026، بات السؤال الأكثر تكراراً بين مشجعي الكرة هو: <mark>أين أشاهد المباراة؟</mark> في <strong>matricnjm.online</strong>، لا نوفر الإجابة فحسب — بل نوفر الحل التقني المتكامل الذي يجعل تجربة المشاهدة تجربة استثنائية من الدرجة الأولى.
+                </p>
+
+                <h2>1. كأس العالم 2026: الحدث الأضخم في التاريخ</h2>
+                <p>
+                    تتجه أنظار العالم إلى قارة أمريكا الشمالية لمتابعة <strong>كأس العالم FIFA 2026</strong>، أضخم نسخة في تاريخ البطولة على الإطلاق بمشاركة 48 منتخباً وطنياً عبر ملاعب موزعة بين الولايات المتحدة، كندا، والمكسيك. هذا الحجم الهائل يتطلب بنية تحتية رقمية استثنائية لمتابعته بسلاسة — وهذا بالضبط ما أعددناه لك.
+                </p>
+                <p>
+                    عبر تطبيق <strong>Matric Nejma</strong>، قمنا بتجهيز سيرفرات VPS عالية الأداء مُوزَّعة جغرافياً في أوروبا وأفريقيا، بالتعاون مع كبار مزودي خدمات بث الفيديو عالمياً. النتيجة: تغطية حصرية لجميع المباريات الـ 104 بجودة تتراوح بين SD وFull HD و4K Ultra HD، مع تعليق عربي احترافي وواجهة مستخدم عربية كاملة. لا حاجة لـ VPN، ولا حاجة لاشتراكات معقدة — فقط <mark>تطبيق واحد يعمل مباشرة</mark>.
+                </p>
+
+                <div class="tournament-grid">
+                    <div class="tournament-card">
+                        <div class="tournament-emoji">🏆</div>
+                        <div class="tournament-title">كأس العالم FIFA 2026</div>
+                        <div class="tournament-desc">48 منتخباً، 104 مباراة، تغطية كاملة بجودات متعددة تناسب كل سرعة إنترنت.</div>
+                    </div>
+                    <div class="tournament-card">
+                        <div class="tournament-emoji">⭐</div>
+                        <div class="tournament-title">دوري أبطال أوروبا</div>
+                        <div class="tournament-desc">ليالي الأبطال الساحرة بجودة 4K وتقنية منع التقطع المتطورة.</div>
+                    </div>
+                    <div class="tournament-card">
+                        <div class="tournament-emoji">🌍</div>
+                        <div class="tournament-title">كأس أمم أفريقيا CAN</div>
+                        <div class="tournament-desc">دعم كامل لأسود الأطلس والمنتخبات العربية عبر سيرفرات محلية مُحسَّنة.</div>
+                    </div>
+                </div>
+
+                <h2>2. دوري أبطال أوروبا: صراع عمالقة الكرة الأوروبية</h2>
+                <p>
+                    إذا كنت تتساءل أين تشاهد <strong>دوري أبطال أوروبا</strong>، فإن الإجابة تكمن في التقنية التي نستخدمها. مباريات ريال مدريد، مانشستر سيتي، باريس سان جيرمان، وإنتر ميلان تتطلب سرعة استجابة عالية وثبات في البث لا يُحتمل معه تقطع واحد — لأن كل ثانية قد تحمل هدفاً تاريخياً.
+                </p>
+                <p>
+                    نوفر لك قنوات مخصصة لدوري الأبطال تبث بجودة <strong>Ultra HD</strong> عبر بروتوكول HLS المتطور، مع ميزة اختيار المعلق المفضل (عربي، إنجليزي، أو فرنسي). كما تتوفر ميزة "النافذة المتعددة" لمتابعة مباراتين في آنٍ واحد خلال مرحلة دوري المجموعات.
+                </p>
+
+                <h2>3. كأس أمم أفريقيا: نبض القارة السمراء</h2>
+                <p>
+                    تعتبر <strong>كأس أمم أفريقيا</strong> البطولة الأقرب إلى قلوب المشجع المغربي والعربي. ونحن ندرك تماماً أن لحظة هدف أسود الأطلس لا تُعوَّض — لذا قمنا بتطوير بنية تحتية خاصة لمباريات المغرب تضمن لك صفر انقطاعات حتى في ذروة التحميل.
+                </p>
+
+                <div class="carriers-banner">
+                    <div>
+                        <div style="font-weight:900; color:var(--brand-white); margin-bottom:0.4rem;">📡 متوافق مع جميع شبكات المغرب</div>
+                        <div style="font-size:0.85rem; color:var(--brand-muted);">اختر مزودك واستمتع بنجمة 6 (*6) بسرعة قصوى</div>
+                    </div>
+                    <div style="display:flex; gap:0.6rem; flex-wrap:wrap;">
+                        <span class="carrier-badge">🔴 Inwi</span>
+                        <span class="carrier-badge">🟠 Orange</span>
+                        <span class="carrier-badge">🔵 Maroc Telecom</span>
+                    </div>
+                </div>
+
+                <p>
+                    الميزة التي تُميز تطبيقنا هي <mark>تقنية "البث المحلي"</mark> المُطوَّرة خصيصاً للمستخدم المغربي. عندما تُفعِّل نجمة 6 على شبكتك، يكتشف التطبيق تلقائياً الشبكة المستخدمة ويوجه البث عبر سيرفرات مُحسَّنة جغرافياً لتلك الشبكة تحديداً، ما يُقلل الـ Ping ويُلغي التقطع بشكل شبه كامل. مستخدمو Inwi، Orange، وMaroc Telecom جربوا الفرق بأنفسهم.
+                </p>
+
+                <hr class="sep">
+
+                <h2>4. التكنولوجيا التي تجعلنا الأفضل — مواصفات تقنية حقيقية</h2>
+                <p>
+                    البث المباشر في 2026 لم يعد مجرد صورة تتحرك على الشاشة. أصبح تجربة تفاعلية متكاملة. إليك ما يعمل خلف الكواليس في <strong>Matric Nejma</strong>:
+                </p>
+
+                <div class="spec-grid">
+                    <div class="spec-item">
+                        <div class="spec-icon">🖥️</div>
+                        <div>
+                            <div class="spec-label">البنية التحتية</div>
+                            <div class="spec-value">VPS Linux عالي الأداء</div>
+                        </div>
+                    </div>
+                    <div class="spec-item">
+                        <div class="spec-icon">📡</div>
+                        <div>
+                            <div class="spec-label">بروتوكول البث</div>
+                            <div class="spec-value">HLS / MPEG-DASH</div>
+                        </div>
+                    </div>
+                    <div class="spec-item">
+                        <div class="spec-icon">🎥</div>
+                        <div>
+                            <div class="spec-label">جودة الفيديو</div>
+                            <div class="spec-value">SD / HD / FHD / 4K</div>
+                        </div>
+                    </div>
+                    <div class="spec-item">
+                        <div class="spec-icon">⚡</div>
+                        <div>
+                            <div class="spec-label">تأخير البث</div>
+                            <div class="spec-value">أقل من ثانية واحدة</div>
+                        </div>
+                    </div>
+                    <div class="spec-item">
+                        <div class="spec-icon">🔄</div>
+                        <div>
+                            <div class="spec-label">توازن الحمل</div>
+                            <div class="spec-value">Load Balancing تلقائي</div>
+                        </div>
+                    </div>
+                    <div class="spec-item">
+                        <div class="spec-icon">🌍</div>
+                        <div>
+                            <div class="spec-label">توزيع المحتوى</div>
+                            <div class="spec-value">CDN أوروبا + أفريقيا</div>
+                        </div>
+                    </div>
+                </div>
+
+                <p>
+                    نستخدم بروتوكول <strong>HLS (HTTP Live Streaming)</strong> — المعيار الصناعي الذي تعتمده كبرى منصات البث في العالم — مع تحسينات مُخصَّصة لاتصالات المغرب وشمال أفريقيا. ميزة <strong>Adaptive Bitrate (ABR)</strong> تُعدِّل الجودة تلقائياً بحسب سرعة اتصالك الفوري، فلا تقطع ولا توقف. البث لا يتأخر عن الواقع بأكثر من ثانية واحدة — مما يعني أنك تعرف النتائج قبل الجميع.
+                </p>
+
+                <h3>إحصائيات حية وذكاء اصطناعي رياضي</h3>
+                <p>
+                    تطبيق Matric Nejma لا يكتفي بالبث، بل يوفر إحصائيات حية للمباريات، تشكيلات الفرق، خريطة التمريرات، وتنبيهات الأهداف فور تسجيلها. الواجهة مصممة بالكامل بالعربية مع دعم كامل للاتجاه من اليمين لليسار، وتعمل بسلاسة على جميع هواتف الأندرويد من إصدار 6.0 فما فوق.
+                </p>
+
+                <hr class="sep">
+
+                <h2>5. الأمان والموثوقية: لماذا matricnjm.online هو المصدر الوحيد؟</h2>
+                <p>
+                    في عالم يتكاثر فيه تطبيقات مزيفة وروابط مشبوهة، يجب أن تكون ذكياً في اختيار مصدر التحميل. <strong>matricnjm.online</strong> هو الموقع الرسمي الوحيد المعتمد لتطبيق Matric Nejma، وإليك لماذا يجب أن تثق به:
+                </p>
+                <p>
+                    كل ملف APK نُوزِّعه يمر عبر فحص أمني متعدد المراحل قبل نشره. نستخدم تشفير SHA-256 للتحقق من سلامة الملف، ويحتوي التطبيق على آلية داخلية للتحقق من التوقيع الرقمي لمنع أي تعديل خارجي. نظام التحديث التلقائي يضمن لك دائماً أحدث نسخة دون الحاجة لإعادة التحميل اليدوي — كل ذلك <mark>دون إذونات غير ضرورية</mark> على جهازك.
+                </p>
+                <p>
+                    نحن لا نوفر روابط عشوائية على تيليغرام أو مواقع مجهولة. المصدر الوحيد والآمن هو دائماً: <strong>matricnjm.online</strong>.
+                </p>
+
+                <hr class="sep">
+
+                <h2>6. دليل التثبيت خطوة بخطوة</h2>
+                <p>
+                    تثبيت تطبيق Matric Nejma لا يستغرق سوى دقيقة واحدة:
+                </p>
+                <div style="background:#1a1a24; border-radius:16px; padding:1.8rem; border:1px solid var(--brand-border); margin-bottom:2rem;">
+                    <div style="display:flex; flex-direction:column; gap:1rem;">
+                        <div style="display:flex; align-items:center; gap:1rem;">
+                            <div style="width:36px; height:36px; background:var(--brand-red); border-radius:10px; display:flex; align-items:center; justify-content:center; font-weight:900; font-size:0.9rem; flex-shrink:0;">١</div>
+                            <span style="color:rgba(248,249,255,0.8);">اضغط على زر <strong style="color:white;">تحميل APK</strong> واحفظ الملف على هاتفك</span>
+                        </div>
+                        <div style="display:flex; align-items:center; gap:1rem;">
+                            <div style="width:36px; height:36px; background:var(--brand-red); border-radius:10px; display:flex; align-items:center; justify-content:center; font-weight:900; font-size:0.9rem; flex-shrink:0;">٢</div>
+                            <span style="color:rgba(248,249,255,0.8);">فعِّل "تثبيت التطبيقات من مصادر غير معروفة" من الإعدادات</span>
+                        </div>
+                        <div style="display:flex; align-items:center; gap:1rem;">
+                            <div style="width:36px; height:36px; background:var(--brand-red); border-radius:10px; display:flex; align-items:center; justify-content:center; font-weight:900; font-size:0.9rem; flex-shrink:0;">٣</div>
+                            <span style="color:rgba(248,249,255,0.8);">افتح الملف المحمَّل وثبِّته — لن يستغرق ذلك سوى ثوانٍ</span>
+                        </div>
+                        <div style="display:flex; align-items:center; gap:1rem;">
+                            <div style="width:36px; height:36px; background:var(--brand-red); border-radius:10px; display:flex; align-items:center; justify-content:center; font-weight:900; font-size:0.9rem; flex-shrink:0;">٤</div>
+                            <span style="color:rgba(248,249,255,0.8);">أدخل كود التفعيل <strong style="color:var(--brand-amber);">M-7700-X92</strong> واستمتع بالبث المباشر</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="callout">
+                    <h3>🏅 خلاصة: تجربة المشاهدة المثالية في 2026</h3>
+                    <p>
+                        لمتابعة كأس العالم، دوري الأبطال، وكأس أمم أفريقيا بأعلى جودة ممكنة — لا تحتاج لأجهزة معقدة ولا اشتراكات باهظة. فقط حمِّل تطبيق <strong>Matric Nejma</strong> من <strong>matricnjm.online</strong>، فعِّل كودك، وفعِّل نجمة 6 على شبكتك. عالم الكرة بأكمله في كفِّ يدك.
+                    </p>
+                </div>
+
             </div>
-
-            <h2>كأس أمم أفريقيا: شغف القارة السمراء</h2>
-            <p>
-                تعتبر <strong>كأس أمم أفريقيا</strong> من أكثر البطولات إثارة، حيث تجتمع القوة البدنية والمهارة العالية. نحن ندرك أهمية هذه البطولة للمشجع العربي والمغربي بشكل خاص، لذلك تم تخصيص سيرفرات "قارية" تضمن أقل زمن تأخير ممكن، مما يسمح لك بمتابعة أسود الأطلس وبقية المنتخبات العربية بأعلى كفاءة، حتى في ظروف الإنترنت المتوسطة.
-            </p>
-
-            <h2>دوري أبطال أوروبا: قمة الكرة العالمية</h2>
-            <p>
-                لا تكتمل تجربة أي مشجع بدون متابعة ليالي <strong>دوري أبطال أوروبا</strong> الساحرة. سواء كنت تترقب مباريات ريال مدريد، مانشستر سيتي، أو إنتر ميلان، فإن توفير بث مستقر لهذه المباريات يتطلب تقنيات متطورة. تطبيقنا يعتمد على توزيع الأحمال الذكي (Load Balancing) لضمان عدم توقف البث أثناء لحظات الحسم في الأدوار الإقصائية.
-            </p>
-
-            <h2>كيفية التحميل والحصول على كود التفعيل</h2>
-            <p>
-                للاستمتاع بكل هذه الميزات لمتابعة <strong>كأس العالم، دوري الأبطال، والكان</strong>، اتبع خطوات التحقق البسيطة في الأسفل. هذا النظام يضمن لك الحصول على نسخة أصلية مشفرة من تطبيق <em>Matric Nejma</em>، مع كود تفعيل خاص بجهازك لضمان أعلى مستويات الأمان والخصوصية.
-            </p>
         </article>
 
-        <section class="max-w-md mx-auto relative z-10" id="download-section">
-            <div class="glass rounded-[3rem] p-8 md:p-12 shadow-2xl text-center border border-slate-200 animate-in">
-                
-                <div class="mb-6">
-                    <div class="bg-indigo-600 text-white w-16 h-16 rounded-2xl flex items-center justify-center mx-auto mb-4 shadow-lg shadow-indigo-200">
-                        <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
-                        </svg>
+        <!-- ── SIDEBAR ── -->
+        <aside class="sidebar">
+            <div class="sidebar-card">
+                <div class="app-icon">⚽</div>
+                <div class="sidebar-title">Matric Nejma</div>
+                <div class="sidebar-sub">النسخة الرسمية V3.0 — مجاناً</div>
+
+                <div style="background:#1a1a24; border-radius:14px; padding:1rem; margin-bottom:1.5rem; text-align:right; border:1px solid var(--brand-border);">
+                    <div style="display:flex; align-items:center; gap:0.5rem; margin-bottom:0.5rem;">
+                        <span class="live-dot"></span>
+                        <span style="font-size:0.75rem; color:#22c55e; font-weight:800; text-transform:uppercase; letter-spacing:0.05em;">بث مباشر الآن</span>
                     </div>
-                    <h2 class="text-2xl font-black text-slate-800">مركز التحقق والتحميل</h2>
-                    <p class="text-slate-500 text-sm mt-2">نظام التحقق السحابي - الإصدار 4.0</p>
+                    <div style="font-size:0.9rem; font-weight:700; color:var(--brand-white);">كأس العالم 2026 — الجولات التأهيلية</div>
+                    <div style="font-size:0.78rem; color:var(--brand-muted); margin-top:0.3rem;">HD · بدون تأخير</div>
                 </div>
 
-                <div id="progressArea">
-                    <div class="flex justify-between mb-2">
-                        <span id="stepText" class="text-xs font-bold text-indigo-600 uppercase">الخطوة 1 من 6</span>
-                        <span id="percentText" class="text-xs font-bold text-slate-400">0%</span>
-                    </div>
-                    <div class="w-full bg-slate-100 rounded-full h-3 mb-8 overflow-hidden">
-                        <div id="progressBar" class="bg-indigo-600 h-full transition-all duration-700 ease-in-out" style="width: 0%"></div>
-                    </div>
+                <a href="https://www.mediafire.com/file/15bqlfrrzlzklmi/Matric+Nejma+6+V3.0.apk/file" target="_blank" rel="nofollow" class="sidebar-btn sidebar-btn-dl">
+                    <svg width="18" height="18" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"/></svg>
+                    تحميل APK المباشر
+                </a>
+
+                <button onclick="openModal()" class="sidebar-btn sidebar-btn-code">
+                    🔑 الحصول على كود التفعيل
+                </button>
+
+                <div class="compat-badge">
+                    <div style="color:var(--brand-white); font-weight:900; margin-bottom:0.4rem;">متوافق مع:</div>
+                    Android 6.0+ · جميع الهواتف<br>
+                    Inwi (*6) · Orange (*6) · IAM (*6)<br>
+                    <span style="color:#22c55e;">✓</span> APK آمن ومحمي رسمياً
                 </div>
 
-                <div id="stepContent">
-                    <button id="actionBtn" onclick="handleStep()" class="w-full bg-indigo-600 hover:bg-indigo-700 text-white font-bold py-5 rounded-2xl shadow-xl transition-all active:scale-95 text-lg flex items-center justify-center gap-3">
-                        <span>ابدأ التحقق الآن</span>
-                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 rotate-180" viewBox="0 0 20 20" fill="currentColor">
-                            <path fill-rule="evenodd" d="M10.293 3.293a1 1 0 011.414 0l6 6a1 1 0 010 1.414l-6 6a1 1 0 01-1.414-1.414L14.586 11H3a1 1 0 110-2h11.586l-4.293-4.293a1 1 0 010-1.414z" clip-rule="evenodd" />
-                        </svg>
-                    </button>
-                </div>
+                <hr style="border:none; height:1px; background:var(--brand-border); margin:1.5rem 0;">
 
-                <div id="finalActions" class="hidden space-y-4">
-                    <div class="bg-emerald-50 text-emerald-700 p-4 rounded-2xl mb-4 font-bold border border-emerald-100">
-                        ✨ تم التحقق بنجاح - الميزات مفعلة
+                <div style="text-align:right;">
+                    <div style="font-size:0.78rem; color:var(--brand-muted); font-weight:700; text-transform:uppercase; letter-spacing:0.05em; margin-bottom:1rem;">البطولات المتاحة</div>
+                    <div style="display:flex; flex-direction:column; gap:0.6rem;">
+                        <div style="display:flex; align-items:center; justify-content:space-between; font-size:0.88rem;">
+                            <span style="color:#22c55e; font-weight:700; font-size:0.75rem;">مباشر</span>
+                            <span style="font-weight:700;">🏆 كأس العالم 2026</span>
+                        </div>
+                        <div style="display:flex; align-items:center; justify-content:space-between; font-size:0.88rem;">
+                            <span style="color:#22c55e; font-weight:700; font-size:0.75rem;">مباشر</span>
+                            <span style="font-weight:700;">⭐ دوري أبطال أوروبا</span>
+                        </div>
+                        <div style="display:flex; align-items:center; justify-content:space-between; font-size:0.88rem;">
+                            <span style="color:#22c55e; font-weight:700; font-size:0.75rem;">مباشر</span>
+                            <span style="font-weight:700;">🌍 كأس أمم أفريقيا</span>
+                        </div>
+                        <div style="display:flex; align-items:center; justify-content:space-between; font-size:0.88rem;">
+                            <span style="color:var(--brand-muted); font-weight:700; font-size:0.75rem;">+100 قناة</span>
+                            <span style="font-weight:700;">📺 قنوات رياضية عالمية</span>
+                        </div>
                     </div>
-                    <a id="downloadLink" href="#" rel="nofollow" class="flex items-center justify-center gap-3 w-full bg-slate-900 hover:bg-black text-white font-bold py-5 rounded-2xl shadow-2xl transition-all">
-                        تحميل التطبيق (APK)
-                    </a>
-                    <button onclick="toggleModal(true)" class="flex items-center justify-center gap-3 w-full bg-amber-500 hover:bg-amber-600 text-white font-bold py-5 rounded-2xl shadow-xl transition-all">
-                        عرض كود التفعيل
-                    </button>
                 </div>
             </div>
-        </section>
+
+            <div style="margin-top:1rem; background:var(--brand-card); border:1px solid var(--brand-border); border-radius:16px; padding:1.2rem; text-align:center;">
+                <div style="font-size:0.78rem; color:var(--brand-muted); font-weight:700; text-transform:uppercase; letter-spacing:0.05em; margin-bottom:0.6rem;">المصدر الرسمي الوحيد</div>
+                <div style="font-weight:900; color:var(--brand-red); font-size:1rem; letter-spacing:0.02em;">matricnjm.online</div>
+            </div>
+        </aside>
+
     </main>
 
-    <footer class="mt-20 py-12 bg-slate-900 text-center text-slate-500 text-sm">
-         <div class="max-w-2xl mx-auto px-4">
-             <p class="mb-4 uppercase tracking-widest text-[10px]">Best 10 Tips - Digital Solutions 2026</p>
-             <div class="flex justify-center gap-8 mb-6 font-bold">
-                 <a href="#" class="hover:text-white transition-colors">سياسة الخصوصية</a>
-                 <a href="#" class="hover:text-white transition-colors">اتصل بنا</a>
-             </div>
-             <p class="leading-relaxed opacity-50">جميع الحقوق محفوظة لموقع Best10Tips. هذا الموقع يقدم مراجعات تقنية وروابط تحميل آمنة للتطبيقات الرياضية.</p>
-         </div>
+    <!-- ═══════════════ FOOTER ═══════════════ -->
+    <footer>
+        <div style="max-width:900px; margin:0 auto;">
+            <div style="font-family:'Tajawal',sans-serif; font-size:1.6rem; font-weight:900; color:var(--brand-red); margin-bottom:0.5rem;">Matric Nejma</div>
+            <div style="font-size:0.85rem; color:var(--brand-muted); margin-bottom:2rem;">البوابة الرسمية للبث المباشر الرياضي</div>
+            <div class="footer-links">
+                <a href="#">سياسة الخصوصية</a>
+                <a href="#">شروط الاستخدام</a>
+                <a href="#">عن التطبيق</a>
+                <a href="#">اتصل بنا</a>
+            </div>
+            <div style="font-size:0.82rem; color:rgba(107,114,128,0.6);">
+                جميع الحقوق محفوظة &copy; 2026 · <span style="color:var(--brand-muted);">matricnjm.online</span>
+            </div>
+        </div>
     </footer>
 
-    <div id="codeModal" class="fixed inset-0 bg-black/80 hidden flex items-center justify-center z-50 p-6">
-        <div class="bg-white rounded-[2.5rem] max-w-sm w-full p-10 text-center shadow-2xl">
-            <h2 class="text-xl font-bold text-slate-800 mb-2">كود التفعيل الخاص بك</h2>
-            <div id="activationCodeDisplay" class="bg-slate-50 border-2 border-dashed border-indigo-200 p-5 rounded-2xl text-2xl font-mono font-bold text-indigo-700 mb-8 select-all"></div>
-            <button onclick="toggleModal(false)" class="w-full bg-slate-100 hover:bg-slate-200 text-slate-600 font-bold py-4 rounded-2xl transition-all tracking-wide">إغلاق</button>
+    <!-- ═══════════════ MODAL ═══════════════ -->
+    <div class="modal-overlay" id="codeModal" onclick="handleModalClick(event)">
+        <div class="modal-box" id="modalBox">
+            <button class="modal-close" onclick="closeModal()">✕</button>
+
+            <div style="font-size:2.5rem; margin-bottom:1rem;">🔑</div>
+            <h2 style="font-family:'Tajawal',sans-serif; font-size:1.6rem; font-weight:900; margin-bottom:0.5rem;">كود التفعيل الرسمي</h2>
+            <p style="font-size:0.88rem; color:var(--brand-muted); font-weight:600; margin-bottom:0.5rem;">انسخ الكود وأدخله عند تشغيل التطبيق</p>
+
+            <div class="code-box" id="codeBox" onclick="copyCode()" title="اضغط للنسخ">
+                M-7700-X92
+            </div>
+            <div class="copy-hint" id="copyHint">🖱️ اضغط على الكود لنسخه تلقائياً</div>
+
+            <div style="background:#1a1a24; border-radius:12px; padding:1rem; margin:1.2rem 0; border:1px solid var(--brand-border); text-align:right; font-size:0.85rem; color:var(--brand-muted); line-height:1.8;">
+                <div style="color:var(--brand-white); font-weight:800; margin-bottom:0.4rem;">كيفية الاستخدام:</div>
+                ١. حمِّل التطبيق من الرابط أعلاه<br>
+                ٢. عند الفتح لأول مرة، أدخل الكود<br>
+                ٣. استمتع بالبث المباشر فوراً ⚽
+            </div>
+
+            <button onclick="closeModal()" style="width:100%; background:rgba(255,255,255,0.06); border:1px solid rgba(255,255,255,0.1); color:var(--brand-muted); font-weight:800; padding:0.8rem; border-radius:10px; cursor:pointer; font-size:0.95rem; transition:all 0.2s;">
+                إغلاق
+            </button>
         </div>
     </div>
 
     <script>
-        const totalSteps = 6;
-        const activationCode = "M-7700-X92"; 
-        const appDownloadUrl = "https://www.mediafire.com/file/15bqlfrrzlzklmi/Matric+Nejma+6+V3.0.apk/file"; 
-        
-        let currentStep = 1;
-        const actionBtn = document.getElementById('actionBtn');
-        const stepText = document.getElementById('stepText');
-        const percentText = document.getElementById('percentText');
-        const progressBar = document.getElementById('progressBar');
-        const finalActions = document.getElementById('finalActions');
-        const progressArea = document.getElementById('progressArea');
-        const codeDisplay = document.getElementById('activationCodeDisplay');
-        const downloadLink = document.getElementById('downloadLink');
-
-        function updateUI() {
-            if (currentStep > totalSteps) {
-                progressArea.style.display = 'none';
-                document.getElementById('stepContent').style.display = 'none';
-                finalActions.classList.remove('hidden');
-                downloadLink.href = appDownloadUrl;
-                codeDisplay.innerText = activationCode;
-            } else {
-                const percent = Math.round(((currentStep - 1) / totalSteps) * 100);
-                stepText.innerText = `الخطوة ${currentStep} من ${totalSteps}`;
-                percentText.innerText = `${percent}%`;
-                progressBar.style.width = `${percent}%`;
-                const labels = ["فحص نظام الأمان", "تشفير قناة الاتصال", "التحقق من السيرفر", "تجاوز بروتوكول الحماية", "مزامنة البيانات", "إنشاء مفتاح التفعيل"];
-                actionBtn.querySelector('span').innerText = labels[currentStep - 1];
-            }
+        function openModal() {
+            document.getElementById('codeModal').classList.add('active');
+            document.body.style.overflow = 'hidden';
         }
 
-        function handleStep() {
-            if (currentStep <= totalSteps) {
-                // ملاحظة: هنا لا يوجد Smart Links حالياً كما طلبت
-                actionBtn.disabled = true;
-                actionBtn.querySelector('span').innerText = "جاري الفحص...";
+        function closeModal() {
+            document.getElementById('codeModal').classList.remove('active');
+            document.body.style.overflow = '';
+        }
+
+        function handleModalClick(e) {
+            if (e.target === document.getElementById('codeModal')) closeModal();
+        }
+
+        function copyCode() {
+            navigator.clipboard.writeText('M-7700-X92').then(() => {
+                const hint = document.getElementById('copyHint');
+                const box  = document.getElementById('codeBox');
+                hint.textContent  = '✅ تم النسخ بنجاح!';
+                hint.style.color  = '#22c55e';
+                box.style.borderColor = 'rgba(34,197,94,0.5)';
+                box.style.color = '#22c55e';
                 setTimeout(() => {
-                    currentStep++;
-                    actionBtn.disabled = false;
-                    updateUI();
-                }, 1500);
-            }
+                    hint.textContent  = '🖱️ اضغط على الكود لنسخه تلقائياً';
+                    hint.style.color  = '';
+                    box.style.borderColor = '';
+                    box.style.color = '';
+                }, 2500);
+            }).catch(() => {
+                // Fallback for older browsers
+                const sel = document.createRange();
+                sel.selectNodeContents(document.getElementById('codeBox'));
+                window.getSelection().removeAllRanges();
+                window.getSelection().addRange(sel);
+            });
         }
 
-        function toggleModal(show) {
-            const modal = document.getElementById('codeModal');
-            modal.classList.toggle('hidden', !show);
-        }
-
-        updateUI();
+        document.addEventListener('keydown', e => {
+            if (e.key === 'Escape') closeModal();
+        });
     </script>
 </body>
 </html>
