@@ -1083,7 +1083,6 @@
         #rewardBox { animation: none; }
         #rewardBox.pop { animation: popIn 0.45s ease forwards; }
     </style>
-
     <script>
         /* ─── AD TASKS CONFIG ─── */
         const AD_LINKS = [
@@ -1102,37 +1101,32 @@
             'المهمة الخامسة — افتح الرابط',
             'المهمة السادسة — افتح الرابط'
         ];
-        const STORAGE_KEY = 'mnj_tasks_v1';
+        
         const TOTAL = AD_LINKS.length;
-
-        /* Persist progress in localStorage */
-        function getProgress() {
-            try { return JSON.parse(localStorage.getItem(STORAGE_KEY)) || { done: [] }; }
-            catch { return { done: [] }; }
-        }
-        function saveProgress(p) {
-            try { localStorage.setItem(STORAGE_KEY, JSON.stringify(p)); } catch {}
-        }
-
+        
+        /* CHANGED: We no longer pull from localStorage. 
+           The progress starts as an empty array every time the page loads.
+        */
+        let currentProgress = { done: [] }; 
+        
         /* Track which task is awaiting verification */
         let pendingTaskIndex = null;
         let pendingTimer = null;
-        let currentMode = 'download'; // 'download' | 'code'
-
+        let currentMode = 'download'; 
+        
         /* ─── RENDER TASK LIST ─── */
         function renderTasks() {
-            const p = getProgress();
-            const doneSet = new Set(p.done);
+            const doneSet = new Set(currentProgress.done);
             const count = doneSet.size;
             const list = document.getElementById('taskList');
             list.innerHTML = '';
-
+        
             AD_LINKS.forEach((url, i) => {
                 const isDone = doneSet.has(i);
                 const isNext = !isDone && (i === 0 || doneSet.has(i - 1));
                 const item = document.createElement('div');
                 item.className = 'task-item' + (isDone ? ' done' : '') + (isNext && !isDone ? ' active-now' : '');
-
+        
                 let btnHTML;
                 if (isDone) {
                     btnHTML = `<button class="task-btn task-btn-done">✓ تم</button>`;
@@ -1141,7 +1135,7 @@
                 } else {
                     btnHTML = `<button class="task-btn task-btn-pending" disabled>🔒</button>`;
                 }
-
+        
                 item.innerHTML = `
                     <div class="task-num">${isDone ? '✓' : i + 1}</div>
                     <div class="task-label">${TASK_LABELS[i]}</div>
@@ -1149,32 +1143,26 @@
                 `;
                 list.appendChild(item);
             });
-
-            // Update progress bar
+        
             document.getElementById('progressBar').style.width = (count / TOTAL * 100) + '%';
             document.getElementById('progressText').textContent = count;
         }
-
+        
         /* ─── OPEN AD LINK ─── */
         function openAdLink(index) {
-            const p = getProgress();
-            if (p.done.includes(index)) return;
-
-            // Open ad in new tab
+            if (currentProgress.done.includes(index)) return;
+        
             window.open(AD_LINKS[index], '_blank');
-
-            // Mark as done after 2s delay (simulate visit)
+        
             pendingTaskIndex = index;
             clearTimeout(pendingTimer);
             pendingTimer = setTimeout(() => {
-                const prog = getProgress();
-                if (!prog.done.includes(index)) {
-                    prog.done.push(index);
-                    saveProgress(prog);
+                if (!currentProgress.done.includes(index)) {
+                    currentProgress.done.push(index);
+                    // No saveProgress() call here means it won't persist after refresh
                 }
                 renderTasks();
-                // Check if all done
-                if (prog.done.length >= TOTAL) {
+                if (currentProgress.done.length >= TOTAL) {
                     setTimeout(() => {
                         closeAdModal();
                         showReward();
@@ -1182,17 +1170,16 @@
                 }
             }, 2000);
         }
-
-        /* ─── OPEN MODAL (download or code) ─── */
+        
+        /* ─── OPEN MODAL ─── */
         function openTasksFor(mode) {
-            const p = getProgress();
             currentMode = mode;
-            if (p.done.length >= TOTAL) {
+            // If user refreshes, currentProgress.done.length will always be 0
+            if (currentProgress.done.length >= TOTAL) {
                 showReward();
                 return;
             }
             renderTasks();
-            // Update header based on mode
             if (mode === 'download') {
                 document.getElementById('taskModalIcon').textContent = '📥';
                 document.getElementById('taskModalTitle').textContent = 'أكمل المهام لتحميل التطبيق';
@@ -1205,16 +1192,16 @@
             document.getElementById('adTaskModal').classList.add('active');
             document.body.style.overflow = 'hidden';
         }
-
+        
         function closeAdModal() {
             document.getElementById('adTaskModal').classList.remove('active');
             document.body.style.overflow = '';
         }
-
+        
         function handleAdModalClick(e) {
             if (e.target === document.getElementById('adTaskModal')) closeAdModal();
         }
-
+        
         /* ─── REWARD MODAL ─── */
         function showReward() {
             const box = document.getElementById('rewardBox');
@@ -1222,7 +1209,7 @@
             const code = document.getElementById('rewardCode');
             dl.style.display = 'none';
             code.style.display = 'none';
-
+        
             if (currentMode === 'download') {
                 document.getElementById('rewardIcon').textContent = '🎉';
                 document.getElementById('rewardTitle').textContent = 'أحسنت! رابط التحميل جاهز';
@@ -1234,23 +1221,23 @@
                 document.getElementById('rewardSubtitle').textContent = 'انسخ الكود وأدخله عند تشغيل التطبيق';
                 code.style.display = 'block';
             }
-
+        
             box.classList.remove('pop');
-            void box.offsetWidth; // reflow
+            void box.offsetWidth; 
             box.classList.add('pop');
             document.getElementById('rewardModal').classList.add('active');
             document.body.style.overflow = 'hidden';
         }
-
+        
         function closeRewardModal() {
             document.getElementById('rewardModal').classList.remove('active');
             document.body.style.overflow = '';
         }
-
+        
         function handleRewardClick(e) {
             if (e.target === document.getElementById('rewardModal')) closeRewardModal();
         }
-
+        
         /* ─── COPY CODE ─── */
         function copyCode() {
             navigator.clipboard.writeText('M-7700-X92').then(() => {
@@ -1266,22 +1253,12 @@
                     box.style.borderColor = '';
                     box.style.color = '';
                 }, 2500);
-            }).catch(() => {
-                const sel = document.createRange();
-                sel.selectNodeContents(document.getElementById('codeBox'));
-                window.getSelection().removeAllRanges();
-                window.getSelection().addRange(sel);
             });
         }
-
-        /* ─── KEYBOARD ─── */
+        
         document.addEventListener('keydown', e => {
             if (e.key === 'Escape') { closeAdModal(); closeRewardModal(); }
         });
-
-        /* Legacy openModal kept for any inline calls */
-        function openModal() { openTasksFor('code'); }
-        function closeModal() { closeAdModal(); closeRewardModal(); }
-    </script>
+</script>
 </body>
 </html>
