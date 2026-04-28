@@ -58,25 +58,26 @@ function verifyPassword(password, stored) {
     } catch (_) { return false; }
 }
 
-/* ---------- Initialise admin password ---------- */
+/* ---------- Initialise admin password (called after listen) ---------- */
 function ensureAdmin() {
-    if (!fs.existsSync(DATA_DIR)) fs.mkdirSync(DATA_DIR, { recursive: true });
-    let admin = readJSON(ADMIN_FILE, null);
-    const envPwd = process.env.ADMIN_PASSWORD;
+    try {
+        if (!fs.existsSync(DATA_DIR)) fs.mkdirSync(DATA_DIR, { recursive: true });
+        let admin = readJSON(ADMIN_FILE, null);
+        const envPwd = process.env.ADMIN_PASSWORD;
 
-    if (envPwd) {
-        // Env var always wins — keeps password in sync with secret.
-        admin = { passwordHash: hashPassword(envPwd), updatedAt: new Date().toISOString() };
-        writeJSON(ADMIN_FILE, admin);
-        console.log('[admin] Password set from ADMIN_PASSWORD env var.');
-    } else if (!admin || !admin.passwordHash) {
-        const defaultPwd = 'admin123';
-        admin = { passwordHash: hashPassword(defaultPwd), updatedAt: new Date().toISOString() };
-        writeJSON(ADMIN_FILE, admin);
-        console.log('[admin] Default password set to "admin123" — change it from the admin panel or via ADMIN_PASSWORD env var!');
+        if (envPwd) {
+            admin = { passwordHash: hashPassword(envPwd), updatedAt: new Date().toISOString() };
+            writeJSON(ADMIN_FILE, admin);
+            console.log('[admin] Password set from ADMIN_PASSWORD env var.');
+        } else if (!admin || !admin.passwordHash) {
+            admin = { passwordHash: hashPassword('admin123'), updatedAt: new Date().toISOString() };
+            writeJSON(ADMIN_FILE, admin);
+            console.log('[admin] Default password set to "admin123" — change it from the admin panel!');
+        }
+    } catch (e) {
+        console.error('[admin] init error:', e);
     }
 }
-ensureAdmin();
 
 /* ---------- Sessions / auth ---------- */
 function createSession() {
@@ -162,16 +163,38 @@ function safeStr(v, max) {
 }
 
 /* ---------- Static file serving ---------- */
+function sendFile(req, res, data, type, status = 200) {
+    const isHead = req.method === 'HEAD';
+    res.writeHead(status, {
+        'Content-Type': type,
+        'Content-Length': Buffer.byteLength(data),
+        'Cache-Control': 'no-store, no-cache, must-revalidate, max-age=0',
+    });
+    if (isHead) return res.end();
+    res.end(data);
+}
+
 function serveStatic(req, res) {
     try {
+        const method = req.method.toUpperCase();
+        if (method !== 'GET' && method !== 'HEAD') {
+            res.writeHead(405, { 'Allow': 'GET, HEAD', 'Content-Length': 0 });
+            return res.end();
+        }
+
         const urlPath = decodeURIComponent((req.url || '/').split('?')[0]);
         let filePath = path.normalize(path.join(ROOT, urlPath));
-        if (!filePath.startsWith(ROOT)) { res.writeHead(403); return res.end('Forbidden'); }
+        if (!filePath.startsWith(ROOT)) {
+            res.writeHead(403, { 'Content-Length': 0 });
+            return res.end();
+        }
 
         // Block direct access to data directory & sensitive files
         if (filePath.startsWith(path.join(ROOT, 'data')) || filePath.endsWith('server.js')) {
-            // Allow only the public read of posts.json (used by the front-end blog engine)
-            if (filePath !== POSTS_FILE) { res.writeHead(403); return res.end('Forbidden'); }
+            if (filePath !== POSTS_FILE) {
+                res.writeHead(403, { 'Content-Length': 0 });
+                return res.end();
+            }
         }
 
         let stat = null;
@@ -186,25 +209,23 @@ function serveStatic(req, res) {
             const fallback = path.join(ROOT, 'index.html');
             try {
                 const data = fs.readFileSync(fallback);
-                res.writeHead(200, {
-                    'Content-Type': 'text/html; charset=utf-8',
-                    'Cache-Control': 'no-store, no-cache, must-revalidate, max-age=0',
-                });
-                return res.end(data);
-            } catch (_) { res.writeHead(404); return res.end('Not Found'); }
+                return sendFile(req, res, data, 'text/html; charset=utf-8', 200);
+            } catch (_) {
+                res.writeHead(404, { 'Content-Length': 0 });
+                return res.end();
+            }
         }
 
         const ext = path.extname(filePath).toLowerCase();
         const type = MIME[ext] || 'application/octet-stream';
         const data = fs.readFileSync(filePath);
-        res.writeHead(200, {
-            'Content-Type': type,
-            'Cache-Control': 'no-store, no-cache, must-revalidate, max-age=0',
-        });
-        res.end(data);
+        return sendFile(req, res, data, type, 200);
     } catch (err) {
         console.error('Static error:', err);
-        res.writeHead(500); res.end('Internal Server Error');
+        try {
+            res.writeHead(500, { 'Content-Length': 0 });
+            res.end();
+        } catch (_) {}
     }
 }
 
@@ -397,6 +418,18 @@ const server = http.createServer(async (req, res) => {
     }
 });
 
-server.listen(PORT, HOST, () => {
-    console.log(`Server running at http://${HOST}:${PORT}`);
+server.on('error', (err) => {
+    console.error('Server error:', err);
+    process.exit(1);
+});
+
+process.on('SIGTERM', () => server.close(() => process.exit(0)));
+process.on('SIGINT', () => server.close(() => process.exit(0)));
+
+// Bind explicitly to 0.0.0.0 so the IPv4 socket shows up in /proc/net/tcp,
+// which is what Replit's workflow port watcher reads.
+server.listen(PORT, '0.0.0.0', () => {
+    const addr = server.address();
+    console.log(`Server running on port ${PORT} (bound to ${addr.address})`);
+    setImmediate(ensureAdmin);
 });

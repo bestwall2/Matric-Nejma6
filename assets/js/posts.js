@@ -357,10 +357,15 @@ function initShared() {
         toggle.addEventListener('click', () => links.classList.toggle('open'));
     }
 
+    // Theme: URL ?theme=light|dark wins, otherwise localStorage
+    const urlTheme = new URLSearchParams(location.search).get('theme');
+    const saved = urlTheme || localStorage.getItem('mn6-theme');
+    if (saved === 'light') document.documentElement.classList.add('light');
+    if (saved === 'dark') document.documentElement.classList.remove('light');
+    if (urlTheme === 'light' || urlTheme === 'dark') localStorage.setItem('mn6-theme', urlTheme);
+
     const themeBtn = document.getElementById('themeToggle');
     if (themeBtn) {
-        const saved = localStorage.getItem('mn6-theme');
-        if (saved === 'light') document.documentElement.classList.add('light');
         themeBtn.addEventListener('click', () => {
             document.documentElement.classList.toggle('light');
             localStorage.setItem(

@@ -1,1 +1,24 @@
-[]
+[
+  {
+    "id": "44405461-e473-4b76-a12e-4ddcaf65f38a",
+    "name": "Final",
+    "email": "f@x.com",
+    "subject": "Test",
+    "message": "All good",
+    "ip": "127.0.0.1",
+    "userAgent": "curl/8.14.1",
+    "read": false,
+    "createdAt": "2026-04-28T23:31:50.158Z"
+  },
+  {
+    "id": "bd7d3ab2-6505-4b7f-8373-82c16fac00ff",
+    "name": "Tester",
+    "email": "t@x.com",
+    "subject": "Hi",
+    "message": "From curl after fix",
+    "ip": "127.0.0.1",
+    "userAgent": "curl/8.14.1",
+    "read": false,
+    "createdAt": "2026-04-28T23:28:23.055Z"
+  }
+]
