@@ -164,7 +164,14 @@ function safeStr(v, max) {
 /* ---------- Static file serving ---------- */
 function serveStatic(req, res) {
     try {
-        const urlPath = decodeURIComponent((req.url || '/').split('?')[0]);
+        const rawPath = decodeURIComponent((req.url || '/').split('?')[0]);
+        const rewrites = {
+            '/admin': '/admin.html',
+            '/blog': '/blog.html',
+            '/contact': '/contact.html',
+            '/privacy': '/privacy.html',
+        };
+        const urlPath = rewrites[rawPath] || rawPath;
         let filePath = path.normalize(path.join(ROOT, urlPath));
         if (!filePath.startsWith(ROOT)) { res.writeHead(403); return res.end('Forbidden'); }
 
