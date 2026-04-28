@@ -515,7 +515,10 @@ module.exports = async (req, res) => {
   ensureAdmin();
 
   try {
-    const parsed = new URL(req.url, `http://${req.headers.host || "localhost"}`);
+    const parsed = new URL(
+      req.url,
+      `http://${req.headers.host || "localhost"}`,
+    );
     if (parsed.pathname.startsWith("/api/")) return handleAPI(req, res, parsed);
     return serveStatic(req, res);
   } catch (err) {
