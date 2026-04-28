@@ -1,5 +1,5 @@
 /* ============================================================
-   Matric Nejma 6 — Static server + JSON API
+   Matric Nejma 6 — Vercel Serverless Function + JSON API
    - Static file serving (existing landing + blog pages)
    - POST /api/messages              (public — contact form)
    - POST /api/admin/login           (public — returns token)
@@ -15,14 +15,11 @@
    - POST /api/admin/password        (auth — change password)
    ============================================================ */
 
-const http = require("http");
 const fs = require("fs");
 const path = require("path");
 const crypto = require("crypto");
 const { URL } = require("url");
 
-const PORT = process.env.PORT || 5000;
-const HOST = "0.0.0.0";
 const ROOT = __dirname;
 const DATA_DIR = path.join(ROOT, "data");
 const MESSAGES_FILE = path.join(DATA_DIR, "messages.json");
@@ -512,13 +509,13 @@ function sanitizePost(input) {
   };
 }
 
-/* ---------- Server ---------- */
-const server = http.createServer(async (req, res) => {
+/* ---------- Vercel Serverless Handler ---------- */
+module.exports = async (req, res) => {
+  // Ensure admin is initialized
+  ensureAdmin();
+
   try {
-    const parsed = new URL(
-      req.url,
-      `http://${req.headers.host || "localhost"}`,
-    );
+    const parsed = new URL(req.url, `http://${req.headers.host || "localhost"}`);
     if (parsed.pathname.startsWith("/api/")) return handleAPI(req, res, parsed);
     return serveStatic(req, res);
   } catch (err) {
@@ -528,20 +525,4 @@ const server = http.createServer(async (req, res) => {
       res.end("Internal Server Error");
     } catch (_) {}
   }
-});
-
-server.on("error", (err) => {
-  console.error("Server error:", err);
-  process.exit(1);
-});
-
-process.on("SIGTERM", () => server.close(() => process.exit(0)));
-process.on("SIGINT", () => server.close(() => process.exit(0)));
-
-// Bind explicitly to 0.0.0.0 so the IPv4 socket shows up in /proc/net/tcp,
-// which is what Replit's workflow port watcher reads.
-server.listen(PORT, "0.0.0.0", () => {
-  const addr = server.address();
-  console.log(`Server running on port ${PORT} (bound to ${addr.address})`);
-  setImmediate(ensureAdmin);
-});
+};
