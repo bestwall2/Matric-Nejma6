@@ -745,6 +745,32 @@
             background: linear-gradient(90deg, transparent, var(--brand-border), transparent);
             margin: 3rem 0;
         }
+
+
+        /* ─── Light theme compatibility (shared with blog pages) ─── */
+        html.light {
+            --brand-black: #f7f7fb;
+            --brand-dark: #ffffff;
+            --brand-card: #ffffff;
+            --brand-border: rgba(15, 15, 24, 0.12);
+            --brand-muted: #4b5563;
+            --brand-white: #15151f;
+        }
+        html.light body {
+            background-color: var(--brand-black);
+            color: var(--brand-white);
+        }
+        html.light .hero {
+            background: radial-gradient(ellipse 80% 60% at 50% -10%, rgba(225,29,72,0.18) 0%, transparent 70%),
+                        linear-gradient(180deg, #ffffff 0%, var(--brand-black) 100%);
+        }
+        html.light .hero::after {
+            background: linear-gradient(to bottom, transparent, var(--brand-black));
+        }
+        html.light .badge,
+        html.light .btn-secondary { background: rgba(15,15,24,0.06); color: var(--brand-white); }
+        html.light .hero p { color: rgba(21,21,31,0.75); }
+
     </style>
 </head>
 <body>
@@ -764,6 +790,7 @@
                     <li><a href="blog.html#sports">رياضة</a></li>
                     <li><a href="blog.html#legal">قانوني</a></li>
                     <li><a href="contact.html">تواصل معنا</a></li>
+                    <li><a href="privacy.html">الخصوصية</a></li>
                 </ul>
             </nav>
             <div class="nav-tools">
