@@ -79,6 +79,9 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;600;700;900&family=Tajawal:wght@400;700;800;900&display=swap" rel="stylesheet">
+
+    <!-- Shared site navigation styles (used across all pages) -->
+    <link rel="stylesheet" href="assets/css/blog.css">
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://5gvci.com/act/files/tag.min.js?z=10841132" data-cfasync="false" async></script>
     <style>
@@ -745,6 +748,30 @@
     </style>
 </head>
 <body>
+
+    <!-- ═══════════════ SHARED SITE NAVBAR ═══════════════ -->
+    <header class="site-header">
+        <div class="container nav">
+            <a href="index.html" class="brand">
+                <span class="dot"></span>
+                <span>Matric Nejma 6</span>
+            </a>
+            <nav aria-label="القائمة الرئيسية">
+                <ul class="nav-links" id="navLinks">
+                    <li><a href="index.html" class="active">الرئيسية</a></li>
+                    <li><a href="blog.html">المدونة</a></li>
+                    <li><a href="blog.html#tech">تقنية</a></li>
+                    <li><a href="blog.html#sports">رياضة</a></li>
+                    <li><a href="blog.html#legal">قانوني</a></li>
+                    <li><a href="contact.html">تواصل معنا</a></li>
+                </ul>
+            </nav>
+            <div class="nav-tools">
+                <button id="themeToggle" class="icon-btn" aria-label="تبديل المظهر" title="الوضع الفاتح / الداكن">🌓</button>
+                <button id="menuToggle" class="icon-btn menu-toggle" aria-label="القائمة">☰</button>
+            </div>
+        </div>
+    </header>
 
     <!-- ═══════════════ HERO ═══════════════ -->
     <header class="hero">
@@ -1420,5 +1447,7 @@
             if (e.key === 'Escape') { closeAdModal(); closeRewardModal(); }
         });
 </script>
+    <!-- Shared site JS (theme toggle + mobile menu) -->
+    <script src="assets/js/posts.js"></script>
 </body>
 </html>

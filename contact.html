@@ -63,7 +63,7 @@
         <p><a href="mailto:contact@matricnjm.online">contact@matricnjm.online</a></p>
 
         <h2>أرسل لنا رسالة</h2>
-        <form class="contact-form" onsubmit="event.preventDefault(); alert('شكراً! سنتواصل معك قريباً.'); this.reset();">
+        <form id="contactForm" class="contact-form" novalidate>
             <div>
                 <label for="name">الاسم الكامل</label>
                 <input id="name" name="name" type="text" required placeholder="اكتب اسمك هنا">
@@ -80,9 +80,43 @@
                 <label for="message">الرسالة</label>
                 <textarea id="message" name="message" required placeholder="اكتب رسالتك هنا..."></textarea>
             </div>
-            <button class="submit-btn" type="submit">إرسال الرسالة</button>
-            <p class="form-note">ملاحظة: هذا النموذج تجريبي. يمكنك ربطه لاحقاً بخدمة مثل Formspree أو EmailJS لاستقبال الرسائل فعلياً.</p>
+            <!-- Honeypot anti-spam field (must remain empty) -->
+            <input type="text" name="website" tabindex="-1" autocomplete="off" style="position:absolute;left:-9999px;opacity:0;height:0;" aria-hidden="true">
+            <button class="submit-btn" type="submit" id="submitBtn">إرسال الرسالة</button>
+            <p id="formStatus" class="form-note" role="status"></p>
         </form>
+
+        <script>
+            (function () {
+                const form = document.getElementById('contactForm');
+                const status = document.getElementById('formStatus');
+                const btn = document.getElementById('submitBtn');
+                form.addEventListener('submit', async (e) => {
+                    e.preventDefault();
+                    status.style.color = '';
+                    status.textContent = 'جاري الإرسال...';
+                    btn.disabled = true;
+                    const data = Object.fromEntries(new FormData(form).entries());
+                    try {
+                        const res = await fetch('/api/messages', {
+                            method: 'POST',
+                            headers: { 'Content-Type': 'application/json' },
+                            body: JSON.stringify(data),
+                        });
+                        const json = await res.json().catch(() => ({}));
+                        if (!res.ok) throw new Error(json.error || 'حدث خطأ، حاول لاحقاً.');
+                        status.style.color = '#22c55e';
+                        status.textContent = '✅ تم إرسال رسالتك بنجاح! سنتواصل معك قريباً.';
+                        form.reset();
+                    } catch (err) {
+                        status.style.color = '#fb7185';
+                        status.textContent = '❌ ' + err.message;
+                    } finally {
+                        btn.disabled = false;
+                    }
+                });
+            })();
+        </script>
     </main>
 
     <footer class="site-footer">
