@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html dir="rtl" lang="ar">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>تواصل معنا — Matric Nejma 6</title>
+    <meta name="description" content="تواصل مع فريق Matric Nejma 6 (matricnjm.online) لإرسال الاستفسارات، الشراكات، أو الإبلاغ عن مشكلة.">
+    <meta name="robots" content="index, follow">
+    <link rel="canonical" href="https://matricnjm.online/contact.html">
+    <meta name="theme-color" content="#e11d48">
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;700;900&family=Tajawal:wght@500;700;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="assets/css/blog.css">
+
+    <style>
+        .contact-form { display: grid; gap: .9rem; margin-top: 1rem; }
+        .contact-form label { font-weight: 700; font-size: .9rem; color: var(--text); }
+        .contact-form input, .contact-form textarea {
+            width: 100%; padding: .8rem 1rem; border-radius: 10px;
+            border: 1px solid var(--border); background: var(--surface);
+            color: var(--text); font-family: inherit; font-size: 1rem; outline: none;
+            transition: border-color .2s, box-shadow .2s;
+        }
+        .contact-form input:focus, .contact-form textarea:focus {
+            border-color: var(--brand-red);
+            box-shadow: 0 0 0 3px rgba(225, 29, 72, .18);
+        }
+        .contact-form textarea { min-height: 140px; resize: vertical; }
+        .submit-btn {
+            justify-self: start; padding: .85rem 1.6rem; border: 0; border-radius: 10px;
+            background: var(--brand-red); color: white; font-weight: 800; cursor: pointer;
+            transition: transform .15s, box-shadow .15s;
+        }
+        .submit-btn:hover { transform: translateY(-1px); box-shadow: 0 8px 20px rgba(225, 29, 72, .35); }
+        .form-note { color: var(--text-soft); font-size: .85rem; }
+    </style>
+</head>
+<body>
+
+    <header class="site-header">
+        <div class="container nav">
+            <a href="index.html" class="brand"><span class="dot"></span><span>Matric Nejma 6</span></a>
+            <nav><ul class="nav-links" id="navLinks">
+                <li><a href="index.html">الرئيسية</a></li>
+                <li><a href="blog.html">المدونة</a></li>
+                <li><a href="contact.html" class="active">تواصل معنا</a></li>
+                <li><a href="privacy.html">الخصوصية</a></li>
+            </ul></nav>
+            <div class="nav-tools">
+                <button id="themeToggle" class="icon-btn" aria-label="تبديل المظهر">🌓</button>
+                <button id="menuToggle" class="icon-btn menu-toggle" aria-label="القائمة">☰</button>
+            </div>
+        </div>
+    </header>
+
+    <main class="container static-page">
+        <h1>تواصل معنا</h1>
+        <p>يسعدنا تواصلكم معنا لأي استفسار، اقتراح، طلب شراكة، أو الإبلاغ عن مشكلة في الموقع أو التطبيق. سنرد عليكم في أقرب وقت ممكن.</p>
+
+        <h2>البريد الإلكتروني</h2>
+        <p><a href="mailto:contact@matricnjm.online">contact@matricnjm.online</a></p>
+
+        <h2>أرسل لنا رسالة</h2>
+        <form class="contact-form" onsubmit="event.preventDefault(); alert('شكراً! سنتواصل معك قريباً.'); this.reset();">
+            <div>
+                <label for="name">الاسم الكامل</label>
+                <input id="name" name="name" type="text" required placeholder="اكتب اسمك هنا">
+            </div>
+            <div>
+                <label for="email">البريد الإلكتروني</label>
+                <input id="email" name="email" type="email" required placeholder="example@email.com">
+            </div>
+            <div>
+                <label for="subject">الموضوع</label>
+                <input id="subject" name="subject" type="text" required placeholder="عنوان الرسالة">
+            </div>
+            <div>
+                <label for="message">الرسالة</label>
+                <textarea id="message" name="message" required placeholder="اكتب رسالتك هنا..."></textarea>
+            </div>
+            <button class="submit-btn" type="submit">إرسال الرسالة</button>
+            <p class="form-note">ملاحظة: هذا النموذج تجريبي. يمكنك ربطه لاحقاً بخدمة مثل Formspree أو EmailJS لاستقبال الرسائل فعلياً.</p>
+        </form>
+    </main>
+
+    <footer class="site-footer">
+        <div class="container">
+            <div class="footer-grid">
+                <div><h4>Matric Nejma 6</h4><p>المصدر الرسمي لتطبيق ماتريك نجمة 6 وأخبار البث المباشر لكرة القدم.</p></div>
+                <div><h4>روابط سريعة</h4><ul>
+                    <li><a href="index.html">الرئيسية</a></li>
+                    <li><a href="blog.html">المدونة</a></li>
+                    <li><a href="contact.html">تواصل معنا</a></li>
+                    <li><a href="privacy.html">سياسة الخصوصية</a></li>
+                </ul></div>
+                <div><h4>تابعنا</h4><ul>
+                    <li><a href="#" rel="noopener">فيسبوك</a></li>
+                    <li><a href="#" rel="noopener">تويتر / X</a></li>
+                    <li><a href="#" rel="noopener">يوتيوب</a></li>
+                </ul></div>
+            </div>
+            <div class="copyright">© <span id="year"></span> Matric Nejma 6 — جميع الحقوق محفوظة.</div>
+        </div>
+    </footer>
+
+    <script src="assets/js/posts.js"></script>
+</body>
+</html>
