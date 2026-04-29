@@ -1,42 +1,108 @@
-# Matric Nejma 6
+# Matric Nejma 6 - تطبيق ماتريك نجمة 6 للبث المباشر
 
-A blog and admin panel for Matric Nejma 6, built with Node.js serverless function for Vercel.
+المصدر الرسمي لتطبيق Matric Nejma 6 (ماتريك نجمة 6) لمشاهدة البث المباشر لكرة القدم.
 
-## Features
+## المميزات
 
-- User-facing blog with posts
-- Contact form
-- Admin panel for managing posts and messages
-- API for CRUD operations
+- 📱 تصميم متجاوب يعمل على جميع الأجهزة (هواتف، أجهزة لوحية، حواسيب)
+- 🗄️ قاعدة بيانات Supabase لتخزين和管理 جميع البيانات
+- 🔐 لوحة تحكم آمنة للإدارة
+- 📝 نظام تدوين متكامل
+- 📬 نموذج اتصال مع حفظ الرسائل في قاعدة البيانات
 
-## Deployment to Vercel
+## الإعداد
 
-1. Push the code to GitHub.
-2. Connect the repository to Vercel.
-3. Vercel will automatically detect the Node.js app and deploy it.
+### 1. إعداد Supabase
 
-The app uses `package.json` for dependencies and `vercel.json` for routing.
+قم بتشغيل ملف SQL التالي في محرر SQL الخاص بـ Supabase:
 
-## Admin Access
+```sql
+-- Matric Nejma 6 — Supabase one-time setup
+create table if not exists public.kv_store (
+  key text primary key,
+  value jsonb not null,
+  updated_at timestamptz not null default now()
+);
 
-- Default password: `admin123`
-- Change it from the admin panel after login.
-- Access at `/admin.html`
+alter table public.kv_store disable row level security;
 
-## Data Storage
-
-Data is stored in JSON files in the `data/` directory. Note that on Vercel serverless, data is ephemeral and will reset on redeploy or cold starts. For production persistence, consider using a database.
-
-## Sessions
-
-Admin sessions are in-memory and may not persist across serverless instances. For production, use persistent storage.
-
-## Development
-
-Run locally with:
-
-```bash
-npm start
+create index if not exists kv_store_updated_at_idx on public.kv_store (updated_at desc);
 ```
 
-But for local development, the serverless function won't run directly. Use a local server or adapt.
+### 2. متغيرات البيئة
+
+أنشئ ملف `.env` في الجذر مع المتغيرات التالية:
+
+```env
+SUPABASE_URL="https://your-project.supabase.co"
+SUPABASE_SERVICE_ROLE_KEY="your-service-role-key"
+ADMIN_PASSWORD="admin123"
+```
+
+### 3. النشر على Vercel
+
+تم تكوين المشروع للعمل مع Vercel. تأكد من إضافة متغيرات البيئة في لوحة تحكم Vercel:
+
+- `SUPABASE_URL`
+- `SUPABASE_SERVICE_ROLE_KEY`
+- `ADMIN_PASSWORD`
+
+## الهيكل
+
+```
+/workspace
+├── index.html          # الصفحة الرئيسية
+├── blog.html           # المدونة
+├── post.html           # عرض المقال
+├── contact.html        # صفحة الاتصال
+├── admin.html          # لوحة التحكم
+├── privacy.html        # سياسة الخصوصية
+├── assets/
+│   ├── css/
+│   │   └── blog.css    # الأنماط المشتركة
+│   └── js/
+│       ├── posts.js    # منطق التدوين
+│       └── admin.js    # منطق لوحة التحكم
+├── api/
+│   ├── messages.js     # API إرسال الرسائل
+│   └── admin/          # APIs لوحة التحكم
+├── lib/
+│   ├── store.js        # تخزين البيانات (Supabase)
+│   └── auth.js         # المصادقة
+└── scripts/
+    └── supabase-init.sql
+```
+
+## لوحة التحكم
+
+الوصول إلى لوحة التحكم: `/admin.html`
+
+كلمة المرور الافتراضية: `admin123`
+
+**مهم:** قم بتغيير كلمة المرور من خلال متغير البيئة `ADMIN_PASSWORD`.
+
+## التوافق مع الأجهزة المحمولة
+
+تم تحسين التطبيق للعمل على:
+
+- 📱 الهواتف الذكية (جميع الأحجام)
+- 📱 الأجهزة اللوحية
+- 💻 الحواسيب المكتبية والمحمولة
+- 🖥️ الشاشات الكبيرة
+
+يستخدم التصميم:
+- CSS Grid و Flexbox للتخطيط المتجاوب
+- Media queries للأحجام المختلفة
+- وحدات نسبية (rem, em, vw, vh)
+- clamp() للنصوص المرنة
+
+## التقنيات المستخدمة
+
+- HTML5, CSS3, JavaScript (Vanilla)
+- Tailwind CSS (عبر CDN)
+- Supabase (قاعدة البيانات)
+- Vercel (الاستضافة والنشر)
+
+## الترخيص
+
+جميع الحقوق محفوظة © Matric Nejma 6

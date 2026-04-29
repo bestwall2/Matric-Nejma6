@@ -145,6 +145,24 @@ html.light .site-header { background: rgba(255, 255, 255, 0.85); }
     .nav-links a { padding: .9rem 1rem; border-radius: 0; border-bottom: 1px solid var(--border); }
 }
 
+/* Responsive improvements for smaller screens */
+@media (max-width: 600px) {
+    .container { padding: 0 1rem; }
+    .hub-hero { padding: 2rem 0 1.5rem; }
+    .hub-hero h1 { font-size: 1.6rem; }
+    .section { padding: 1.5rem 0; }
+    .posts-grid { grid-template-columns: 1fr; }
+    .section-head { flex-direction: column; align-items: flex-start; gap: 0.5rem; }
+    .footer-grid { grid-template-columns: 1fr !important; }
+}
+
+@media (max-width: 400px) {
+    .brand span:last-child { display: none; }
+    .icon-btn { width: 36px; height: 36px; }
+    .chips { gap: 0.4rem; }
+    .chip { padding: 0.4rem 0.8rem; font-size: 0.8rem; }
+}
+
 /* ---------- Hub Hero ---------- */
 .hub-hero {
     padding: 3.5rem 0 2rem;
@@ -213,6 +231,16 @@ html.light .site-header { background: rgba(255, 255, 255, 0.85); }
 .posts-grid {
     display: grid; gap: 1.25rem;
     grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+}
+
+/* Responsive post cards for mobile */
+@media (max-width: 600px) {
+    .posts-grid { grid-template-columns: 1fr; }
+    .post-card { border-radius: 12px; }
+    .post-thumb { aspect-ratio: 16 / 9; }
+    .post-body { padding: 0.9rem 1rem; }
+    .post-title { font-size: 1rem; }
+    .post-excerpt { font-size: 0.88rem; }
 }
 
 .post-card {
@@ -400,3 +428,22 @@ html.light .site-header { background: rgba(255, 255, 255, 0.85); }
     font-size: 1.3rem; margin: 1.6rem 0 .6rem; color: var(--brand-rose);
 }
 .static-page p, .static-page li { color: var(--text-muted); }
+
+/* Contact form responsive */
+@media (max-width: 600px) {
+    .static-page { padding: 1.5rem 0; }
+    .contact-form input, .contact-form textarea { font-size: 0.95rem; padding: 0.75rem 0.9rem; }
+    .submit-btn { width: 100%; justify-self: stretch; }
+}
+
+/* Article page responsive improvements */
+@media (max-width: 600px) {
+    .article-hero { padding: 1.5rem 0 1rem; }
+    .article-title { font-size: 1.5rem; }
+    .article-cover { border-radius: 12px; }
+    .prose { font-size: 0.98rem; }
+    .prose h2 { font-size: 1.35rem; }
+    .prose h3 { font-size: 1.1rem; }
+    .toc { padding: 0.8rem 0.9rem; }
+    .toc h3 { font-size: 0.9rem; }
+}

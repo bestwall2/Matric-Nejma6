@@ -19,6 +19,7 @@ const fs = require("fs");
 const path = require("path");
 const crypto = require("crypto");
 const { URL } = require("url");
+const store = require("./lib/store");
 
 const ROOT = __dirname;
 const DATA_DIR = path.join(ROOT, "data");
@@ -305,7 +306,7 @@ async function handleAPI(req, res, parsed) {
     if (!message || message.length < 5)
       return sendError(res, 400, "الرسالة قصيرة جداً");
 
-    const messages = readJSON(MESSAGES_FILE, []);
+    const messages = await store.getMessages();
     const entry = {
       id: crypto.randomUUID(),
       name,
@@ -318,7 +319,7 @@ async function handleAPI(req, res, parsed) {
       createdAt: new Date().toISOString(),
     };
     messages.unshift(entry);
-    writeJSON(MESSAGES_FILE, messages);
+    await store.setJSON('messages', messages);
     return sendJSON(res, 201, { ok: true, id: entry.id });
   }
 
@@ -356,8 +357,8 @@ async function handleAPI(req, res, parsed) {
 
   /* ---------- Admin: stats ---------- */
   if (pathname === "/api/admin/stats" && method === "GET") {
-    const messages = readJSON(MESSAGES_FILE, []);
-    const posts = readJSON(POSTS_FILE, []);
+    const messages = await store.getMessages();
+    const posts = await store.getPosts();
     const unread = messages.filter((m) => !m.read).length;
     const byCat = posts.reduce((acc, p) => {
       acc[p.category] = (acc[p.category] || 0) + 1;
@@ -379,13 +380,13 @@ async function handleAPI(req, res, parsed) {
 
   /* ---------- Admin: messages ---------- */
   if (pathname === "/api/admin/messages" && method === "GET") {
-    const messages = readJSON(MESSAGES_FILE, []);
+    const messages = await store.getMessages();
     return sendJSON(res, 200, { messages });
   }
   const msgMatch = pathname.match(/^\/api\/admin\/messages\/([\w-]+)$/);
   if (msgMatch) {
     const id = msgMatch[1];
-    const messages = readJSON(MESSAGES_FILE, []);
+    const messages = await store.getMessages();
     const idx = messages.findIndex((m) => m.id === id);
     if (idx === -1) return sendError(res, 404, "الرسالة غير موجودة");
 
@@ -397,19 +398,19 @@ async function handleAPI(req, res, parsed) {
         return sendError(res, 400, e.message);
       }
       if (typeof body.read === "boolean") messages[idx].read = body.read;
-      writeJSON(MESSAGES_FILE, messages);
+      await store.setJSON('messages', messages);
       return sendJSON(res, 200, { ok: true, message: messages[idx] });
     }
     if (method === "DELETE") {
       messages.splice(idx, 1);
-      writeJSON(MESSAGES_FILE, messages);
+      await store.setJSON('messages', messages);
       return sendJSON(res, 200, { ok: true });
     }
   }
 
   /* ---------- Admin: posts ---------- */
   if (pathname === "/api/admin/posts" && method === "GET") {
-    return sendJSON(res, 200, { posts: readJSON(POSTS_FILE, []) });
+    return sendJSON(res, 200, { posts: await store.getPosts() });
   }
   if (pathname === "/api/admin/posts" && method === "POST") {
     let body;
@@ -418,20 +419,20 @@ async function handleAPI(req, res, parsed) {
     } catch (e) {
       return sendError(res, 400, e.message);
     }
-    const posts = readJSON(POSTS_FILE, []);
+    const posts = await store.getPosts();
     const slug = safeStr(body.slug, 120);
     if (!slug) return sendError(res, 400, "slug مطلوب");
     if (posts.some((p) => p.slug === slug))
       return sendError(res, 409, "يوجد مقال بنفس الـ slug");
     const post = sanitizePost(body);
     posts.unshift(post);
-    writeJSON(POSTS_FILE, posts);
+    await store.setJSON('posts', posts);
     return sendJSON(res, 201, { ok: true, post });
   }
   const postMatch = pathname.match(/^\/api\/admin\/posts\/([\w-]+)$/);
   if (postMatch) {
     const slug = postMatch[1];
-    const posts = readJSON(POSTS_FILE, []);
+    const posts = await store.getPosts();
     const idx = posts.findIndex((p) => p.slug === slug);
     if (idx === -1) return sendError(res, 404, "المقال غير موجود");
     if (method === "PUT") {
@@ -443,12 +444,12 @@ async function handleAPI(req, res, parsed) {
       }
       const updated = sanitizePost({ ...posts[idx], ...body, slug });
       posts[idx] = updated;
-      writeJSON(POSTS_FILE, posts);
+      await store.setJSON('posts', posts);
       return sendJSON(res, 200, { ok: true, post: updated });
     }
     if (method === "DELETE") {
       posts.splice(idx, 1);
-      writeJSON(POSTS_FILE, posts);
+      await store.setJSON('posts', posts);
       return sendJSON(res, 200, { ok: true });
     }
   }
