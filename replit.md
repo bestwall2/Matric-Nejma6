@@ -63,7 +63,10 @@ The same codebase also deploys to Vercel (https://matric-nejma-rouge.vercel.app/
   - `api/admin/messages/[id].js` and `api/admin/posts/[slug].js` (dynamic routes)
   - Shared helpers live in `lib/auth.js` and `lib/store.js` (outside `api/` so Vercel doesn't deploy them as functions). 9 functions total — well under Vercel Hobby's 12-function limit.
 - **Auth on Vercel** — stateless HMAC-signed tokens (no in-memory session map). Set `ADMIN_PASSWORD` in Vercel env vars; the token-signing secret is derived from it.
-- **Storage on Vercel** — `lib/store.js` uses Upstash Redis if `UPSTASH_REDIS_REST_URL` + `UPSTASH_REDIS_REST_TOKEN` are set. Otherwise posts are read from the baked-in `data/posts.json`, contact submissions are logged to function logs, and admin write operations return HTTP 503 with an Arabic explanation.
+- **Storage on Vercel** — `lib/store.js` picks the first available backend:
+  1. **Supabase** if `SUPABASE_URL` + `SUPABASE_SERVICE_ROLE_KEY` are set (auto-injected by Vercel's Supabase integration). Uses a single `public.kv_store` table — see `scripts/supabase-init.sql` for the one-time setup that must be run in the Supabase SQL Editor.
+  2. **Upstash Redis** if `UPSTASH_REDIS_REST_URL` + `UPSTASH_REDIS_REST_TOKEN` are set.
+  3. Otherwise posts are read from the baked-in `data/posts.json`, contact submissions are logged to function logs, and admin write operations return HTTP 503 with an Arabic explanation.
 - `vercel.json` enables `cleanUrls`, disables trailing slashes, and adds cache headers for `/data/*` and `/assets/*`.
 - Password change from the admin Settings tab is disabled on Vercel — change `ADMIN_PASSWORD` in Vercel env vars and redeploy instead.
 
