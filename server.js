@@ -71,12 +71,14 @@ function ensureAdmin() {
     const envPwd = process.env.ADMIN_PASSWORD;
 
     if (envPwd) {
-      admin = {
-        passwordHash: hashPassword(envPwd),
-        updatedAt: new Date().toISOString(),
-      };
-      writeJSON(ADMIN_FILE, admin);
-      console.log("[admin] Password set from ADMIN_PASSWORD env var.");
+      if (!admin || !verifyPassword(envPwd, admin.passwordHash)) {
+        admin = {
+          passwordHash: hashPassword(envPwd),
+          updatedAt: new Date().toISOString(),
+        };
+        writeJSON(ADMIN_FILE, admin);
+        console.log("[admin] Password updated from ADMIN_PASSWORD env var.");
+      }
     } else if (!admin || !admin.passwordHash) {
       admin = {
         passwordHash: hashPassword("admin123"),
@@ -455,6 +457,13 @@ async function handleAPI(req, res, parsed) {
 
   /* ---------- Admin: change password ---------- */
   if (pathname === "/api/admin/password" && method === "POST") {
+    if (process.env.ADMIN_PASSWORD) {
+      return sendError(
+        res,
+        403,
+        "تغيير كلمة المرور معطل عند استخدام ADMIN_PASSWORD.",
+      );
+    }
     let body;
     try {
       body = await readBody(req);
