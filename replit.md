@@ -53,5 +53,19 @@ Dark mode is the default. A toggle in the navbar adds/removes `.light` on `<html
 - Default admin password is `admin123` (set on first boot if `data/admin.json` is missing). Override at any time via the `ADMIN_PASSWORD` environment variable, or change it from the admin Settings tab.
 - Deployment target: `autoscale`, run command `node server.js`.
 
+## Vercel Deployment
+The same codebase also deploys to Vercel (https://matric-nejma-rouge.vercel.app/). Two completely separate execution paths share the front-end:
+
+- **Local / Replit Autoscale** — `server.js` runs as a long-lived Node HTTP server (the `if (require.main === module)` block at the bottom). It uses local file storage in `data/*.json` and the password file `data/admin.json`.
+- **Vercel** — Vercel only deploys files inside `api/`. Each route is its own serverless function:
+  - `api/messages.js` (public contact form)
+  - `api/admin/{login,check,stats,messages,posts,password}.js`
+  - `api/admin/messages/[id].js` and `api/admin/posts/[slug].js` (dynamic routes)
+  - Shared helpers live in `lib/auth.js` and `lib/store.js` (outside `api/` so Vercel doesn't deploy them as functions). 9 functions total — well under Vercel Hobby's 12-function limit.
+- **Auth on Vercel** — stateless HMAC-signed tokens (no in-memory session map). Set `ADMIN_PASSWORD` in Vercel env vars; the token-signing secret is derived from it.
+- **Storage on Vercel** — `lib/store.js` uses Upstash Redis if `UPSTASH_REDIS_REST_URL` + `UPSTASH_REDIS_REST_TOKEN` are set. Otherwise posts are read from the baked-in `data/posts.json`, contact submissions are logged to function logs, and admin write operations return HTTP 503 with an Arabic explanation.
+- `vercel.json` enables `cleanUrls`, disables trailing slashes, and adds cache headers for `/data/*` and `/assets/*`.
+- Password change from the admin Settings tab is disabled on Vercel — change `ADMIN_PASSWORD` in Vercel env vars and redeploy instead.
+
 ## Known Quirks
 - Replit's workflow port watcher occasionally fails to detect port 5000 even when the server is fully listening. Removing and re-creating the workflow (same config) reliably brings it back.

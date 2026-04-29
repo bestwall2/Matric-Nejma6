@@ -509,11 +509,9 @@ function sanitizePost(input) {
   };
 }
 
-/* ---------- Vercel Serverless Handler ---------- */
-module.exports = async (req, res) => {
-  // Ensure admin is initialized
+/* ---------- Request handler (used by local server + Vercel) ---------- */
+const handler = async (req, res) => {
   ensureAdmin();
-
   try {
     const parsed = new URL(
       req.url,
@@ -529,3 +527,23 @@ module.exports = async (req, res) => {
     } catch (_) {}
   }
 };
+
+module.exports = handler;
+
+/* ---------- Local HTTP bootstrap (skipped on Vercel) ---------- */
+if (require.main === module) {
+  const http = require("http");
+  const PORT = parseInt(process.env.PORT, 10) || 5000;
+  const HOST = "0.0.0.0";
+  const server = http.createServer(handler);
+  server.listen(PORT, HOST, () => {
+    console.log(`[server] listening on http://${HOST}:${PORT}`);
+  });
+  const shutdown = (sig) => () => {
+    console.log(`[server] received ${sig}, shutting down`);
+    server.close(() => process.exit(0));
+    setTimeout(() => process.exit(0), 2000).unref();
+  };
+  process.on("SIGTERM", shutdown("SIGTERM"));
+  process.on("SIGINT", shutdown("SIGINT"));
+}
