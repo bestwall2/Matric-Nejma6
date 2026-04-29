@@ -222,6 +222,26 @@
             .mobile-toggle { display: inline-flex !important; }
         }
         .mobile-toggle { display: none; }
+        
+        /* Admin responsive improvements for smaller screens */
+        @media (max-width: 600px) {
+            .login-card { padding: 1.5rem 1.2rem; }
+            .main { padding: 1rem; }
+            .topbar h1 { font-size: 1.3rem; }
+            .stats-grid { grid-template-columns: 1fr 1fr; }
+            .stat-card .value { font-size: 1.5rem; }
+            table.data th, table.data td { padding: 0.6rem 0.75rem; font-size: 0.85rem; }
+            .row-actions { gap: 0.25rem; }
+            .btn-sm { padding: 0.3rem 0.5rem; font-size: 0.75rem; }
+            .modal { max-width: 95vw; padding: 1.2rem; }
+            .form-grid-2 { grid-template-columns: 1fr; }
+        }
+        
+        @media (max-width: 400px) {
+            .stats-grid { grid-template-columns: 1fr; }
+            .toolbar input[type="search"] { min-width: 100%; }
+            .brand-row span:last-child { display: none; }
+        }
     </style>
 </head>
 <body>
