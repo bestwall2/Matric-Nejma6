@@ -1166,7 +1166,7 @@
             <!-- Code reward -->
             <div id="rewardCode" style="display:none;">
                 <div class="code-box" id="codeBox" onclick="copyCode()" title="اضغط للنسخ" style="margin-bottom:0.5rem;">
-                    MA2000
+                    M2026
                 </div>
                 <div class="copy-hint" id="copyHint">🖱️ اضغط على الكود لنسخه تلقائياً</div>
                 <div style="background:var(--brand-soft-bg); border-radius:12px; padding:clamp(0.75rem, 2vw, 1rem); margin:1rem 0; border:1px solid var(--brand-border); text-align:right; font-size:clamp(0.75rem, 2vw, 0.85rem); color:var(--brand-muted); line-height:1.8;">
@@ -1316,14 +1316,15 @@
         
         const TOTAL = AD_LINKS.length;
         
-        /* CHANGED: We no longer pull from localStorage. 
-           The progress starts as an empty array every time the page loads.
-        */
-        let currentProgress = { done: [] }; 
+        const PROGRESS_KEY = 'mn6-ad-progress';
+        let currentProgress = JSON.parse(localStorage.getItem(PROGRESS_KEY)) || { done: [] };
         
-        /* Track which task is awaiting verification */
-        let pendingTaskIndex = null;
-        let pendingTimer = null;
+        function saveProgress() {
+            localStorage.setItem(PROGRESS_KEY, JSON.stringify(currentProgress));
+        }
+
+        /* Track which tasks are awaiting verification */
+        let pendingTimers = {};
         let currentMode = 'download'; 
         
         /* ─── RENDER TASK LIST ─── */
@@ -1335,14 +1336,19 @@
         
             AD_LINKS.forEach((url, i) => {
                 const isDone = doneSet.has(i);
-                const isNext = !isDone && (i === 0 || doneSet.has(i - 1));
+                const isPending = !!pendingTimers[i];
+                // Allow non-sequential tasks for better UX as implied by "multiple tasks"
+                const isAvailable = !isDone;
+
                 const item = document.createElement('div');
-                item.className = 'task-item' + (isDone ? ' done' : '') + (isNext && !isDone ? ' active-now' : '');
+                item.className = 'task-item' + (isDone ? ' done' : '') + (isPending ? ' active-now' : '');
         
                 let btnHTML;
                 if (isDone) {
                     btnHTML = `<button class="task-btn task-btn-done">✓ تم</button>`;
-                } else if (isNext) {
+                } else if (isPending) {
+                    btnHTML = `<button class="task-btn task-btn-pending" disabled>جارٍ التحقق...</button>`;
+                } else if (isAvailable) {
                     btnHTML = `<button class="task-btn task-btn-open" onclick="openAdLink(${i})">فتح الرابط ↗</button>`;
                 } else {
                     btnHTML = `<button class="task-btn task-btn-pending" disabled>🔒</button>`;
@@ -1362,16 +1368,15 @@
         
         /* ─── OPEN AD LINK ─── */
         function openAdLink(index) {
-            if (currentProgress.done.includes(index)) return;
+            if (currentProgress.done.includes(index) || pendingTimers[index]) return;
         
             window.open(AD_LINKS[index], '_blank');
         
-            pendingTaskIndex = index;
-            clearTimeout(pendingTimer);
-            pendingTimer = setTimeout(() => {
+            pendingTimers[index] = setTimeout(() => {
+                delete pendingTimers[index];
                 if (!currentProgress.done.includes(index)) {
                     currentProgress.done.push(index);
-                    // No saveProgress() call here means it won't persist after refresh
+                    saveProgress();
                 }
                 renderTasks();
                 if (currentProgress.done.length >= TOTAL) {
@@ -1381,6 +1386,7 @@
                     }, 600);
                 }
             }, 2000);
+            renderTasks();
         }
         
         /* ─── OPEN MODAL ─── */
