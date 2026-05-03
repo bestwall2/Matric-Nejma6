@@ -1055,35 +1055,7 @@
 
                 <hr class="sep">
 
-                <h2>7. دليل المطورين وإعداد النظام</h2>
-                <p>
-                    إذا كنت ترغب في إعداد نسختك الخاصة من نظام Matric Nejma 6، اتبع الخطوات التقنية التالية:
-                </p>
-                <div style="background:var(--brand-card); border-radius:16px; padding:1.8rem; border:1px solid var(--brand-border); margin-bottom:2rem; direction: ltr; text-align: left;">
-                    <h3 style="color: var(--brand-red); margin-top: 0;">1. إعداد قاعدة البيانات (Supabase)</h3>
-                    <pre style="background: var(--brand-black); padding: 1rem; border-radius: 8px; overflow-x: auto; font-size: 0.85rem; color: #86efac; border: 1px solid var(--brand-border);"><code>-- إنشاء جدول تخزين البيانات
-create table if not exists public.kv_store (
-  key text primary key,
-  value jsonb not null,
-  updated_at timestamptz not null default now()
-);
-
-alter table public.kv_store disable row level security;
-create index if not exists kv_store_updated_at_idx on public.kv_store (updated_at desc);</code></pre>
-                    
-                    <h3 style="color: var(--brand-red);">2. متغيرات البيئة (.env)</h3>
-                    <pre style="background: var(--brand-black); padding: 1rem; border-radius: 8px; overflow-x: auto; font-size: 0.85rem; color: #67e8f9; border: 1px solid var(--brand-border);"><code>SUPABASE_URL="https://your-project.supabase.co"
-SUPABASE_SERVICE_ROLE_KEY="your-service-role-key"
-ADMIN_PASSWORD="your-secure-password"</code></pre>
-
-                    <h3 style="color: var(--brand-red);">3. التثبيت والتشغيل</h3>
-                    <pre style="background: var(--brand-black); padding: 1rem; border-radius: 8px; overflow-x: auto; font-size: 0.85rem; color: #fca5a5; border: 1px solid var(--brand-border);"><code># تثبيت التبعيات
-npm install
-
-# تشغيل الخادم محلياً
-node server.js</code></pre>
-                </div>
-
+               
                 <div class="callout">
                     <h3>🏅 خلاصة: تجربة المشاهدة المثالية في 2026</h3>
                     <p>
@@ -1224,7 +1196,7 @@ node server.js</code></pre>
             <!-- Code reward -->
             <div id="rewardCode" style="display:none;">
                 <div class="code-box" id="codeBox" onclick="copyCode()" title="اضغط للنسخ" style="margin-bottom:0.5rem;">
-                    MA2000
+                    MA2222
                 </div>
                 <div class="copy-hint" id="copyHint">🖱️ اضغط على الكود لنسخه تلقائياً</div>
                 <div style="background:var(--brand-soft-bg); border-radius:12px; padding:clamp(0.75rem, 2vw, 1rem); margin:1rem 0; border:1px solid var(--brand-border); text-align:right; font-size:clamp(0.75rem, 2vw, 0.85rem); color:var(--brand-muted); line-height:1.8;">
