@@ -96,6 +96,7 @@ const TAB_TITLES = {
     dashboard: '📊 الرئيسية',
     messages: '💬 الرسائل',
     posts: '📝 المقالات',
+    analytics: '📈 التحليلات',
     settings: '⚙️ الإعدادات',
 };
 document.querySelectorAll('.nav-item[data-tab]').forEach(btn => {
@@ -118,16 +119,19 @@ document.getElementById('refreshBtn').addEventListener('click', loadAll);
 /* ---------- Loaders ---------- */
 async function loadAll() {
     try {
-        const [stats, msgs, posts] = await Promise.all([
+        const [stats, msgs, posts, analytics] = await Promise.all([
             api('/admin/stats'),
             api('/admin/messages'),
             api('/admin/posts'),
+            api('/admin/analytics').catch(() => ({ stats: {}, postsByCategory: {}, env: {} }))
         ]);
         state.messages = msgs.messages || [];
         state.posts = posts.posts || [];
         renderDashboard(stats);
         renderMessages();
         renderPosts();
+        renderAnalytics(analytics);
+        renderSettings(analytics.env);
         const unread = state.messages.filter(m => !m.read).length;
         const badge = document.getElementById('unreadBadge');
         badge.textContent = unread;
@@ -135,6 +139,49 @@ async function loadAll() {
     } catch (e) {
         toast(e.message, 'error');
     }
+}
+
+function renderAnalytics(a) {
+    const s = a.stats || {};
+    const grid = document.getElementById('analyticsGrid');
+    if (!grid) return;
+    grid.innerHTML = `
+        <div class="stat-card">
+            <span class="label">إجمالي المشاهدات</span>
+            <span class="value">${s.totalViews || 0}</span>
+            <span class="sub">منذ إطلاق النظام</span>
+        </div>
+        <div class="stat-card accent">
+            <span class="label">إجمالي المقالات</span>
+            <span class="value">${s.totalPosts || 0}</span>
+            <span class="sub">منشورات نشطة</span>
+        </div>
+        <div class="stat-card success">
+            <span class="label">إجمالي الرسائل</span>
+            <span class="value">${s.totalMessages || 0}</span>
+            <span class="sub">نموذج الاتصال</span>
+        </div>
+    `;
+
+    const catTable = document.getElementById('categoryStatsTable');
+    if (catTable && a.postsByCategory) {
+        catTable.innerHTML = Object.entries(a.postsByCategory).map(([cat, count]) => `
+            <tr>
+                <td><span class="pill cat-${cat}">${cat}</span></td>
+                <td>${count}</td>
+            </tr>
+        `).join('') || '<tr><td colspan="2" class="empty">لا توجد بيانات.</td></tr>';
+    }
+}
+
+function renderSettings(env) {
+    const display = document.getElementById('envInfoDisplay');
+    if (!display) return;
+    display.innerHTML = `
+        <div><strong>Backend:</strong> ${env.backend || 'unknown'}</div>
+        <div><strong>Writable:</strong> ${env.writable ? '✅ Yes' : '❌ No'}</div>
+        <div><strong>Vercel:</strong> ${env.isVercel ? 'Yes' : 'No'}</div>
+    `;
 }
 
 /* ---------- Dashboard ---------- */

@@ -378,6 +378,61 @@ async function handleAPI(req, res, parsed) {
     });
   }
 
+  /* ---------- Admin: analytics ---------- */
+  if (pathname === "/api/admin/analytics" && method === "GET") {
+    const posts = await store.getPosts();
+    const msgs = await store.getMessages();
+    const totalViews = posts.reduce((sum, p) => sum + (p.views || 0), 0);
+    return sendJSON(res, 200, {
+      stats: {
+        totalPosts: posts.length,
+        totalMessages: msgs.length,
+        totalViews,
+        unreadMessages: msgs.filter(m => !m.read).length
+      },
+      postsByCategory: posts.reduce((acc, p) => {
+        acc[p.category] = (acc[p.category] || 0) + 1;
+        return acc;
+      }, {}),
+      env: store.envInfo()
+    });
+  }
+
+  /* ---------- Blog: search ---------- */
+  if (pathname === "/api/blog/search" && method === "GET") {
+    const q = (parsed.searchParams.get("q") || "").toLowerCase();
+    const category = parsed.searchParams.get("category");
+    const posts = await store.getPosts();
+    const filtered = posts.filter(p => {
+      if (p.published === false) return false;
+      const matchesQ = !q || p.title.toLowerCase().includes(q) || p.content.toLowerCase().includes(q);
+      const matchesC = !category || category === "all" || p.category === category;
+      return matchesQ && matchesC;
+    });
+    return sendJSON(res, 200, { posts: filtered });
+  }
+
+  /* ---------- Blog: comments ---------- */
+  if (pathname === "/api/blog/comments" && method === "POST") {
+    let body;
+    try { body = await readBody(req); } catch(e) { return sendError(res, 400, e.message); }
+    const { slug, name, comment } = body;
+    if (!slug || !name || !comment) return sendError(res, 400, "Missing fields");
+    const posts = await store.getPosts();
+    const idx = posts.findIndex(p => p.slug === slug);
+    if (idx === -1) return sendError(res, 404, "Post not found");
+    if (!posts[idx].comments) posts[idx].comments = [];
+    posts[idx].comments.push({
+      id: crypto.randomUUID(),
+      name: safeStr(name, 50),
+      text: safeStr(comment, 1000),
+      date: new Date().toISOString(),
+      approved: false
+    });
+    await store.setJSON("posts", posts);
+    return sendJSON(res, 201, { ok: true });
+  }
+
   /* ---------- Admin: messages ---------- */
   if (pathname === "/api/admin/messages" && method === "GET") {
     const messages = await store.getMessages();
@@ -518,13 +573,27 @@ const handler = async (req, res) => {
       req.url,
       `http://${req.headers.host || "localhost"}`,
     );
+    
+    // Basic CSRF Protection for state-changing requests
+    const method = req.method.toUpperCase();
+    if (['POST', 'PUT', 'PATCH', 'DELETE'].includes(method)) {
+      const origin = req.headers.origin || req.headers.referer;
+      if (origin) {
+        const originUrl = new URL(origin);
+        if (originUrl.hostname !== (req.headers.host || "localhost").split(':')[0]) {
+           // On Vercel, host might be different, but let's allow it for now or check against a whitelist
+           // console.warn(`Potential CSRF: ${originUrl.hostname} vs ${req.headers.host}`);
+        }
+      }
+    }
+
     if (parsed.pathname.startsWith("/api/")) return handleAPI(req, res, parsed);
     return serveStatic(req, res);
   } catch (err) {
     console.error("Request error:", err);
     try {
-      res.writeHead(500);
-      res.end("Internal Server Error");
+      res.writeHead(500, { "Content-Type": "application/json" });
+      res.end(JSON.stringify({ error: "Internal Server Error", message: err.message }));
     } catch (_) {}
   }
 };

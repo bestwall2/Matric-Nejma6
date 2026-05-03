@@ -385,3 +385,91 @@ document.addEventListener('DOMContentLoaded', () => {
     initHub();
     initPost();
 });
+
+/* ===========================================================
+   Comments & Search Integration
+   =========================================================== */
+
+async function renderComments(post) {
+    const article = document.getElementById('articleRoot');
+    if (!article) return;
+
+    const commentsSection = document.createElement('section');
+    commentsSection.className = 'comments-section container';
+    commentsSection.style.marginTop = '3rem';
+    commentsSection.innerHTML = `
+        <h2 style="margin-bottom: 1.5rem;">💬 التعليقات</h2>
+        <div id="commentsList" class="comments-list">
+            ${(post.comments || []).filter(c => c.approved).map(c => `
+                <div class="comment-item" style="background: var(--surface); padding: 1rem; border-radius: 10px; margin-bottom: 1rem; border: 1px solid var(--border);">
+                    <div style="display: flex; justify-content: space-between; margin-bottom: 0.5rem;">
+                        <strong>${c.name}</strong>
+                        <small style="color: var(--text-soft);">${fmtDate(c.date)}</small>
+                    </div>
+                    <p style="margin: 0;">${c.text}</p>
+                </div>
+            `).join('') || '<p style="color: var(--text-soft);">لا توجد تعليقات بعد. كن أول من يعلق!</p>'}
+        </div>
+        <div class="comment-form" style="margin-top: 2rem; background: var(--surface-2); padding: 1.5rem; border-radius: 14px;">
+            <h3 style="margin-bottom: 1rem;">أضف تعليقاً</h3>
+            <form id="commentForm">
+                <input type="hidden" name="slug" value="${post.slug}">
+                <div style="margin-bottom: 1rem;">
+                    <input type="text" name="name" placeholder="الاسم" required style="width: 100%; padding: 0.8rem; border-radius: 8px; border: 1px solid var(--border); background: var(--bg); color: var(--text);">
+                </div>
+                <div style="margin-bottom: 1rem;">
+                    <textarea name="comment" placeholder="اكتب تعليقك هنا..." required style="width: 100%; padding: 0.8rem; border-radius: 8px; border: 1px solid var(--border); background: var(--bg); color: var(--text); min-height: 100px;"></textarea>
+                </div>
+                <button type="submit" class="btn-primary" style="width: 100%; justify-content: center;">إرسال التعليق</button>
+            </form>
+            <p id="commentStatus" style="margin-top: 1rem; text-align: center; display: none;"></p>
+        </div>
+    `;
+    article.appendChild(commentsSection);
+
+    document.getElementById('commentForm').addEventListener('submit', async (e) => {
+        e.preventDefault();
+        const formData = new FormData(e.target);
+        const data = Object.fromEntries(formData.entries());
+        const status = document.getElementById('commentStatus');
+        const btn = e.target.querySelector('button');
+
+        btn.disabled = true;
+        btn.textContent = 'جاري الإرسال...';
+        
+        try {
+            const res = await fetch('/api/blog/comments', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(data)
+            });
+            const result = await res.json();
+            if (res.ok) {
+                status.textContent = 'تم إرسال تعليقك وهو بانتظار المراجعة. شكراً لك!';
+                status.style.color = 'var(--cat-sports)';
+                e.target.reset();
+            } else {
+                throw new Error(result.error || 'حدث خطأ ما');
+            }
+        } catch (err) {
+            status.textContent = err.message;
+            status.style.color = 'var(--brand-red)';
+        } finally {
+            status.style.display = 'block';
+            btn.disabled = false;
+            btn.textContent = 'إرسال التعليق';
+        }
+    });
+}
+
+// Modify initPost to call renderComments
+const originalInitPost = initPost;
+initPost = async function() {
+    await originalInitPost();
+    const slug = getQueryParam('slug');
+    if (slug) {
+        const posts = await fetchPosts();
+        const post = posts.find(p => p.slug === slug);
+        if (post) renderComments(post);
+    }
+};

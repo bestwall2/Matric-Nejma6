@@ -19,6 +19,9 @@ function sanitizePost(input) {
         tags: Array.isArray(input.tags) ? input.tags.map(t => safeStr(t, 50)).filter(Boolean).slice(0, 12) : [],
         content: typeof input.content === 'string' ? input.content.slice(0, 100000) : '',
         related: Array.isArray(input.related) ? input.related.map(s => safeStr(s, 120)).filter(Boolean).slice(0, 10) : [],
+        comments: Array.isArray(input.comments) ? input.comments : [],
+        views: parseInt(input.views) || 0,
+        published: input.published !== false
     };
 }
 

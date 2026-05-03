@@ -13,20 +13,20 @@
 
 :root {
     --brand-red: #e11d48;
-    --brand-rose: #fb7185;
-    --cat-tech: #06b6d4;
-    --cat-sports: #22c55e;
-    --cat-legal: #a78bfa;
+    --brand-rose: #e11d48;
+    --cat-tech: #e11d48;
+    --cat-sports: #e11d48;
+    --cat-legal: #e11d48;
 
-    --bg: #0f0f18;
-    --surface: #15151f;
-    --surface-2: #1c1c28;
-    --border: rgba(255, 255, 255, 0.08);
-    --border-strong: rgba(255, 255, 255, 0.16);
+    --bg: #000000;
+    --surface: #111111;
+    --surface-2: #1a1a1a;
+    --border: #222222;
+    --border-strong: #333333;
 
-    --text: #f8f9ff;
-    --text-muted: rgba(248, 249, 255, 0.65);
-    --text-soft: rgba(248, 249, 255, 0.5);
+    --text: #ffffff;
+    --text-muted: #888888;
+    --text-soft: #666666;
 
     --radius: 14px;
     --radius-sm: 10px;
@@ -369,7 +369,7 @@ html.light .site-header { background: rgba(255, 255, 255, 0.85); }
 .prose h3 {
     font-family: var(--font-display); font-weight: 800;
     font-size: 1.2rem; margin: 1.4rem 0 .6rem; scroll-margin-top: calc(var(--header-h) + 1rem);
-    color: var(--brand-rose);
+    color: var(--brand-red);
 }
 .prose p { margin: 0 0 1rem; color: var(--text-muted); }
 .prose ul, .prose ol { color: var(--text-muted); padding-inline-start: 1.4rem; margin: 0 0 1rem; }
@@ -425,7 +425,7 @@ html.light .site-header { background: rgba(255, 255, 255, 0.85); }
 }
 .static-page h2 {
     font-family: var(--font-display); font-weight: 800;
-    font-size: 1.3rem; margin: 1.6rem 0 .6rem; color: var(--brand-rose);
+    font-size: 1.3rem; margin: 1.6rem 0 .6rem; color: var(--brand-red);
 }
 .static-page p, .static-page li { color: var(--text-muted); }
 

@@ -29,6 +29,7 @@
     <meta name="application-name" content="Matric Nejma 6">
     <meta name="apple-mobile-web-app-title" content="Matric Nejma 6">
     <meta name="theme-color" content="#e11d48">
+    <link rel="icon" type="image/svg+xml" href="assets/logo.svg">
     
     <!-- Structured Data for SEO -->
     <script type="application/ld+json">
@@ -88,20 +89,20 @@
         :root {
             --brand-red: #e11d48;
             --brand-red-dark: #9f1239;
-            --brand-black: #0a0a0f;
-            --brand-dark: #111118;
-            --brand-card: #16161f;
-            --brand-border: #2a2a3a;
-            --brand-muted: #6b7280;
-            --brand-white: #f8f9ff;
+            --brand-black: #000000;
+            --brand-dark: #0a0a0a;
+            --brand-card: #111111;
+            --brand-border: #222222;
+            --brand-muted: #888888;
+            --brand-white: #ffffff;
             --brand-amber: #f59e0b;
-            --brand-noise: 0.4;
-            --brand-grid: rgba(225,29,72,0.04);
-            --brand-hero-overlay: rgba(225,29,72,0.35);
-            --brand-hero-fade-from: #0f0f18;
-            --brand-soft-bg: #1a1a24;
-            --brand-input-bg: rgba(255,255,255,0.04);
-            --brand-text-soft: rgba(248,249,255,0.6);
+            --brand-noise: 0.05;
+            --brand-grid: rgba(225,29,72,0.05);
+            --brand-hero-overlay: rgba(225,29,72,0.4);
+            --brand-hero-fade-from: #000000;
+            --brand-soft-bg: #0a0a0a;
+            --brand-input-bg: rgba(255,255,255,0.05);
+            --brand-text-soft: rgba(255,255,255,0.7);
         }
 
         /* Light mode override — same brand red, light surfaces & dark text */
@@ -184,7 +185,7 @@
             gap: 0.5rem;
             background: rgba(225,29,72,0.12);
             border: 1px solid rgba(225,29,72,0.3);
-            color: #fb7185;
+            color: #e11d48;
             padding: 0.4rem 1.2rem;
             border-radius: 100px;
             font-size: 0.85rem;
@@ -363,7 +364,7 @@
         .article-body h3 {
             font-size: 1.3rem;
             font-weight: 800;
-            color: #fb7185;
+            color: #e11d48;
             margin-top: 2rem;
             margin-bottom: 0.8rem;
         }
@@ -785,7 +786,7 @@
         /* ─── HIGHLIGHTS ─── */
         mark {
             background: rgba(225,29,72,0.2);
-            color: #fb7185;
+            color: #e11d48;
             padding: 0.1em 0.4em;
             border-radius: 4px;
         }
@@ -805,7 +806,7 @@
     <header class="site-header">
         <div class="container nav">
             <a href="index.html" class="brand">
-                <span class="dot"></span>
+                <img src="assets/logo.svg" alt="Logo" style="width: 32px; height: 32px;">
                 <span>Matric Nejma 6</span>
             </a>
             <nav aria-label="القائمة الرئيسية">
@@ -1052,6 +1053,37 @@
                     </div>
                 </div>
 
+                <hr class="sep">
+
+                <h2>7. دليل المطورين وإعداد النظام</h2>
+                <p>
+                    إذا كنت ترغب في إعداد نسختك الخاصة من نظام Matric Nejma 6، اتبع الخطوات التقنية التالية:
+                </p>
+                <div style="background:var(--brand-card); border-radius:16px; padding:1.8rem; border:1px solid var(--brand-border); margin-bottom:2rem; direction: ltr; text-align: left;">
+                    <h3 style="color: var(--brand-red); margin-top: 0;">1. إعداد قاعدة البيانات (Supabase)</h3>
+                    <pre style="background: var(--brand-black); padding: 1rem; border-radius: 8px; overflow-x: auto; font-size: 0.85rem; color: #86efac; border: 1px solid var(--brand-border);"><code>-- إنشاء جدول تخزين البيانات
+create table if not exists public.kv_store (
+  key text primary key,
+  value jsonb not null,
+  updated_at timestamptz not null default now()
+);
+
+alter table public.kv_store disable row level security;
+create index if not exists kv_store_updated_at_idx on public.kv_store (updated_at desc);</code></pre>
+                    
+                    <h3 style="color: var(--brand-red);">2. متغيرات البيئة (.env)</h3>
+                    <pre style="background: var(--brand-black); padding: 1rem; border-radius: 8px; overflow-x: auto; font-size: 0.85rem; color: #67e8f9; border: 1px solid var(--brand-border);"><code>SUPABASE_URL="https://your-project.supabase.co"
+SUPABASE_SERVICE_ROLE_KEY="your-service-role-key"
+ADMIN_PASSWORD="your-secure-password"</code></pre>
+
+                    <h3 style="color: var(--brand-red);">3. التثبيت والتشغيل</h3>
+                    <pre style="background: var(--brand-black); padding: 1rem; border-radius: 8px; overflow-x: auto; font-size: 0.85rem; color: #fca5a5; border: 1px solid var(--brand-border);"><code># تثبيت التبعيات
+npm install
+
+# تشغيل الخادم محلياً
+node server.js</code></pre>
+                </div>
+
                 <div class="callout">
                     <h3>🏅 خلاصة: تجربة المشاهدة المثالية في 2026</h3>
                     <p>
@@ -1261,7 +1293,7 @@
         .task-item.active-now .task-num {
             background: rgba(225,29,72,0.15);
             border-color: rgba(225,29,72,0.4);
-            color: #fb7185;
+            color: #e11d48;
         }
         .task-label {
             flex: 1;
