@@ -87,25 +87,39 @@
             <p id="formStatus" class="form-note" role="status"></p>
         </form>
 
+        <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
         <script>
             (function () {
+                const { createClient } = supabase;
+                const supabaseClient = createClient(
+                    'https://oevnahgzuqvdoatcfoat.supabase.co',
+                    'sb_publishable_8PU83sWOQbpnNLhkq8VpdQ_zYyJapXF',
+                    { auth: { persistSession: false } }
+                );
+
                 const form = document.getElementById('contactForm');
                 const status = document.getElementById('formStatus');
                 const btn = document.getElementById('submitBtn');
                 form.addEventListener('submit', async (e) => {
                     e.preventDefault();
+
+                    const data = Object.fromEntries(new FormData(form).entries());
+                    if (data.website) return;
+
                     status.style.color = '';
                     status.textContent = 'جاري الإرسال...';
                     btn.disabled = true;
-                    const data = Object.fromEntries(new FormData(form).entries());
+
                     try {
-                        const res = await fetch('/api/messages', {
-                            method: 'POST',
-                            headers: { 'Content-Type': 'application/json' },
-                            body: JSON.stringify(data),
+                        const { error } = await supabaseClient.from('messages').insert({
+                            name: data.name,
+                            email: data.email,
+                            subject: data.subject || '(بدون موضوع)',
+                            message: data.message,
+                            ip: '',
+                            read: false,
                         });
-                        const json = await res.json().catch(() => ({}));
-                        if (!res.ok) throw new Error(json.error || 'حدث خطأ، حاول لاحقاً.');
+                        if (error) throw new Error(error.message);
                         status.style.color = '#22c55e';
                         status.textContent = '✅ تم إرسال رسالتك بنجاح! سنتواصل معك قريباً.';
                         form.reset();

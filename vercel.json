@@ -15,5 +15,15 @@
       "source": "/assets/(.*)",
       "headers": [{ "key": "Cache-Control", "value": "public, max-age=300, must-revalidate" }]
     }
+  ],
+  "rewrites": [
+    {
+      "source": "/post.html",
+      "destination": "/api/render-post"
+    },
+    {
+      "source": "/sitemap.xml",
+      "destination": "/api/sitemap"
+    }
   ]
 }

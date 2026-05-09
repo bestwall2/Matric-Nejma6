@@ -17,7 +17,7 @@
     <meta property="og:url" content="https://matricnjm.online/blog.html">
     <meta property="og:title" content="مدونة Matric Nejma 6 — أخبار الرياضة والتقنية">
     <meta property="og:description" content="مقالات وأدلة حول البث المباشر، كأس العالم 2026، وأفضل تطبيقات الأندرويد.">
-    <meta property="og:image" content="https://matricnjm.online/og-image.png">
+    <meta property="og:image" content="https://matricnjm.online/assets/logo.png">
     <meta property="og:site_name" content="Matric Nejma 6">
 
     <!-- Fonts -->
@@ -50,9 +50,10 @@
             "name": "Matric Nejma 6",
             "logo": {
                 "@type": "ImageObject",
-                "url": "https://matricnjm.online/og-image.png"
+                "url": "https://matricnjm.online/assets/logo.png"
             }
-        }
+        },
+        "image": "https://matricnjm.online/assets/logo.png"
     }
     </script>
 </head>
@@ -86,19 +87,26 @@
     <!-- ===================== HUB HERO ===================== -->
     <section class="hub-hero">
         <div class="container">
+            <span class="hero-kicker">مجلة Matric Nejma 6</span>
             <h1>مدونة Matric Nejma 6</h1>
             <p>أحدث المقالات والأدلة حول البث المباشر، كرة القدم، تقنية الأندرويد، ونصائح المشاهدة الآمنة والقانونية.</p>
 
             <div class="search-wrap">
                 <input id="searchInput" type="search" class="search-input" placeholder="ابحث في المقالات…" aria-label="بحث في المدونة">
-                <span class="search-icon" aria-hidden="true">🔍</span>
+                <span class="search-icon" aria-hidden="true">⌕</span>
             </div>
 
             <div class="chips" role="tablist" aria-label="تصنيفات">
                 <button class="chip active" data-chip="all" role="tab">الكل</button>
-                <button class="chip" data-chip="tech" role="tab">💻 تقنية</button>
-                <button class="chip" data-chip="sports" role="tab">⚽ رياضة</button>
-                <button class="chip" data-chip="legal" role="tab">⚖️ قانوني</button>
+                <button class="chip" data-chip="tech" role="tab">تقنية</button>
+                <button class="chip" data-chip="sports" role="tab">رياضة</button>
+                <button class="chip" data-chip="legal" role="tab">قانوني</button>
+            </div>
+
+            <div class="hero-stats" aria-label="ملخص المدونة">
+                <span>أدلة عملية</span>
+                <span>تحليلات رياضية</span>
+                <span>نصائح مشاهدة آمنة</span>
             </div>
         </div>
     </section>
@@ -119,7 +127,10 @@
     <main class="section">
         <div class="container">
             <div class="section-head">
-                <h2>أحدث المقالات</h2>
+                <div>
+                    <span class="section-kicker">اختيارات التحرير</span>
+                    <h2>أحدث المقالات</h2>
+                </div>
                 <span class="meta" id="postsCount"></span>
             </div>
 
@@ -162,6 +173,7 @@
         </div>
     </footer>
 
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
     <script src="assets/js/posts.js"></script>
     <script>
         /* Deep-link category filter when navigating with #tech / #sports / #legal */

@@ -588,6 +588,14 @@ const handler = async (req, res) => {
     }
 
     if (parsed.pathname.startsWith("/api/")) return handleAPI(req, res, parsed);
+    if (parsed.pathname === "/sitemap.xml") {
+      const sitemapHandler = require("./api/sitemap.js");
+      return sitemapHandler(req, res);
+    }
+    if (parsed.pathname === "/post.html" && parsed.searchParams.has("slug")) {
+      const postHandler = require("./api/render-post.js");
+      return postHandler(req, res);
+    }
     return serveStatic(req, res);
   } catch (err) {
     console.error("Request error:", err);

@@ -6,7 +6,6 @@
                     + JSON-LD Article schema
    =========================================================== */
 
-const POSTS_URL = 'data/posts.json';
 const SITE_NAME = 'Matric Nejma 6';
 const SITE_URL = 'https://matricnjm.online';
 
@@ -34,8 +33,29 @@ const slugify = (str) => str
 
 const getQueryParam = (key) => new URLSearchParams(window.location.search).get(key);
 
+let _supabaseClient = null;
+function getSupabase() {
+    if (!_supabaseClient && typeof supabase !== 'undefined' && supabase.createClient) {
+        _supabaseClient = supabase.createClient(
+            'https://oevnahgzuqvdoatcfoat.supabase.co',
+            'sb_publishable_8PU83sWOQbpnNLhkq8VpdQ_zYyJapXF',
+            { auth: { persistSession: false } }
+        );
+    }
+    return _supabaseClient;
+}
+
 const fetchPosts = async () => {
-    const res = await fetch(POSTS_URL, { cache: 'no-store' });
+    const client = getSupabase();
+    if (client) {
+        const { data, error } = await client
+            .from('posts')
+            .select('*')
+            .order('created_at', { ascending: false });
+        if (error) throw new Error(error.message);
+        return data || [];
+    }
+    const res = await fetch('data/posts.json', { cache: 'no-store' });
     if (!res.ok) throw new Error('Failed to load posts');
     return res.json();
 };
@@ -82,7 +102,7 @@ async function initHub() {
         }
 
         const cards = filtered.map((p, idx) => `
-            <article class="post-card">
+            <article class="post-card ${idx === 0 ? 'featured-card' : ''}">
                 <a href="post.html?slug=${encodeURIComponent(p.slug)}" class="post-thumb" aria-label="${p.title}">
                     <span class="cat-badge" data-cat="${p.category}">${p.categoryLabel || p.category}</span>
                     <img src="${p.image}" alt="${p.title}" loading="lazy" />
@@ -92,9 +112,12 @@ async function initHub() {
                         <a href="post.html?slug=${encodeURIComponent(p.slug)}" style="color:inherit">${p.title}</a>
                     </h3>
                     <p class="post-excerpt">${p.excerpt}</p>
+                    <div class="post-tags" aria-label="وسوم المقال">
+                        ${(p.tags || []).slice(0, 3).map(tag => `<span>${tag}</span>`).join('')}
+                    </div>
                     <div class="post-meta">
                         <span>${fmtDate(p.date)}</span>
-                        <span>${estimateReadingTime(p.content)} د قراءة</span>
+                        <a class="read-link" href="post.html?slug=${encodeURIComponent(p.slug)}">اقرأ المقال</a>
                     </div>
                 </div>
             </article>
@@ -188,7 +211,7 @@ async function initPost() {
                     <span class="dot-sep"></span>
                     <span>${fmtDate(post.date)}</span>
                     <span class="dot-sep"></span>
-                    <span>⏱ ${readingTime} دقائق قراءة</span>
+                    <span>${readingTime} دقائق قراءة</span>
                 </div>
                 <img class="article-cover" src="${post.image}" alt="${post.title}" />
             </div>
@@ -197,7 +220,7 @@ async function initPost() {
         <div class="container">
             <div class="article-layout">
                 <aside class="toc" aria-label="جدول المحتويات">
-                    <h3>📑 جدول المحتويات</h3>
+                    <h3>جدول المحتويات</h3>
                     <ol id="tocList"></ol>
                 </aside>
 
@@ -226,7 +249,7 @@ async function initPost() {
             </div>
 
             <section class="related">
-                <h2>📰 مقالات ذات صلة</h2>
+                <h2>مقالات ذات صلة</h2>
                 <div class="posts-grid" id="relatedGrid"></div>
             </section>
         </div>
@@ -235,6 +258,20 @@ async function initPost() {
     /* Update document head */
     document.title = `${post.title} — ${SITE_NAME}`;
     setMeta('description', post.excerpt);
+    setMeta('keywords', (post.tags || []).join(', '));
+    setMetaProperty('og:title', `${post.title} — ${SITE_NAME}`);
+    setMetaProperty('og:description', post.excerpt);
+    setMetaProperty('og:image', post.image || `${SITE_URL}/assets/logo.png`);
+    setMetaProperty('og:url', `${SITE_URL}/post.html?slug=${post.slug}`);
+    setMetaProperty('og:type', 'article');
+    setMetaProperty('og:site_name', SITE_NAME);
+    setMetaProperty('article:published_time', post.date);
+    setMetaProperty('article:section', post.categoryLabel || post.category);
+    setMeta('twitter:card', 'summary_large_image');
+    setMeta('twitter:title', `${post.title} — ${SITE_NAME}`);
+    setMeta('twitter:description', post.excerpt);
+    setMeta('twitter:image', post.image || `${SITE_URL}/assets/logo.png`);
+    setMeta('twitter:url', `${SITE_URL}/post.html?slug=${post.slug}`);
 
     /* Build Table of Contents */
     buildTOC();
@@ -299,9 +336,12 @@ function buildRelated(currentPost, allPosts) {
                     <a href="post.html?slug=${encodeURIComponent(p.slug)}" style="color:inherit">${p.title}</a>
                 </h3>
                 <p class="post-excerpt">${p.excerpt}</p>
+                <div class="post-tags" aria-label="وسوم المقال">
+                    ${(p.tags || []).slice(0, 3).map(tag => `<span>${tag}</span>`).join('')}
+                </div>
                 <div class="post-meta">
                     <span>${fmtDate(p.date)}</span>
-                    <span>${estimateReadingTime(p.content)} د قراءة</span>
+                    <a class="read-link" href="post.html?slug=${encodeURIComponent(p.slug)}">اقرأ المقال</a>
                 </div>
             </div>
         </article>
@@ -318,6 +358,16 @@ function setMeta(name, content) {
     el.setAttribute('content', content);
 }
 
+function setMetaProperty(prop, content) {
+    let el = document.querySelector(`meta[property="${prop}"]`);
+    if (!el) {
+        el = document.createElement('meta');
+        el.setAttribute('property', prop);
+        document.head.appendChild(el);
+    }
+    el.setAttribute('content', content);
+}
+
 function injectArticleSchema(post, readingTime) {
     const schema = {
         '@context': 'https://schema.org',
@@ -329,7 +379,7 @@ function injectArticleSchema(post, readingTime) {
         publisher: {
             '@type': 'Organization',
             name: SITE_NAME,
-            logo: { '@type': 'ImageObject', url: `${SITE_URL}/og-image.png` }
+            logo: { '@type': 'ImageObject', url: `${SITE_URL}/assets/logo.png` }
         },
         datePublished: post.date,
         dateModified: post.date,

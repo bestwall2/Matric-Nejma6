@@ -1,9 +1,15 @@
 /* ============================================================
-   Matric Nejma 6 — Admin Panel (Vanilla JS)
-   Auth, dashboard, messages, posts manager, settings.
+   Matric Nejma 6 — Admin Panel (Supabase-backed)
    ============================================================ */
 
-const API = '/api';
+const { createClient } = supabase;
+
+const SUPABASE_URL = 'https://oevnahgzuqvdoatcfoat.supabase.co';
+const SUPABASE_ANON_KEY = 'sb_publishable_8PU83sWOQbpnNLhkq8VpdQ_zYyJapXF';
+const supabaseClient = createClient(SUPABASE_URL, SUPABASE_ANON_KEY, {
+    auth: { persistSession: false },
+});
+
 const TOKEN_KEY = 'mn6-admin-token';
 
 let state = {
@@ -17,23 +23,6 @@ let state = {
     editingSlug: null,
 };
 
-/* ---------- HTTP helpers ---------- */
-async function api(path, opts = {}) {
-    const headers = { 'Content-Type': 'application/json', ...(opts.headers || {}) };
-    if (state.token && path.startsWith('/admin/')) headers.Authorization = `Bearer ${state.token}`;
-    const res = await fetch(API + path, { ...opts, headers });
-    let data = {};
-    try { data = await res.json(); } catch (_) {}
-    if (!res.ok) {
-        if (res.status === 401 && path !== '/admin/login') {
-            logout();
-            throw new Error('انتهت الجلسة، الرجاء تسجيل الدخول مجدداً.');
-        }
-        throw new Error(data.error || `HTTP ${res.status}`);
-    }
-    return data;
-}
-
 /* ---------- Toast ---------- */
 function toast(msg, type = '') {
     const el = document.getElementById('toast');
@@ -46,7 +35,12 @@ function toast(msg, type = '') {
 async function bootstrap() {
     if (!state.token) return showLogin();
     try {
-        await api('/admin/check');
+        const { data, error } = await supabaseClient
+            .from('settings')
+            .select('value')
+            .eq('key', 'admin_password')
+            .single();
+        if (error || !data) throw new Error('no-pwd');
         showApp();
     } catch (_) {
         showLogin();
@@ -75,17 +69,23 @@ document.getElementById('loginForm').addEventListener('submit', async (e) => {
     const err = document.getElementById('loginError');
     const btn = document.getElementById('loginBtn');
     err.textContent = '';
-    btn.disabled = true; btn.textContent = 'جارٍ التحقق...';
+    btn.disabled = true;
+    btn.textContent = 'جارٍ التحقق...';
     try {
-        const data = await api('/admin/login', { method: 'POST', body: JSON.stringify({ password: pwd }) });
-        state.token = data.token;
-        localStorage.setItem(TOKEN_KEY, data.token);
+        const { data, error } = await supabaseClient.rpc('verify_admin_password', {
+            input_password: pwd,
+        });
+        if (error) throw new Error(error.message);
+        if (!data) throw new Error('كلمة المرور غير صحيحة');
+        state.token = 'authenticated';
+        localStorage.setItem(TOKEN_KEY, 'authenticated');
         document.getElementById('loginPassword').value = '';
         showApp();
     } catch (e2) {
         err.textContent = e2.message;
     } finally {
-        btn.disabled = false; btn.textContent = 'دخول';
+        btn.disabled = false;
+        btn.textContent = 'دخول';
     }
 });
 
@@ -99,12 +99,18 @@ const TAB_TITLES = {
     analytics: '📈 التحليلات',
     settings: '⚙️ الإعدادات',
 };
-document.querySelectorAll('.nav-item[data-tab]').forEach(btn => {
+
+document.querySelectorAll('.nav-item[data-tab]').forEach((btn) => {
     btn.addEventListener('click', () => switchTab(btn.dataset.tab));
 });
+
 function switchTab(name) {
-    document.querySelectorAll('.nav-item[data-tab]').forEach(b => b.classList.toggle('active', b.dataset.tab === name));
-    document.querySelectorAll('.tab-content').forEach(s => s.style.display = 'none');
+    document
+        .querySelectorAll('.nav-item[data-tab]')
+        .forEach((b) => b.classList.toggle('active', b.dataset.tab === name));
+    document
+        .querySelectorAll('.tab-content')
+        .forEach((s) => (s.style.display = 'none'));
     document.getElementById('tab-' + name).style.display = 'block';
     document.getElementById('pageTitle').textContent = TAB_TITLES[name] || '';
     document.getElementById('sidebar').classList.remove('open');
@@ -119,20 +125,20 @@ document.getElementById('refreshBtn').addEventListener('click', loadAll);
 /* ---------- Loaders ---------- */
 async function loadAll() {
     try {
-        const [stats, msgs, posts, analytics] = await Promise.all([
-            api('/admin/stats'),
-            api('/admin/messages'),
-            api('/admin/posts'),
-            api('/admin/analytics').catch(() => ({ stats: {}, postsByCategory: {}, env: {} }))
+        const [msgsRes, postsRes] = await Promise.all([
+            supabaseClient.from('messages').select('*').order('created_at', { ascending: false }),
+            supabaseClient.from('posts').select('*').order('created_at', { ascending: false }),
         ]);
-        state.messages = msgs.messages || [];
-        state.posts = posts.posts || [];
-        renderDashboard(stats);
+        if (msgsRes.error) throw new Error('فشل تحميل الرسائل: ' + msgsRes.error.message);
+        if (postsRes.error) throw new Error('فشل تحميل المقالات: ' + postsRes.error.message);
+        state.messages = msgsRes.data || [];
+        state.posts = postsRes.data || [];
+        renderDashboard();
         renderMessages();
         renderPosts();
-        renderAnalytics(analytics);
-        renderSettings(analytics.env);
-        const unread = state.messages.filter(m => !m.read).length;
+        renderAnalytics();
+        renderSettings();
+        const unread = state.messages.filter((m) => !m.read).length;
         const badge = document.getElementById('unreadBadge');
         badge.textContent = unread;
         badge.style.display = unread ? 'inline-block' : 'none';
@@ -141,111 +147,100 @@ async function loadAll() {
     }
 }
 
-function renderAnalytics(a) {
-    const s = a.stats || {};
-    const grid = document.getElementById('analyticsGrid');
-    if (!grid) return;
-    grid.innerHTML = `
-        <div class="stat-card">
-            <span class="label">إجمالي المشاهدات</span>
-            <span class="value">${s.totalViews || 0}</span>
-            <span class="sub">منذ إطلاق النظام</span>
-        </div>
-        <div class="stat-card accent">
-            <span class="label">إجمالي المقالات</span>
-            <span class="value">${s.totalPosts || 0}</span>
-            <span class="sub">منشورات نشطة</span>
-        </div>
-        <div class="stat-card success">
-            <span class="label">إجمالي الرسائل</span>
-            <span class="value">${s.totalMessages || 0}</span>
-            <span class="sub">نموذج الاتصال</span>
-        </div>
-    `;
-
-    const catTable = document.getElementById('categoryStatsTable');
-    if (catTable && a.postsByCategory) {
-        catTable.innerHTML = Object.entries(a.postsByCategory).map(([cat, count]) => `
-            <tr>
-                <td><span class="pill cat-${cat}">${cat}</span></td>
-                <td>${count}</td>
-            </tr>
-        `).join('') || '<tr><td colspan="2" class="empty">لا توجد بيانات.</td></tr>';
-    }
-}
-
-function renderSettings(env) {
+function renderSettings() {
     const display = document.getElementById('envInfoDisplay');
     if (!display) return;
     display.innerHTML = `
-        <div><strong>Backend:</strong> ${env.backend || 'unknown'}</div>
-        <div><strong>Writable:</strong> ${env.writable ? '✅ Yes' : '❌ No'}</div>
-        <div><strong>Vercel:</strong> ${env.isVercel ? 'Yes' : 'No'}</div>
+        <div><strong>Backend:</strong> Supabase (PostgreSQL)</div>
+        <div><strong>حالة الربط:</strong> ✅ متصل</div>
+        <div><strong>المشروع:</strong> ${SUPABASE_URL.replace('https://', '')}</div>
     `;
 }
 
 /* ---------- Dashboard ---------- */
-function renderDashboard(s) {
+function renderDashboard() {
+    const now = new Date();
+    const weekAgo = new Date(now.getTime() - 7 * 24 * 60 * 60 * 1000).toISOString();
+    const messagesLast7Days = state.messages.filter((m) => new Date(m.created_at) >= new Date(weekAgo)).length;
     const grid = document.getElementById('statsGrid');
     grid.innerHTML = `
         <div class="stat-card accent">
             <span class="label">إجمالي الرسائل</span>
-            <span class="value">${s.messagesTotal}</span>
+            <span class="value">${state.messages.length}</span>
             <span class="sub">رسائل من نموذج الاتصال</span>
         </div>
         <div class="stat-card">
             <span class="label">رسائل غير مقروءة</span>
-            <span class="value">${s.messagesUnread}</span>
+            <span class="value">${state.messages.filter((m) => !m.read).length}</span>
             <span class="sub">بحاجة للمراجعة</span>
         </div>
         <div class="stat-card success">
             <span class="label">رسائل آخر 7 أيام</span>
-            <span class="value">${s.messagesLast7Days}</span>
+            <span class="value">${messagesLast7Days}</span>
             <span class="sub">نشاط الأسبوع الأخير</span>
         </div>
         <div class="stat-card cyan">
             <span class="label">إجمالي المقالات</span>
-            <span class="value">${s.postsTotal}</span>
+            <span class="value">${state.posts.length}</span>
             <span class="sub">منشورات في المدونة</span>
         </div>
     `;
     const recent = state.messages.slice(0, 5);
-    const rows = recent.length ? recent.map(m => `
+    const rows = recent.length
+        ? recent
+              .map(
+                  (m) => `
         <tr class="${m.read ? '' : 'unread'}">
             <td>${escapeHTML(m.subject)}</td>
-            <td><div>${escapeHTML(m.name)}</div><div style="color:var(--text-soft);font-size:.8rem">${escapeHTML(m.email)}</div></td>
-            <td>${formatDateTime(m.createdAt)}</td>
+            <td>
+                <div>${escapeHTML(m.name)}</div>
+                <div style="color:var(--text-dim);font-size:.8rem">${escapeHTML(m.email)}</div>
+            </td>
+            <td>${formatDateTime(m.created_at)}</td>
             <td><button class="btn btn-sm" onclick="openMessage('${m.id}')">عرض</button></td>
-        </tr>
-    `).join('') : `<tr><td colspan="4" class="empty">لا توجد رسائل بعد.</td></tr>`;
+        </tr>`
+              )
+              .join('')
+        : '<tr><td colspan="4" class="empty">لا توجد رسائل بعد.</td></tr>';
     document.getElementById('dashRecent').innerHTML = rows;
 }
 
 /* ---------- Messages ---------- */
-document.getElementById('msgSearch').addEventListener('input', (e) => { state.msgQuery = e.target.value; renderMessages(); });
-document.getElementById('msgFilter').addEventListener('change', (e) => { state.msgFilter = e.target.value; renderMessages(); });
+document.getElementById('msgSearch').addEventListener('input', (e) => {
+    state.msgQuery = e.target.value;
+    renderMessages();
+});
+document.getElementById('msgFilter').addEventListener('change', (e) => {
+    state.msgFilter = e.target.value;
+    renderMessages();
+});
 
 function renderMessages() {
     const q = state.msgQuery.trim().toLowerCase();
-    const filtered = state.messages.filter(m => {
+    const filtered = state.messages.filter((m) => {
         if (state.msgFilter === 'unread' && m.read) return false;
         if (state.msgFilter === 'read' && !m.read) return false;
         if (!q) return true;
-        return [m.name, m.email, m.subject, m.message].some(v => v.toLowerCase().includes(q));
+        return [m.name, m.email, m.subject, m.message].some((v) =>
+            (v || '').toLowerCase().includes(q)
+        );
     });
 
     if (!filtered.length) {
-        document.getElementById('messagesTable').innerHTML = `<tr><td colspan="6" class="empty">لا توجد رسائل مطابقة.</td></tr>`;
+        document.getElementById('messagesTable').innerHTML =
+            '<tr><td colspan="6" class="empty">لا توجد رسائل مطابقة.</td></tr>';
         return;
     }
 
-    document.getElementById('messagesTable').innerHTML = filtered.map(m => `
+    document.getElementById('messagesTable').innerHTML = filtered
+        .map(
+            (m) => `
         <tr class="${m.read ? '' : 'unread'}">
             <td><span class="pill ${m.read ? 'read' : 'unread'}">${m.read ? 'مقروءة' : 'جديدة'}</span></td>
             <td>${escapeHTML(m.name)}</td>
-            <td><a href="mailto:${escapeHTML(m.email)}" style="color:var(--text)">${escapeHTML(m.email)}</a></td>
+            <td><a href="mailto:${escapeHTML(m.email)}" style="color:var(--text-neon)">${escapeHTML(m.email)}</a></td>
             <td>${escapeHTML(m.subject)}</td>
-            <td>${formatDateTime(m.createdAt)}</td>
+            <td>${formatDateTime(m.created_at)}</td>
             <td>
                 <div class="row-actions">
                     <button class="btn btn-sm" onclick="openMessage('${m.id}')">📖 عرض</button>
@@ -253,20 +248,21 @@ function renderMessages() {
                     <button class="btn btn-sm btn-danger" onclick="deleteMessage('${m.id}')">🗑 حذف</button>
                 </div>
             </td>
-        </tr>
-    `).join('');
+        </tr>`
+        )
+        .join('');
 }
 
 window.openMessage = async function (id) {
-    const msg = state.messages.find(m => m.id === id);
+    const msg = state.messages.find((m) => m.id === id);
     if (!msg) return;
     document.getElementById('messageModalContent').innerHTML = `
         <h2>${escapeHTML(msg.subject)}</h2>
-        <p style="color:var(--text-muted); margin:.2rem 0">
-            <strong>${escapeHTML(msg.name)}</strong> &lt;<a href="mailto:${escapeHTML(msg.email)}" style="color:var(--brand-rose)">${escapeHTML(msg.email)}</a>&gt;
+        <p style="color:var(--text-dim); margin:.2rem 0">
+            <strong>${escapeHTML(msg.name)}</strong> &lt;<a href="mailto:${escapeHTML(msg.email)}" style="color:var(--neon-cyan)">${escapeHTML(msg.email)}</a>&gt;
         </p>
-        <p style="color:var(--text-soft); font-size:.85rem; margin:.2rem 0 1rem">📅 ${formatDateTime(msg.createdAt)} · IP: ${escapeHTML(msg.ip || '-')}</p>
-        <div style="background:var(--bg); border:1px solid var(--border); border-radius:10px; padding:1rem; white-space:pre-wrap; line-height:1.7">${escapeHTML(msg.message)}</div>
+        <p style="color:var(--text-dim); font-size:.85rem; margin:.2rem 0 1rem">📅 ${formatDateTime(msg.created_at)} · IP: ${escapeHTML(msg.ip || '-')}</p>
+        <div style="background:rgba(0,0,0,.3); border:1px solid var(--border-neon); border-radius:10px; padding:1rem; white-space:pre-wrap; line-height:1.7">${escapeHTML(msg.message)}</div>
         <div class="close-row">
             <button class="btn" onclick="closeMessageModal()">إغلاق</button>
             <a class="btn btn-primary" href="mailto:${escapeHTML(msg.email)}?subject=${encodeURIComponent('رد: ' + msg.subject)}">↩ رد بالبريد</a>
@@ -275,79 +271,112 @@ window.openMessage = async function (id) {
     document.getElementById('messageModal').classList.add('open');
     if (!msg.read) await toggleRead(id, true, true);
 };
-window.closeMessageModal = () => document.getElementById('messageModal').classList.remove('open');
+window.closeMessageModal = () =>
+    document.getElementById('messageModal').classList.remove('open');
 document.getElementById('messageModal').addEventListener('click', (e) => {
     if (e.target.id === 'messageModal') closeMessageModal();
 });
 
 window.toggleRead = async function (id, read, silent = false) {
     try {
-        await api('/admin/messages/' + id, { method: 'PATCH', body: JSON.stringify({ read }) });
-        const m = state.messages.find(x => x.id === id);
+        const { error } = await supabaseClient
+            .from('messages')
+            .update({ read })
+            .eq('id', id);
+        if (error) throw new Error(error.message);
+        const m = state.messages.find((x) => x.id === id);
         if (m) m.read = read;
         renderMessages();
-        const unread = state.messages.filter(x => !x.read).length;
+        const unread = state.messages.filter((x) => !x.read).length;
         const badge = document.getElementById('unreadBadge');
-        badge.textContent = unread; badge.style.display = unread ? 'inline-block' : 'none';
+        badge.textContent = unread;
+        badge.style.display = unread ? 'inline-block' : 'none';
         if (!silent) toast('تم التحديث', 'success');
-    } catch (e) { toast(e.message, 'error'); }
+    } catch (e) {
+        toast(e.message, 'error');
+    }
 };
 
 window.deleteMessage = async function (id) {
     if (!confirm('حذف هذه الرسالة نهائياً؟')) return;
     try {
-        await api('/admin/messages/' + id, { method: 'DELETE' });
-        state.messages = state.messages.filter(m => m.id !== id);
+        const { error } = await supabaseClient.from('messages').delete().eq('id', id);
+        if (error) throw new Error(error.message);
+        state.messages = state.messages.filter((m) => m.id !== id);
         renderMessages();
         toast('تم الحذف', 'success');
-    } catch (e) { toast(e.message, 'error'); }
+    } catch (e) {
+        toast(e.message, 'error');
+    }
 };
 
 document.getElementById('markAllReadBtn').addEventListener('click', async () => {
-    const unread = state.messages.filter(m => !m.read);
+    const unread = state.messages.filter((m) => !m.read);
     if (!unread.length) return toast('لا توجد رسائل غير مقروءة');
     try {
-        await Promise.all(unread.map(m => api('/admin/messages/' + m.id, { method: 'PATCH', body: JSON.stringify({ read: true }) })));
-        unread.forEach(m => m.read = true);
+        const { error } = await supabaseClient
+            .from('messages')
+            .update({ read: true })
+            .in('id', unread.map((m) => m.id));
+        if (error) throw new Error(error.message);
+        unread.forEach((m) => (m.read = true));
         renderMessages();
         document.getElementById('unreadBadge').style.display = 'none';
         toast('تم وضع جميع الرسائل كمقروءة', 'success');
-    } catch (e) { toast(e.message, 'error'); }
+    } catch (e) {
+        toast(e.message, 'error');
+    }
 });
 
 document.getElementById('exportCsvBtn').addEventListener('click', () => {
     if (!state.messages.length) return toast('لا توجد رسائل للتصدير');
-    const headers = ['id', 'name', 'email', 'subject', 'message', 'read', 'createdAt'];
-    const rows = state.messages.map(m => headers.map(h => csvEscape(m[h])).join(','));
+    const headers = ['id', 'name', 'email', 'subject', 'message', 'read', 'created_at'];
+    const rows = state.messages.map((m) =>
+        headers.map((h) => csvEscape(m[h])).join(',')
+    );
     const csv = '\uFEFF' + headers.join(',') + '\n' + rows.join('\n');
     const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
     const url = URL.createObjectURL(blob);
     const a = document.createElement('a');
-    a.href = url; a.download = `messages-${new Date().toISOString().slice(0, 10)}.csv`;
-    a.click(); URL.revokeObjectURL(url);
+    a.href = url;
+    a.download = `messages-${new Date().toISOString().slice(0, 10)}.csv`;
+    a.click();
+    URL.revokeObjectURL(url);
     toast('تم تنزيل الملف', 'success');
 });
 
 /* ---------- Posts ---------- */
-document.getElementById('postSearch').addEventListener('input', e => { state.postQuery = e.target.value; renderPosts(); });
-document.getElementById('postFilter').addEventListener('change', e => { state.postFilter = e.target.value; renderPosts(); });
+document.getElementById('postSearch').addEventListener('input', (e) => {
+    state.postQuery = e.target.value;
+    renderPosts();
+});
+document.getElementById('postFilter').addEventListener('change', (e) => {
+    state.postFilter = e.target.value;
+    renderPosts();
+});
 
 function renderPosts() {
     const q = state.postQuery.trim().toLowerCase();
-    const filtered = state.posts.filter(p => {
+    const filtered = state.posts.filter((p) => {
         if (state.postFilter !== 'all' && p.category !== state.postFilter) return false;
         if (!q) return true;
-        return p.title.toLowerCase().includes(q) || p.slug.toLowerCase().includes(q);
+        return (
+            (p.title || '').toLowerCase().includes(q) ||
+            (p.slug || '').toLowerCase().includes(q)
+        );
     });
     if (!filtered.length) {
-        document.getElementById('postsTable').innerHTML = `<tr><td colspan="5" class="empty">لا توجد مقالات.</td></tr>`;
+        document.getElementById('postsTable').innerHTML =
+            '<tr><td colspan="5" class="empty">لا توجد مقالات.</td></tr>';
         return;
     }
-    document.getElementById('postsTable').innerHTML = filtered.map(p => `
+    document.getElementById('postsTable').innerHTML = filtered
+        .map(
+            (p) => `
         <tr>
             <td>
                 <div style="font-weight:700">${escapeHTML(p.title)}</div>
-                <div style="color:var(--text-soft); font-size:.8rem">/${escapeHTML(p.slug)}</div>
+                <div style="color:var(--text-dim); font-size:.8rem">/${escapeHTML(p.slug)}</div>
             </td>
             <td><span class="pill cat-${p.category}">${escapeHTML(p.categoryLabel || p.category)}</span></td>
             <td>${escapeHTML(p.author)}</td>
@@ -359,15 +388,18 @@ function renderPosts() {
                     <button class="btn btn-sm btn-danger" onclick="deletePost('${p.slug}')">🗑 حذف</button>
                 </div>
             </td>
-        </tr>
-    `).join('');
+        </tr>`
+        )
+        .join('');
 }
 
 document.getElementById('newPostBtn').addEventListener('click', () => openPostModal(null));
 
 function openPostModal(post) {
     state.editingSlug = post ? post.slug : null;
-    document.getElementById('postModalTitle').textContent = post ? `✏️ تعديل: ${post.title}` : '＋ مقال جديد';
+    document.getElementById('postModalTitle').textContent = post
+        ? `✏️ تعديل: ${post.title}`
+        : '＋ مقال جديد';
     document.getElementById('postSlug').value = post?.slug || '';
     document.getElementById('postSlug').readOnly = !!post;
     document.getElementById('postCategory').value = post?.category || 'tech';
@@ -381,22 +413,25 @@ function openPostModal(post) {
     document.getElementById('postModal').classList.add('open');
 }
 window.closePostModal = () => document.getElementById('postModal').classList.remove('open');
-document.getElementById('postModal').addEventListener('click', e => {
+document.getElementById('postModal').addEventListener('click', (e) => {
     if (e.target.id === 'postModal') closePostModal();
 });
 
 window.editPost = function (slug) {
-    const p = state.posts.find(x => x.slug === slug);
+    const p = state.posts.find((x) => x.slug === slug);
     if (p) openPostModal(p);
 };
 window.deletePost = async function (slug) {
     if (!confirm('حذف هذا المقال نهائياً؟')) return;
     try {
-        await api('/admin/posts/' + slug, { method: 'DELETE' });
-        state.posts = state.posts.filter(p => p.slug !== slug);
+        const { error } = await supabaseClient.from('posts').delete().eq('slug', slug);
+        if (error) throw new Error(error.message);
+        state.posts = state.posts.filter((p) => p.slug !== slug);
         renderPosts();
         toast('تم الحذف', 'success');
-    } catch (e) { toast(e.message, 'error'); }
+    } catch (e) {
+        toast(e.message, 'error');
+    }
 };
 
 const CAT_LABELS = { tech: 'تقنية', sports: 'رياضة', legal: 'قانوني' };
@@ -412,44 +447,117 @@ document.getElementById('postForm').addEventListener('submit', async (e) => {
         date: document.getElementById('postDate').value,
         image: document.getElementById('postImage').value.trim(),
         excerpt: document.getElementById('postExcerpt').value.trim(),
-        tags: document.getElementById('postTags').value.split(',').map(t => t.trim()).filter(Boolean),
+        tags: document
+            .getElementById('postTags')
+            .value.split(',')
+            .map((t) => t.trim())
+            .filter(Boolean),
         content: document.getElementById('postContent').value,
     };
     try {
         if (state.editingSlug) {
-            const data = await api('/admin/posts/' + state.editingSlug, { method: 'PUT', body: JSON.stringify(payload) });
-            const idx = state.posts.findIndex(p => p.slug === state.editingSlug);
-            if (idx !== -1) state.posts[idx] = data.post;
+            const { data, error } = await supabaseClient
+                .from('posts')
+                .update(payload)
+                .eq('slug', state.editingSlug)
+                .select()
+                .single();
+            if (error) throw new Error(error.message);
+            const idx = state.posts.findIndex((p) => p.slug === state.editingSlug);
+            if (idx !== -1) state.posts[idx] = data;
         } else {
-            const data = await api('/admin/posts', { method: 'POST', body: JSON.stringify(payload) });
-            state.posts.unshift(data.post);
+            const { data, error } = await supabaseClient
+                .from('posts')
+                .insert(payload)
+                .select()
+                .single();
+            if (error) throw new Error(error.message);
+            state.posts.unshift(data);
         }
         renderPosts();
         closePostModal();
         toast('تم الحفظ', 'success');
-    } catch (err) { toast(err.message, 'error'); }
+    } catch (err) {
+        toast(err.message, 'error');
+    }
 });
+
+/* ---------- Analytics ---------- */
+function renderAnalytics() {
+    const totalPosts = state.posts.length;
+    const totalMessages = state.messages.length;
+
+    const grid = document.getElementById('analyticsGrid');
+    if (!grid) return;
+    grid.innerHTML = `
+        <div class="stat-card">
+            <span class="label">إجمالي المقالات</span>
+            <span class="value">${totalPosts}</span>
+            <span class="sub">منشورات نشطة</span>
+        </div>
+        <div class="stat-card accent">
+            <span class="label">إجمالي الرسائل</span>
+            <span class="value">${totalMessages}</span>
+            <span class="sub">نموذج الاتصال</span>
+        </div>
+        <div class="stat-card success">
+            <span class="label">غير مقروءة</span>
+            <span class="value">${state.messages.filter((m) => !m.read).length}</span>
+            <span class="sub">بحاجة للمراجعة</span>
+        </div>
+    `;
+
+    const catTable = document.getElementById('categoryStatsTable');
+    if (catTable) {
+        const byCategory = {};
+        state.posts.forEach((p) => {
+            const cat = p.category || 'غير مصنف';
+            byCategory[cat] = (byCategory[cat] || 0) + 1;
+        });
+        catTable.innerHTML =
+            Object.entries(byCategory)
+                .map(
+                    ([cat, count]) => `
+                <tr>
+                    <td><span class="pill cat-${cat}">${CAT_LABELS[cat] || cat}</span></td>
+                    <td>${count}</td>
+                </tr>`
+                )
+                .join('') || '<tr><td colspan="2" class="empty">لا توجد بيانات.</td></tr>';
+    }
+}
 
 /* ---------- Settings ---------- */
 document.getElementById('passwordForm').addEventListener('submit', async (e) => {
     e.preventDefault();
     const cur = document.getElementById('currentPwd').value;
     const next = document.getElementById('newPwd').value;
-    const confirm = document.getElementById('confirmPwd').value;
-    if (next !== confirm) return toast('كلمتا المرور غير متطابقتين', 'error');
+    const confirmEl = document.getElementById('confirmPwd').value;
+    if (next !== confirmEl) return toast('كلمتا المرور غير متطابقتين', 'error');
     try {
-        await api('/admin/password', { method: 'POST', body: JSON.stringify({ current: cur, next }) });
+        const { data, error } = await supabaseClient.rpc('change_admin_password', {
+            current_password: cur,
+            new_password: next,
+        });
+        if (error) throw new Error(error.message);
+        if (!data) throw new Error('كلمة المرور الحالية غير صحيحة');
+        state.token = 'authenticated';
+        localStorage.setItem(TOKEN_KEY, 'authenticated');
         e.target.reset();
-        toast('تم تغيير كلمة المرور بنجاح. سجّل دخولك من جديد.', 'success');
-        setTimeout(logout, 1500);
-    } catch (err) { toast(err.message, 'error'); }
+        toast('تم تغيير كلمة المرور بنجاح', 'success');
+    } catch (err) {
+        toast(err.message, 'error');
+    }
 });
 
 /* ---------- Utils ---------- */
 function escapeHTML(s) {
     return String(s ?? '')
-        .replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;')
-        .replace(/"/g, '&quot;').replace(/'/g, '&#39;');
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;')
+        .replace(/"/g, '&quot;')
+        .replace(/'/g, '&#39;');
 }
 function csvEscape(v) {
     const s = String(v ?? '');
@@ -457,10 +565,13 @@ function csvEscape(v) {
     return s;
 }
 function formatDateTime(iso) {
+    if (!iso) return '-';
     try {
         const d = new Date(iso);
         return d.toLocaleString('ar-MA', { dateStyle: 'medium', timeStyle: 'short' });
-    } catch (_) { return iso; }
+    } catch (_) {
+        return iso;
+    }
 }
 
 /* ---------- Boot ---------- */

@@ -777,255 +777,42 @@
             .sidebar {
                 position: fixed;
                 inset: 0 auto 0 0;
-                width: 260px;
+                width: 240px;
                 z-index: 80;
                 transform: translateX(100%);
                 transition: transform .3s cubic-bezier(.22,1,.36,1);
                 border-inline-start: 0;
                 border-inline-end: 1px solid var(--border-neon);
-                box-shadow: 4px 0 40px rgba(0,0,0,.5);
             }
 
             [dir="rtl"] .sidebar {
                 inset: 0 0 0 auto;
                 transform: translateX(100%);
-                box-shadow: -4px 0 40px rgba(0,0,0,.5);
             }
 
             .sidebar.open { transform: translateX(0); }
             .mobile-toggle { display: inline-flex !important; }
-            .sidebar-backdrop {
-                display: none;
-                position: fixed; inset: 0; z-index: 79;
-                background: rgba(2,4,10,.6);
-            }
-            .sidebar.open + .sidebar-backdrop,
-            .sidebar-backdrop.open { display: block; }
         }
 
         .mobile-toggle { display: none; }
 
-        /* ===== RESPONSIVE: tablets & small screens ===== */
-        @media (max-width: 768px) {
-            .login-card {
-                padding: 1.5rem 1.2rem;
-                margin: .5rem;
-                border-radius: 12px;
-            }
-            .login-card h1 { font-size: 1.1rem; }
-            .login-card > p { font-size: .85rem; margin-bottom: 1rem; }
-            .login-card input { padding: .75rem .85rem; font-size: .95rem; }
-            .login-card button { padding: .8rem; font-size: .9rem; }
+        /* ===== RESPONSIVE ===== */
+        @media (max-width: 600px) {
+            .login-card { padding: 1.5rem 1.2rem; }
             .main { padding: 1rem; }
-            .topbar { flex-direction: column; align-items: stretch; gap: .6rem; }
-            .topbar h1 { font-size: 1rem; text-align: center; }
-            .topbar .actions { justify-content: center; }
-            .stats-grid { grid-template-columns: 1fr 1fr; gap: .7rem; }
-            .stat-card { padding: .9rem 1rem; border-radius: 12px; }
-            .stat-card .value { font-size: 1.4rem; }
-            .stat-card .label { font-size: .75rem; }
-            .stat-card .sub { font-size: .7rem; }
-
-            .table-wrap { border-radius: 10px; }
-            .table-wrap {
-                overflow-x: auto;
-                -webkit-overflow-scrolling: touch;
-            }
-            .table-wrap::-webkit-scrollbar { height: 3px; }
-            .table-wrap::-webkit-scrollbar-thumb { background: rgba(0,240,255,.2); border-radius: 2px; }
-            table.data { font-size: .82rem; min-width: 520px; }
-            table.data th, table.data td { padding: .55rem .65rem; }
-            table.data th { font-size: .65rem; }
-            .row-actions { gap: .25rem; }
-            .row-actions .btn { font-size: .72rem; padding: .25rem .5rem; }
-            .btn-sm { padding: .3rem .55rem; font-size: .72rem; }
-
-            .toolbar {
-                flex-direction: row;
-                gap: .4rem;
-            }
-            .toolbar input[type="search"] {
-                min-width: 120px;
-                font-size: .85rem;
-                padding: .5rem .7rem;
-            }
-            .toolbar select {
-                font-size: .82rem;
-                padding: .45rem .6rem;
-            }
-            .toolbar .btn {
-                font-size: .78rem;
-                padding: .45rem .7rem;
-            }
-
-            .modal { max-width: 96vw; padding: 1rem; border-radius: 12px; }
-            .modal h2 { font-size: 1rem; }
-            .field input, .field textarea, .field select { font-size: .88rem; padding: .6rem .75rem; }
-            .field label { font-size: .8rem; }
-            .form-grid-2 { grid-template-columns: 1fr; gap: .65rem; }
-            .field textarea { min-height: 160px; }
-
-            .pill { font-size: .63rem; padding: .1rem .45rem; }
-            .empty { padding: 1.5rem .5rem; font-size: .85rem; }
-
-            .sidebar-backdrop {
-                display: none;
-                position: fixed; inset: 0; z-index: 79;
-                background: rgba(2,4,10,.6);
-            }
-            .sidebar.open .sidebar-backdrop,
-            .sidebar-backdrop.open { display: block; }
-
-            .nav-item { padding: .65rem .75rem; font-size: .85rem; }
+            .topbar h1 { font-size: 1.1rem; }
+            .stats-grid { grid-template-columns: 1fr 1fr; }
+            .stat-card .value { font-size: 1.5rem; }
+            table.data th, table.data td { padding: 0.6rem 0.75rem; font-size: 0.82rem; }
+            .row-actions { gap: 0.25rem; }
+            .btn-sm { padding: 0.3rem 0.5rem; font-size: 0.72rem; }
+            .modal { max-width: 95vw; padding: 1.2rem; }
+            .form-grid-2 { grid-template-columns: 1fr; }
         }
 
-        /* ===== RESPONSIVE: phones ===== */
-        @media (max-width: 480px) {
-            body::after { display: none; }
-            .login-screen { padding: .75rem; }
-            .login-card {
-                padding: 1.2rem 1rem;
-                border-radius: 10px;
-                box-shadow: 0 0 20px rgba(0,240,255,.04), 0 10px 30px rgba(0,0,0,.5);
-            }
-            .login-card::before { left: 10%; right: 10%; }
-            .login-card .corner-bracket { display: none; }
-            .login-card h1 { font-size: 1rem; letter-spacing: .05em; }
-            .login-card > p { font-size: .8rem; }
-            .login-card .field { margin-bottom: .7rem; }
-            .login-card input { padding: .65rem .75rem; font-size: .9rem; }
-            .login-card button { padding: .75rem; font-size: .85rem; }
-            .login-error { font-size: .75rem; }
-            .login-hint { font-size: .7rem; }
-
-            .main { padding: .75rem .65rem 2rem; }
-            .topbar { gap: .4rem; }
-            .topbar h1 { font-size: .9rem; }
-            .topbar .actions { flex-wrap: wrap; }
-            .topbar .actions .btn { font-size: .75rem; padding: .4rem .6rem; }
-
-            .stats-grid {
-                grid-template-columns: 1fr;
-                gap: .6rem;
-                margin-bottom: 1rem;
-            }
-            .stat-card {
-                padding: .75rem .85rem;
-                border-radius: 10px;
-                flex-direction: row;
-                align-items: center;
-                justify-content: space-between;
-                gap: .5rem;
-                backdrop-filter: blur(8px);
-                -webkit-backdrop-filter: blur(8px);
-            }
-            .stat-card::before { height: 1px; }
-            .stat-card .label { font-size: .72rem; white-space: nowrap; }
-            .stat-card .value { font-size: 1.2rem; }
-            .stat-card .sub { display: none; }
-
-            .table-wrap {
-                border-radius: 8px;
-                font-size: .78rem;
-            }
-            .table-wrap::before { height: 1px; opacity: .2; }
-            table.data { font-size: .75rem; min-width: 440px; }
-            table.data th, table.data td { padding: .45rem .5rem; }
-            table.data th { font-size: .58rem; letter-spacing: .06em; }
-            .row-actions { gap: .2rem; }
-            .row-actions .btn {
-                font-size: .65rem;
-                padding: .2rem .4rem;
-                border-radius: 6px;
-            }
-
-            .toolbar {
-                flex-wrap: wrap;
-                gap: .35rem;
-                margin-bottom: .65rem;
-            }
-            .toolbar input[type="search"] {
-                min-width: 100%;
-                font-size: .8rem;
-                padding: .45rem .65rem;
-                order: -1;
-            }
-            .toolbar select {
-                flex: 1;
-                min-width: 0;
-                font-size: .78rem;
-                padding: .4rem .55rem;
-            }
-            .toolbar .btn {
-                font-size: .72rem;
-                padding: .4rem .55rem;
-                flex: 1;
-                justify-content: center;
-            }
-            .toolbar .btn-primary { flex: 1; }
-
-            .modal {
-                max-width: 100vw;
-                margin: .5rem;
-                padding: .85rem;
-                border-radius: 10px;
-                max-height: 92vh;
-            }
-            .modal::before { left: 10%; right: 10%; }
-            .modal h2 { font-size: .9rem; }
-            .modal .close-row { flex-direction: column; gap: .35rem; }
-            .modal .close-row .btn { width: 100%; justify-content: center; }
-
-            .field { margin-bottom: .6rem; }
-            .field input, .field textarea, .field select {
-                font-size: .85rem;
-                padding: .55rem .65rem;
-                border-radius: 8px;
-            }
-            .field label { font-size: .78rem; }
-            .field textarea { min-height: 130px; }
-            .field .hint { font-size: .7rem; }
-            .form-grid-2 { gap: .55rem; }
-
-            .pill { font-size: .58rem; padding: .08rem .38rem; }
-            .empty { padding: 1rem .5rem; font-size: .8rem; }
-
-            .nav-item {
-                padding: .6rem .7rem;
-                font-size: .82rem;
-            }
-            .nav-item .badge-pill { font-size: .6rem; padding: .05rem .4rem; }
-
-            #envInfoDisplay { font-size: .72rem !important; padding: .5rem .6rem !important; }
-            #envInfoDisplay > div { margin-bottom: .15rem; }
-
-            .toast {
-                left: .75rem;
-                right: .75rem;
-                transform: translateY(20px);
-                font-size: .78rem;
-                padding: .6rem .9rem;
-                border-radius: 8px;
-                text-align: center;
-            }
-            .toast.show {
-                transform: translateY(0);
-                left: .75rem;
-                right: .75rem;
-            }
-        }
-
-        /* ===== RESPONSIVE: very small phones ===== */
-        @media (max-width: 360px) {
-            .login-card { padding: 1rem .85rem; }
-            .login-card h1 { font-size: .9rem; }
-            .topbar h1 { font-size: .82rem; }
-            .stat-card { padding: .6rem .7rem; }
-            .stat-card .value { font-size: 1rem; }
-            .stat-card .label { font-size: .65rem; }
-            table.data th, table.data td { padding: .35rem .4rem; font-size: .7rem; }
-            .modal { padding: .7rem; }
-            .field input, .field textarea, .field select { font-size: .8rem; padding: .5rem .6rem; }
+        @media (max-width: 400px) {
+            .stats-grid { grid-template-columns: 1fr; }
+            .toolbar input[type="search"] { min-width: 100%; }
             .brand-row span:last-child { display: none; }
         }
 
@@ -1175,10 +962,6 @@
                             <label for="newPwd">كلمة المرور الجديدة</label>
                             <input id="newPwd" type="password" required minlength="6" autocomplete="new-password">
                         </div>
-                        <div class="field">
-                            <label for="confirmPwd">تأكيد كلمة المرور الجديدة</label>
-                            <input id="confirmPwd" type="password" required minlength="6" autocomplete="new-password">
-                        </div>
                         <button type="submit" class="btn btn-primary" id="savePasswordBtn">تحديث كلمة المرور</button>
                     </form>
                     <p class="login-hint" style="text-align:start; margin-top:1.5rem">في بيئة Vercel، حدّث <code>ADMIN_PASSWORD</code> في لوحة التحكم.</p>
@@ -1260,7 +1043,6 @@
 
     <div id="toast" class="toast"></div>
 
-    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
     <script src="assets/js/admin.js"></script>
 </body>
 </html>
