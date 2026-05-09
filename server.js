@@ -15,6 +15,7 @@
    - POST /api/admin/password        (auth — change password)
    ============================================================ */
 
+require("dotenv").config();
 const fs = require("fs");
 const path = require("path");
 const crypto = require("crypto");
@@ -201,6 +202,20 @@ function safeStr(v, max) {
   return v.trim().slice(0, max);
 }
 
+/* ---------- Client env injection ---------- */
+const CLIENT_ENV_PAGES = ['admin.html', 'post.html', 'contact.html', 'blog.html'];
+
+function injectClientEnv(html) {
+    const env = {
+        SUPABASE_URL: process.env.PUBLIC_SUPABASE_URL || '',
+        SUPABASE_ANON_KEY: process.env.PUBLIC_SUPABASE_ANON_KEY || '',
+        OPENROUTER_API_KEY: process.env.PUBLIC_OPENROUTER_API_KEY || '',
+        UNSPLASH_ACCESS_KEY: process.env.PUBLIC_UNSPLASH_ACCESS_KEY || '',
+    };
+    const script = `<script>window.__ENV__=${JSON.stringify(env)}</script>`;
+    return html.replace('</head>', script + '</head>');
+}
+
 /* ---------- Static file serving ---------- */
 function sendFile(req, res, data, type, status = 200) {
   const isHead = req.method === "HEAD";
@@ -266,7 +281,10 @@ function serveStatic(req, res) {
 
     const ext = path.extname(filePath).toLowerCase();
     const type = MIME[ext] || "application/octet-stream";
-    const data = fs.readFileSync(filePath);
+    let data = fs.readFileSync(filePath);
+    if (ext === '.html' && CLIENT_ENV_PAGES.includes(path.basename(filePath))) {
+        data = Buffer.from(injectClientEnv(data.toString('utf8')));
+    }
     return sendFile(req, res, data, type, 200);
   } catch (err) {
     console.error("Static error:", err);

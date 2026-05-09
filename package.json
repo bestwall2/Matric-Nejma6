@@ -16,5 +16,9 @@
     "node"
   ],
   "author": "",
-  "license": "ISC"
+  "license": "ISC",
+  "dependencies": {
+    "dotenv": "^17.4.2",
+    "unsplash-js": "^7.0.20"
+  }
 }

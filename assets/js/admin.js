@@ -4,8 +4,9 @@
 
 const { createClient } = supabase;
 
-const SUPABASE_URL = 'https://oevnahgzuqvdoatcfoat.supabase.co';
-const SUPABASE_ANON_KEY = 'sb_publishable_8PU83sWOQbpnNLhkq8VpdQ_zYyJapXF';
+const ENV = window.__ENV__ || {};
+const SUPABASE_URL = ENV.SUPABASE_URL;
+const SUPABASE_ANON_KEY = ENV.SUPABASE_ANON_KEY;
 const supabaseClient = createClient(SUPABASE_URL, SUPABASE_ANON_KEY, {
     auth: { persistSession: false },
 });
@@ -98,6 +99,7 @@ const TAB_TITLES = {
     posts: '📝 المقالات',
     analytics: '📈 التحليلات',
     settings: '⚙️ الإعدادات',
+    aiwriter: '🤖 الكتابة بالذكاء الاصطناعي',
 };
 
 document.querySelectorAll('.nav-item[data-tab]').forEach((btn) => {
@@ -548,6 +550,210 @@ document.getElementById('passwordForm').addEventListener('submit', async (e) => 
     } catch (err) {
         toast(err.message, 'error');
     }
+});
+
+/* ---------- AI Writer (Gemini) ---------- */
+const OPENROUTER_API_KEY = ENV.OPENROUTER_API_KEY;
+const UNSPLASH_ACCESS_KEY = ENV.UNSPLASH_ACCESS_KEY || ''; // Get free at https://unsplash.com/developers
+
+async function fetchUnsplashImage(keyword) {
+    try {
+        const res = await fetch(
+            `https://api.unsplash.com/photos/random?query=${encodeURIComponent(keyword)}&orientation=landscape`,
+            { headers: { Authorization: `Client-ID ${UNSPLASH_ACCESS_KEY}` } }
+        );
+        if (!res.ok) throw new Error('Unsplash error');
+        const data = await res.json();
+        return data.urls.regular;
+    } catch {
+        return `https://loremflickr.com/1200/630/${encodeURIComponent(keyword.replace(/\s+/g, ','))}`;
+    }
+}
+
+async function callAI(systemPrompt, userPrompt) {
+    const res = await fetch('https://openrouter.ai/api/v1/chat/completions', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+            Authorization: `Bearer ${OPENROUTER_API_KEY}`,
+            'HTTP-Referer': 'https://matricnjm.online',
+            'X-Title': 'Matric Nejma 6 Admin',
+        },
+        body: JSON.stringify({
+            model: 'google/gemini-3.1-flash-lite',
+            messages: [
+                { role: 'system', content: systemPrompt },
+                { role: 'user', content: userPrompt },
+            ],
+            temperature: 0.85,
+            max_tokens: 1420,
+        }),
+    });
+    const data = await res.json();
+    if (!res.ok) throw new Error(data.error?.message || 'فشل الاتصال بـ OpenRouter');
+    return data.choices?.[0]?.message?.content || '';
+}
+
+function parseAIJSON(text) {
+    try {
+        return JSON.parse(text);
+    } catch (_) {}
+    const match = text.match(/\{[\s\S]*\}/);
+    if (match) {
+        try {
+            return JSON.parse(match[0]);
+        } catch (_) {}
+    }
+    return null;
+}
+
+function makeSlug(title) {
+    return title
+        .replace(/[^\w\s-]/g, '')
+        .trim()
+        .toLowerCase()
+        .replace(/\s+/g, '-')
+        .replace(/-+/g, '-')
+        .replace(/^-|-$/g, '')
+        .slice(0, 80) || 'article-' + Date.now();
+}
+
+document.getElementById('aiGenerateBtn').addEventListener('click', async () => {
+    const topic = document.getElementById('aiTopic').value.trim();
+    const category = document.getElementById('aiCategory').value;
+    if (!topic) return toast('الرجاء إدخال موضوع المقال', 'error');
+
+    const btn = document.getElementById('aiGenerateBtn');
+    const loading = document.getElementById('aiLoading');
+    const result = document.getElementById('aiResult');
+    const progress = document.getElementById('aiProgressBar');
+
+    btn.disabled = true;
+    btn.textContent = 'جارٍ الإنشاء...';
+    loading.style.display = 'block';
+    result.style.display = 'none';
+    progress.style.width = '0%';
+
+    let progressVal = 0;
+    const progressInterval = setInterval(() => {
+        progressVal = Math.min(progressVal + Math.random() * 12, 85);
+        progress.style.width = progressVal + '%';
+    }, 600);
+
+    const catLabels = { tech: 'تقنية', sports: 'رياضة', legal: 'قانوني' };
+
+    const systemPrompt = `أنت كاتب محتوى محترف للمدونة باللغة العربية. تكتب مقالات أصلية 100% متوافقة مع Google AdSense. تخرج النتيجة بصيغة JSON فقط بدون أي markdown أو أكواد برمجية.`;
+    const userPrompt = `اكتب مقالاً كاملاً بالعربية عن التالي:
+
+الموضوع: ${topic}
+التصنيف: ${category} (${catLabels[category] || category})
+
+المطلوب في JSON:
+{
+  "title": "عنوان احترافي جذاب",
+  "slug": "english-slug-for-url",
+  "excerpt": "مقدمة 2-3 جمل",
+  "content": "<h2>عنوان فرعي</h2><p>محتوى HTML كامل مع h2, h3, p, ul, blockquote</p>",
+  "tags": ["وسم1", "وسم2", "وسم3"],
+  "image_keyword": "english keyword for image"
+}
+
+شروط المحتوى: فريد 100%، متوافق مع AdSense، 600-1000 كلمة، محسّن SEO، مقسم لأقسام، مناسب لجمهور عربي.`;
+
+    try {
+        const raw = await callAI(systemPrompt, userPrompt);
+        progress.style.width = '95%';
+
+        const parsed = parseAIJSON(raw);
+        if (!parsed) throw new Error('لم يتمكن الذكاء الاصطناعي من إنشاء المقال بصيغة صحيحة. حاول مرة أخرى.');
+
+        const title = parsed.title || 'عنوان المقال';
+        const slug = parsed.slug || makeSlug(title);
+        const excerpt = parsed.excerpt || '';
+        const content = parsed.content || '<p>المحتوى</p>';
+        const tags = Array.isArray(parsed.tags) ? parsed.tags.join(', ') : '';
+        const imgKeyword = parsed.image_keyword || topic.replace(/[^\w\s]/g, ' ').trim().split(' ')[0] || 'blog';
+        const imageUrl = await fetchUnsplashImage(imgKeyword);
+
+        document.getElementById('aiResultTitle').value = title;
+        document.getElementById('aiResultSlug').value = slug;
+        document.getElementById('aiResultCategory').value = category;
+        document.getElementById('aiResultImage').value = imageUrl;
+        document.getElementById('aiResultExcerpt').value = excerpt;
+        document.getElementById('aiResultTags').value = tags;
+        document.getElementById('aiResultContent').value = content;
+
+        progress.style.width = '100%';
+        setTimeout(() => {
+            loading.style.display = 'none';
+            result.style.display = 'block';
+            result.scrollIntoView({ behavior: 'smooth', block: 'start' });
+            toast('✅ تم إنشاء المقال بنجاح! يمكنك تعديله قبل الحفظ.', 'success');
+        }, 400);
+    } catch (e) {
+        loading.style.display = 'none';
+        toast(e.message, 'error');
+    } finally {
+        clearInterval(progressInterval);
+        btn.disabled = false;
+        btn.textContent = '🤖 إنشاء المقال';
+    }
+});
+
+document.getElementById('aiSaveBtn').addEventListener('click', async () => {
+    const title = document.getElementById('aiResultTitle').value.trim();
+    const slug = document.getElementById('aiResultSlug').value.trim();
+    const category = document.getElementById('aiResultCategory').value;
+    const image = document.getElementById('aiResultImage').value.trim();
+    const excerpt = document.getElementById('aiResultExcerpt').value.trim();
+    const tagsRaw = document.getElementById('aiResultTags').value.trim();
+    const content = document.getElementById('aiResultContent').value.trim();
+
+    if (!title || !slug || !content) return toast('العنوان والـ Slug والمحتوى مطلوبة', 'error');
+    if (!/^[a-z0-9-]+$/.test(slug)) return toast('الـ Slug يجب أن يحتوي على حروف لاتينية صغيرة وأرقام وشَرطات فقط', 'error');
+
+    const saveBtn = document.getElementById('aiSaveBtn');
+    saveBtn.disabled = true;
+    saveBtn.textContent = 'جارٍ الحفظ...';
+
+    const catLabels = { tech: 'تقنية', sports: 'رياضة', legal: 'قانوني' };
+    const payload = {
+        slug,
+        title,
+        category,
+        categoryLabel: catLabels[category] || category,
+        author: 'فريق Matric Nejma 6',
+        date: new Date().toISOString().slice(0, 10),
+        image: image || '',
+        excerpt: excerpt || title,
+        tags: tagsRaw.split(',').map((t) => t.trim()).filter(Boolean),
+        content: content || '<p></p>',
+    };
+
+    try {
+        const { data: inserted, error } = await supabaseClient.from('posts').insert(payload).select().single();
+        if (error) throw new Error(error.message);
+        if (inserted) state.posts.unshift(inserted);
+        toast('✅ تم حفظ المقال في قاعدة البيانات', 'success');
+        document.getElementById('aiClearBtn').click();
+        switchTab('posts');
+    } catch (e) {
+        toast(e.message, 'error');
+    } finally {
+        saveBtn.disabled = false;
+        saveBtn.textContent = '💾 حفظ المقال في قاعدة البيانات';
+    }
+});
+
+document.getElementById('aiClearBtn').addEventListener('click', () => {
+    document.getElementById('aiResult').style.display = 'none';
+    document.getElementById('aiTopic').value = '';
+    document.getElementById('aiResultTitle').value = '';
+    document.getElementById('aiResultSlug').value = '';
+    document.getElementById('aiResultImage').value = '';
+    document.getElementById('aiResultExcerpt').value = '';
+    document.getElementById('aiResultTags').value = '';
+    document.getElementById('aiResultContent').value = '';
 });
 
 /* ---------- Utils ---------- */

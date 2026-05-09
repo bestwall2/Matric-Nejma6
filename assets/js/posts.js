@@ -36,9 +36,10 @@ const getQueryParam = (key) => new URLSearchParams(window.location.search).get(k
 let _supabaseClient = null;
 function getSupabase() {
     if (!_supabaseClient && typeof supabase !== 'undefined' && supabase.createClient) {
+        const ENV = window.__ENV__ || {};
         _supabaseClient = supabase.createClient(
-            'https://oevnahgzuqvdoatcfoat.supabase.co',
-            'sb_publishable_8PU83sWOQbpnNLhkq8VpdQ_zYyJapXF',
+            ENV.SUPABASE_URL,
+            ENV.SUPABASE_ANON_KEY,
             { auth: { persistSession: false } }
         );
     }
