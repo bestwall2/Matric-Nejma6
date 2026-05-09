@@ -163,12 +163,12 @@
         .hero {
             background: radial-gradient(ellipse 80% 60% at 50% -10%, rgba(225,29,72,0.35) 0%, transparent 70%),
                         linear-gradient(180deg, var(--brand-hero-fade-from) 0%, var(--brand-black) 100%);
-            min-height: 100vh;
+            min-height: calc(100svh - var(--header-h, 70px));
             display: flex;
             flex-direction: column;
             align-items: center;
             justify-content: center;
-            padding: 6rem 1.5rem 10rem;
+            padding: clamp(4rem, 9vw, 6rem) 1.5rem clamp(5rem, 10vw, 8rem);
             position: relative;
             overflow: hidden;
         }
@@ -228,6 +228,7 @@
             text-align: center;
             max-width: 680px;
             margin-bottom: 3rem;
+            text-wrap: pretty;
         }
 
         .btn-primary {
@@ -243,8 +244,10 @@
             text-decoration: none;
             display: inline-flex;
             align-items: center;
+            justify-content: center;
             gap: 0.6rem;
             box-shadow: 0 0 40px rgba(225,29,72,0.35), 0 4px 20px rgba(0,0,0,0.4);
+            min-height: 52px;
         }
 
         .btn-primary:hover {
@@ -265,8 +268,10 @@
             transition: all 0.25s ease;
             display: inline-flex;
             align-items: center;
+            justify-content: center;
             gap: 0.6rem;
             backdrop-filter: blur(8px);
+            min-height: 52px;
         }
 
         .btn-secondary:hover {
@@ -277,11 +282,12 @@
 
         /* ─── STATS BAR ─── */
         .stats-bar {
-            display: flex;
+            display: grid;
+            grid-template-columns: repeat(4, minmax(0, 1fr));
             justify-content: center;
             gap: 2rem;
-            flex-wrap: wrap;
             margin-top: 4rem;
+            width: min(760px, 100%);
         }
 
         .stat-item {
@@ -329,24 +335,45 @@
         }
 
         /* Additional responsive improvements for index.html */
+        @media (max-width: 760px) {
+            .stats-bar {
+                grid-template-columns: repeat(2, minmax(0, 1fr));
+                gap: 1rem;
+                margin-top: 2.4rem;
+            }
+            .stat-divider { display: none; }
+            .stat-item {
+                background: var(--brand-input-bg);
+                border: 1px solid var(--brand-border);
+                border-radius: 12px;
+                padding: 1rem .75rem;
+            }
+        }
+
         @media (max-width: 600px) {
-            .hero { padding: 4rem 1rem 8rem; }
-            .hero h1 { font-size: 2.2rem; }
+            .hero { min-height: auto; padding: 3rem 1rem 4rem; }
+            .hero h1 { font-size: clamp(2.05rem, 12vw, 3rem); }
             .hero p { font-size: 0.95rem; }
-            .btn-primary, .btn-secondary { padding: 0.85rem 1.8rem; font-size: 0.95rem; }
-            .stats-bar { gap: 1.2rem; }
+            .hero .flex { width: 100%; }
+            .btn-primary, .btn-secondary { width: 100%; padding: 0.85rem 1.1rem; font-size: 0.95rem; border-radius: 10px; }
+            .stats-bar { gap: .75rem; }
             .stat-number { font-size: 1.8rem; }
             .stat-label { font-size: 0.7rem; }
-            .article-card { padding: 1.5rem 1.2rem; border-radius: 20px; }
+            .main-layout { padding: 2rem 1rem; }
+            .article-card { padding: 1.25rem; border-radius: 12px; }
+            .article-body p { text-align: start; font-size: 1rem; }
+            .article-body h2 { margin-top: 2.4rem; padding-right: .85rem; }
             .tournament-grid { grid-template-columns: 1fr 1fr; }
             .spec-grid { grid-template-columns: 1fr; }
-            .carriers-banner { padding: 1.2rem; }
-            .callout { padding: 1.2rem; }
+            .carriers-banner { padding: 1.2rem; align-items: stretch; }
+            .callout { padding: 1.2rem; border-radius: 12px; }
             .footer-links { gap: 1rem; flex-direction: column; align-items: center; }
             .footer-links a { font-size: 0.85rem; }
+            .mobile-cta { padding: 0 1rem 1.4rem; }
         }
 
         @media (max-width: 400px) {
+            .stats-bar { grid-template-columns: 1fr; }
             .tournament-grid { grid-template-columns: 1fr; }
             .tournament-card { padding: 1.2rem 0.8rem; }
             .tournament-emoji { font-size: 2.2rem; }
@@ -388,6 +415,7 @@
             color: var(--brand-text-soft);
             margin-bottom: 1.6rem;
             text-align: justify;
+            overflow-wrap: anywhere;
         }
 
         .article-body strong {
@@ -412,6 +440,7 @@
             transition: all 0.3s ease;
             position: relative;
             overflow: hidden;
+            min-width: 0;
         }
 
         .tournament-card::before {
@@ -449,6 +478,7 @@
             display: flex;
             align-items: center;
             gap: 1rem;
+            min-width: 0;
         }
 
         .spec-icon {
@@ -464,7 +494,7 @@
         }
 
         .spec-label { font-size: 0.78rem; color: var(--brand-muted); font-weight: 700; text-transform: uppercase; letter-spacing: 0.05em; }
-        .spec-value { font-size: 0.95rem; font-weight: 800; color: var(--brand-white); }
+        .spec-value { font-size: 0.95rem; font-weight: 800; color: var(--brand-white); overflow-wrap: anywhere; }
 
         /* ─── CARRIERS BANNER ─── */
         .carriers-banner {
@@ -487,6 +517,7 @@
             font-weight: 900;
             font-size: 0.9rem;
             color: var(--brand-white);
+            white-space: nowrap;
         }
 
         /* ─── CALLOUT BOX ─── */
@@ -616,6 +647,16 @@
             padding: 0 1.5rem 2rem;
             max-width: 600px;
             margin: 0 auto;
+        }
+
+        @media (hover: none) {
+            .btn-primary:hover,
+            .btn-secondary:hover,
+            .tournament-card:hover,
+            .sidebar-btn-dl:hover,
+            .sidebar-btn-code:hover {
+                transform: none;
+            }
         }
 
         /* ─── FOOTER ─── */
@@ -1239,6 +1280,7 @@
             padding: 0.75rem 0.9rem;
             gap: 0.7rem;
             transition: all 0.3s ease;
+            min-width: 0;
         }
         @media (max-width: 480px) {
             .task-item {
@@ -1287,6 +1329,7 @@
             font-weight: 700;
             color: var(--brand-muted);
             text-align: right;
+            min-width: 0;
         }
         @media (max-width: 480px) {
             .task-label {
@@ -1496,7 +1539,7 @@
         
         /* ─── COPY CODE ─── */
         function copyCode() {
-            navigator.clipboard.writeText('M2026').then(() => {
+            navigator.clipboard.writeText('MA2222').then(() => {
                 const hint = document.getElementById('copyHint');
                 const box  = document.getElementById('codeBox');
                 hint.textContent  = '✅ تم النسخ بنجاح!';

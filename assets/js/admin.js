@@ -115,11 +115,24 @@ function switchTab(name) {
         .forEach((s) => (s.style.display = 'none'));
     document.getElementById('tab-' + name).style.display = 'block';
     document.getElementById('pageTitle').textContent = TAB_TITLES[name] || '';
-    document.getElementById('sidebar').classList.remove('open');
+    closeSidebar();
 }
 
 document.getElementById('mobileMenuBtn').addEventListener('click', () => {
-    document.getElementById('sidebar').classList.toggle('open');
+    const sidebar = document.getElementById('sidebar');
+    const backdrop = document.getElementById('sidebarBackdrop');
+    const isOpen = sidebar.classList.toggle('open');
+    backdrop.classList.toggle('open', isOpen);
+});
+
+function closeSidebar() {
+    document.getElementById('sidebar').classList.remove('open');
+    document.getElementById('sidebarBackdrop')?.classList.remove('open');
+}
+
+document.getElementById('sidebarBackdrop')?.addEventListener('click', closeSidebar);
+document.addEventListener('keydown', (event) => {
+    if (event.key === 'Escape') closeSidebar();
 });
 
 document.getElementById('refreshBtn').addEventListener('click', loadAll);

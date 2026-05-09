@@ -35,6 +35,7 @@
             transition: transform .15s, box-shadow .15s;
         }
         .submit-btn:hover { transform: translateY(-1px); box-shadow: 0 8px 20px rgba(225, 29, 72, .35); }
+        .submit-btn:disabled { opacity: .65; cursor: wait; transform: none; box-shadow: none; }
         .form-note { color: var(--text-soft); font-size: .85rem; }
     </style>
 </head>
@@ -87,17 +88,8 @@
             <p id="formStatus" class="form-note" role="status"></p>
         </form>
 
-        <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
         <script>
             (function () {
-                const ENV = window.__ENV__ || {};
-                const { createClient } = supabase;
-                const supabaseClient = createClient(
-                    ENV.SUPABASE_URL,
-                    ENV.SUPABASE_ANON_KEY,
-                    { auth: { persistSession: false } }
-                );
-
                 const form = document.getElementById('contactForm');
                 const status = document.getElementById('formStatus');
                 const btn = document.getElementById('submitBtn');
@@ -112,21 +104,19 @@
                     btn.disabled = true;
 
                     try {
-                        const { error } = await supabaseClient.from('messages').insert({
-                            name: data.name,
-                            email: data.email,
-                            subject: data.subject || '(بدون موضوع)',
-                            message: data.message,
-                            ip: '',
-                            read: false,
+                        const response = await fetch('/api/messages', {
+                            method: 'POST',
+                            headers: { 'Content-Type': 'application/json' },
+                            body: JSON.stringify(data),
                         });
-                        if (error) throw new Error(error.message);
+                        const result = await response.json().catch(() => ({}));
+                        if (!response.ok) throw new Error(result.error || 'تعذّر إرسال الرسالة');
                         status.style.color = '#22c55e';
-                        status.textContent = '✅ تم إرسال رسالتك بنجاح! سنتواصل معك قريباً.';
+                        status.textContent = 'تم إرسال رسالتك بنجاح! سنتواصل معك قريباً.';
                         form.reset();
                     } catch (err) {
                         status.style.color = '#fb7185';
-                        status.textContent = '❌ ' + err.message;
+                        status.textContent = err.message;
                     } finally {
                         btn.disabled = false;
                     }

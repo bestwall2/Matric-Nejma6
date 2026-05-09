@@ -35,8 +35,14 @@ const getQueryParam = (key) => new URLSearchParams(window.location.search).get(k
 
 let _supabaseClient = null;
 function getSupabase() {
-    if (!_supabaseClient && typeof supabase !== 'undefined' && supabase.createClient) {
-        const ENV = window.__ENV__ || {};
+    const ENV = window.__ENV__ || {};
+    if (
+        !_supabaseClient
+        && typeof supabase !== 'undefined'
+        && supabase.createClient
+        && ENV.SUPABASE_URL
+        && ENV.SUPABASE_ANON_KEY
+    ) {
         _supabaseClient = supabase.createClient(
             ENV.SUPABASE_URL,
             ENV.SUPABASE_ANON_KEY,
@@ -405,7 +411,29 @@ function initShared() {
     const toggle = document.getElementById('menuToggle');
     const links = document.getElementById('navLinks');
     if (toggle && links) {
-        toggle.addEventListener('click', () => links.classList.toggle('open'));
+        toggle.setAttribute('aria-expanded', 'false');
+        toggle.addEventListener('click', (event) => {
+            event.stopPropagation();
+            const isOpen = links.classList.toggle('open');
+            toggle.setAttribute('aria-expanded', String(isOpen));
+        });
+        links.addEventListener('click', (event) => {
+            if (event.target.closest('a')) {
+                links.classList.remove('open');
+                toggle.setAttribute('aria-expanded', 'false');
+            }
+        });
+        document.addEventListener('click', (event) => {
+            if (!links.classList.contains('open')) return;
+            if (links.contains(event.target) || toggle.contains(event.target)) return;
+            links.classList.remove('open');
+            toggle.setAttribute('aria-expanded', 'false');
+        });
+        document.addEventListener('keydown', (event) => {
+            if (event.key !== 'Escape') return;
+            links.classList.remove('open');
+            toggle.setAttribute('aria-expanded', 'false');
+        });
     }
 
     // Theme: URL ?theme=light|dark wins, otherwise localStorage
