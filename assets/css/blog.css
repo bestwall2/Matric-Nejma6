@@ -12,28 +12,28 @@
    =========================================================== */
 
 :root {
-    --brand-red: #d61f3c;
-    --brand-rose: #ff526f;
-    --cat-tech: #0ea5a8;
-    --cat-sports: #24945b;
-    --cat-legal: #7c5cc4;
+    --brand-red: #e11d48;
+    --brand-rose: #fb7185;
+    --cat-tech: #0ea5e9;
+    --cat-sports: #22c55e;
+    --cat-legal: #a78bfa;
 
-    --bg: #0b0d12;
-    --bg-soft: #10141d;
-    --surface: #151923;
-    --surface-2: #1d2330;
-    --surface-raised: #202838;
-    --border: rgba(238, 242, 247, 0.09);
-    --border-strong: rgba(238, 242, 247, 0.18);
+    --bg: #07080c;
+    --bg-soft: #0e111a;
+    --surface: #131722;
+    --surface-2: #1a1f2d;
+    --surface-raised: #1e2536;
+    --border: rgba(238, 242, 247, 0.07);
+    --border-strong: rgba(238, 242, 247, 0.15);
 
-    --text: #f8fafc;
+    --text: #f1f4fa;
     --text-muted: #b7c0cc;
     --text-soft: #8490a0;
 
     --radius: 8px;
     --radius-sm: 6px;
-    --shadow-card: 0 18px 50px rgba(0, 0, 0, 0.22);
-    --shadow-hover: 0 24px 70px rgba(0, 0, 0, 0.3);
+    --shadow-card: 0 18px 50px rgba(0, 0, 0, 0.3);
+    --shadow-hover: 0 24px 70px rgba(0, 0, 0, 0.45);
 
     --container: 1200px;
     --header-h: 70px;
@@ -49,13 +49,13 @@ html.light {
     --surface: #ffffff;
     --surface-2: #f0f3f7;
     --surface-raised: #ffffff;
-    --border: rgba(17, 24, 39, 0.1);
-    --border-strong: rgba(17, 24, 39, 0.2);
+    --border: rgba(17, 24, 39, 0.08);
+    --border-strong: rgba(17, 24, 39, 0.18);
     --text: #121826;
     --text-muted: #4b5565;
     --text-soft: #7b8494;
-    --shadow-card: 0 16px 44px rgba(17, 24, 39, 0.08);
-    --shadow-hover: 0 22px 60px rgba(17, 24, 39, 0.14);
+    --shadow-card: 0 16px 44px rgba(17, 24, 39, 0.06);
+    --shadow-hover: 0 22px 60px rgba(17, 24, 39, 0.12);
 }
 
 /* ---------- Custom Scrollbar ---------- */
@@ -93,6 +93,13 @@ html.light {
 *, *::before, *::after { box-sizing: border-box; }
 
 html { scroll-behavior: smooth; }
+
+/* Smooth theme transition on toggle */
+body, .site-header, .post-card, .hub-hero, .article-hero, .site-footer,
+.toc, .prose, .search-input, .chip, .post-thumb, .article-cover,
+.ad-slot, .btn-primary {
+    transition: background-color 0.25s ease, border-color 0.25s ease, box-shadow 0.25s ease;
+}
 
 body {
     margin: 0;
@@ -630,7 +637,7 @@ html.light .nav-links a:hover, html.light .nav-links a.active {
     cursor: pointer;
     transition: transform .2s ease, background .2s ease, opacity .2s ease;
 }
-.btn-primary:hover { background: #b71832; transform: translateY(-1px); }
+.btn-primary:hover { background: #be123c; transform: translateY(-1px); }
 .btn-primary:disabled { opacity: .65; cursor: wait; transform: none; }
 
 /* ---------- Static pages (Privacy / Contact) ---------- */

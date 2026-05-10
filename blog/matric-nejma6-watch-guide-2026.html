@@ -35,29 +35,36 @@
         :root {
             --brand-red: #e11d48;
             --brand-red-dark: #9f1239;
-            --brand-black: #000000;
-            --brand-dark: #0a0a0a;
-            --brand-card: #111111;
-            --brand-border: #222222;
-            --brand-muted: #888888;
-            --brand-white: #ffffff;
+            --brand-black: #07080c;
+            --brand-dark: #0e111a;
+            --brand-card: #131722;
+            --brand-border: rgba(238,242,247,0.08);
+            --brand-muted: #9ca3b0;
+            --brand-white: #f1f4fa;
             --brand-amber: #f59e0b;
-            --brand-soft-bg: #0a0a0a;
-            --brand-input-bg: rgba(255,255,255,0.05);
-            --brand-text-soft: rgba(255,255,255,0.7);
+            --brand-soft-bg: #0e111a;
+            --brand-input-bg: rgba(255,255,255,0.04);
+            --brand-text-soft: rgba(241,244,250,0.65);
         }
         html.light {
-            --brand-black: #f7f7fb;
+            --brand-black: #f5f6f8;
             --brand-dark: #ffffff;
             --brand-card: #ffffff;
-            --brand-border: rgba(15,15,24,0.10);
-            --brand-muted: rgba(21,21,31,0.65);
-            --brand-white: #15151f;
-            --brand-soft-bg: #f1f2f7;
+            --brand-border: rgba(15,15,24,0.08);
+            --brand-muted: rgba(21,21,31,0.55);
+            --brand-white: #121826;
+            --brand-soft-bg: #eef1f5;
             --brand-input-bg: rgba(15,15,24,0.04);
-            --brand-text-soft: rgba(21,21,31,0.7);
+            --brand-text-soft: rgba(18,24,38,0.6);
         }
+        html { transition: background-color 0.3s ease, border-color 0.3s ease; }
         html.light body { color: var(--brand-white); }
+
+        /* Smooth theme transitions for key elements */
+        .tournament-card, .spec-item, .carriers-banner, .callout, .code-section,
+        .keyword-card, .steps-list, .modal-box {
+            transition: background-color 0.25s ease, border-color 0.25s ease, box-shadow 0.25s ease;
+        }
 
         .tournament-grid {
             display: grid;
