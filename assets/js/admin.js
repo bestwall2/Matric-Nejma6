@@ -268,26 +268,67 @@ function renderMessages() {
         .join('');
 }
 
+/* ---------- Modals & UI ---------- */
+const modals = {
+    open(id) {
+        const el = document.getElementById(id);
+        if (!el) return;
+        el.classList.add('open');
+        document.body.style.overflow = 'hidden';
+        // Focus first input or button
+        const focusable = el.querySelector('input, textarea, select, button');
+        if (focusable) setTimeout(() => focusable.focus(), 100);
+    },
+    close(id) {
+        const el = document.getElementById(id);
+        if (!el) return;
+        el.classList.remove('open');
+        // Only restore scroll if no other modals are open
+        if (!document.querySelector('.modal-overlay.open:not(#' + id + ')')) {
+            document.body.style.overflow = '';
+        }
+    }
+};
+
+window.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape') {
+        const openModal = document.querySelector('.modal-overlay.open');
+        if (openModal) {
+            if (openModal.id === 'messageModal') closeMessageModal();
+            else if (openModal.id === 'postModal') closePostModal();
+            else if (openModal.id === 'aiModal') closeAIModal();
+        }
+    }
+});
+
 window.openMessage = async function (id) {
     const msg = state.messages.find((m) => m.id === id);
     if (!msg) return;
     document.getElementById('messageModalContent').innerHTML = `
-        <h2>${escapeHTML(msg.subject)}</h2>
-        <p style="color:var(--text-dim); margin:.2rem 0">
-            <strong>${escapeHTML(msg.name)}</strong> &lt;<a href="mailto:${escapeHTML(msg.email)}" style="color:var(--neon-cyan)">${escapeHTML(msg.email)}</a>&gt;
-        </p>
-        <p style="color:var(--text-dim); font-size:.85rem; margin:.2rem 0 1rem">📅 ${formatDateTime(msg.created_at)} · IP: ${escapeHTML(msg.ip || '-')}</p>
-        <div style="background:rgba(0,0,0,.3); border:1px solid var(--border-neon); border-radius:10px; padding:1rem; white-space:pre-wrap; line-height:1.7">${escapeHTML(msg.message)}</div>
+        <button class="modal-close" onclick="closeMessageModal()" title="إغلاق">✕</button>
+        <h2>
+            <span style="font-size:1.4rem">✉️</span> 
+            ${escapeHTML(msg.subject)}
+        </h2>
+        <div style="background:rgba(0,240,255,.03); border:1px solid rgba(0,240,255,.08); border-radius:12px; padding:1rem; margin-bottom:1.2rem; display:grid; gap:.25rem">
+            <p style="color:var(--text-neon); margin:0; font-weight:700">
+                ${escapeHTML(msg.name)} 
+                <span style="color:var(--text-dim); font-weight:400; font-size:.85rem">&lt;${escapeHTML(msg.email)}&gt;</span>
+            </p>
+            <p style="color:var(--text-dim); font-size:.8rem; margin:0">📅 ${formatDateTime(msg.created_at)} · IP: ${escapeHTML(msg.ip || '-')}</p>
+        </div>
+        <div style="background:rgba(0,0,0,.4); border:1px solid var(--border-neon); border-radius:14px; padding:1.2rem; white-space:pre-wrap; line-height:1.7; font-size:.95rem; color:var(--text-neon)">${escapeHTML(msg.message)}</div>
         <div class="close-row">
-            <button class="btn" onclick="closeMessageModal()">إغلاق</button>
-            <a class="btn btn-primary" href="mailto:${escapeHTML(msg.email)}?subject=${encodeURIComponent('رد: ' + msg.subject)}">↩ رد بالبريد</a>
+            <button class="btn" onclick="closeMessageModal()">إغلاق النافذة</button>
+            <a class="btn btn-primary" href="mailto:${escapeHTML(msg.email)}?subject=${encodeURIComponent('رد: ' + msg.subject)}">
+                <span>↩</span> رد عبر البريد
+            </a>
         </div>
     `;
-    document.getElementById('messageModal').classList.add('open');
+    modals.open('messageModal');
     if (!msg.read) await toggleRead(id, true, true);
 };
-window.closeMessageModal = () =>
-    document.getElementById('messageModal').classList.remove('open');
+window.closeMessageModal = () => modals.close('messageModal');
 document.getElementById('messageModal').addEventListener('click', (e) => {
     if (e.target.id === 'messageModal') closeMessageModal();
 });
@@ -399,6 +440,7 @@ function renderPosts() {
             <td>
                 <div class="row-actions">
                     <a class="btn btn-sm" target="_blank" href="post.html?slug=${encodeURIComponent(p.slug)}">👁 عرض</a>
+                    <button class="btn btn-sm" style="background:var(--cat-tech);color:#fff" onclick='downloadStaticBlogPage(${JSON.stringify(p).replace(/'/g, "&#39;")})'>📥 SEO</button>
                     <button class="btn btn-sm" onclick="editPost('${p.slug}')">✏️ تعديل</button>
                     <button class="btn btn-sm btn-danger" onclick="deletePost('${p.slug}')">🗑 حذف</button>
                 </div>
@@ -425,9 +467,9 @@ function openPostModal(post) {
     document.getElementById('postExcerpt').value = post?.excerpt || '';
     document.getElementById('postTags').value = (post?.tags || []).join(', ');
     document.getElementById('postContent').value = post?.content || '<p>اكتب محتوى المقال هنا...</p>';
-    document.getElementById('postModal').classList.add('open');
+    modals.open('postModal');
 }
-window.closePostModal = () => document.getElementById('postModal').classList.remove('open');
+window.closePostModal = () => modals.close('postModal');
 document.getElementById('postModal').addEventListener('click', (e) => {
     if (e.target.id === 'postModal') closePostModal();
 });
@@ -470,6 +512,7 @@ document.getElementById('postForm').addEventListener('submit', async (e) => {
         content: document.getElementById('postContent').value,
     };
     try {
+        let savedPost;
         if (state.editingSlug) {
             const { data, error } = await supabaseClient
                 .from('posts')
@@ -478,6 +521,7 @@ document.getElementById('postForm').addEventListener('submit', async (e) => {
                 .select()
                 .single();
             if (error) throw new Error(error.message);
+            savedPost = data;
             const idx = state.posts.findIndex((p) => p.slug === state.editingSlug);
             if (idx !== -1) state.posts[idx] = data;
         } else {
@@ -487,11 +531,29 @@ document.getElementById('postForm').addEventListener('submit', async (e) => {
                 .select()
                 .single();
             if (error) throw new Error(error.message);
+            savedPost = data;
             state.posts.unshift(data);
         }
         renderPosts();
+        
+        // Auto-generate static blog page
+        try {
+            const staticRes = await fetch('/api/admin/posts/generate-static', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ post: savedPost || payload })
+            });
+            if (staticRes.ok) {
+                const staticData = await staticRes.json();
+                toast(`تم الحفظ + صفحة SEO: ${staticData.url}`, 'success');
+            } else {
+                toast('تم الحفظ', 'success');
+            }
+        } catch (staticErr) {
+            toast('تم الحفظ', 'success');
+        }
+        
         closePostModal();
-        toast('تم الحفظ', 'success');
     } catch (err) {
         toast(err.message, 'error');
     }
@@ -593,13 +655,13 @@ async function callAI(systemPrompt, userPrompt) {
             'X-Title': 'Matric Nejma 6 Admin',
         },
         body: JSON.stringify({
-            model: 'google/gemini-3.1-flash-lite',
+            model: 'mistralai/mistral-small-3.2-24b-instruct',
             messages: [
                 { role: 'system', content: systemPrompt },
                 { role: 'user', content: userPrompt },
             ],
             temperature: 0.85,
-            max_tokens: 1420,
+            max_tokens: 8192,
         }),
     });
     const data = await res.json();
@@ -726,6 +788,7 @@ document.getElementById('aiSaveBtn').addEventListener('click', async () => {
     if (!/^[a-z0-9-]+$/.test(slug)) return toast('الـ Slug يجب أن يحتوي على حروف لاتينية صغيرة وأرقام وشَرطات فقط', 'error');
 
     const saveBtn = document.getElementById('aiSaveBtn');
+    const downloadBtn = document.getElementById('aiDownloadBtn');
     saveBtn.disabled = true;
     saveBtn.textContent = 'جارٍ الحفظ...';
 
@@ -747,15 +810,40 @@ document.getElementById('aiSaveBtn').addEventListener('click', async () => {
         const { data: inserted, error } = await supabaseClient.from('posts').insert(payload).select().single();
         if (error) throw new Error(error.message);
         if (inserted) state.posts.unshift(inserted);
-        toast('✅ تم حفظ المقال في قاعدة البيانات', 'success');
+        
+        // Auto-generate static blog page
+        try {
+            const staticRes = await fetch('/api/admin/posts/generate-static', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ post: payload })
+            });
+            if (staticRes.ok) {
+                const staticData = await staticRes.json();
+                toast(`✅ تم حفظ المقال + إنشاء صفحة SEO (${staticData.url})`, 'success');
+            } else {
+                toast('✅ تم حفظ المقال في قاعدة البيانات (صفحة SEO فشل إنشاؤها)', 'success');
+            }
+        } catch (staticErr) {
+            console.error('Static generation error:', staticErr);
+            toast('✅ تم حفظ المقال في قاعدة البيانات', 'success');
+        }
+        
         document.getElementById('aiClearBtn').click();
         switchTab('posts');
+        
     } catch (e) {
         toast(e.message, 'error');
-    } finally {
         saveBtn.disabled = false;
         saveBtn.textContent = '💾 حفظ المقال في قاعدة البيانات';
     }
+});
+
+document.getElementById('aiDownloadBtn')?.addEventListener('click', function() {
+    const post = window.latestSavedPost;
+    if (!post) return toast('لا يوجد مقال محفوظ للتنزيل', 'error');
+    downloadStaticBlogPage(post);
+    this.style.display = 'none';
 });
 
 document.getElementById('aiClearBtn').addEventListener('click', () => {
@@ -768,6 +856,97 @@ document.getElementById('aiClearBtn').addEventListener('click', () => {
     document.getElementById('aiResultTags').value = '';
     document.getElementById('aiResultContent').value = '';
 });
+
+/* ---------- Static Blog Page Generator for SEO ---------- */
+function generateStaticBlogHTML(post) {
+    const SITE_URL = 'https://www.matricnjm.online';
+    const SITE_NAME = 'Matric Nejma 6';
+    const today = new Date().toISOString().slice(0, 10);
+    
+    const categoryLabels = { tech: 'تقنية', sports: 'رياضة', legal: 'قانوني' };
+    const category = post.category || 'tech';
+    const categoryLabel = categoryLabels[category] || category;
+    
+    const tags = Array.isArray(post.tags) ? post.tags.join(', ') : '';
+    const image = post.image || 'https://images.unsplash.com/photo-1518770660439-4636190af475?auto=format&fit=crop&w=1200&q=80';
+    
+    return `<!DOCTYPE html>
+<html dir="rtl" lang="ar">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>${post.title} — ${SITE_NAME}</title>
+    <meta name="description" content="${post.excerpt || post.title}">
+    <meta name="robots" content="index, follow">
+    <link rel="canonical" href="${SITE_URL}/blog/${post.slug}.html">
+    <meta name="theme-color" content="#e11d48">
+    <link rel="icon" type="image/svg+xml" href="../assets/logo.svg">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;700;900&family=Tajawal:wght@500;700;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="../assets/css/blog.css">
+    <script type="application/ld+json">
+    {
+        "@context": "https://schema.org",
+        "@type": "Article",
+        "headline": "${post.title}",
+        "description": "${post.excerpt || post.title}",
+        "image": "${image}",
+        "author": { "@type": "Organization", "name": "${post.author || SITE_NAME}" },
+        "publisher": {
+            "@type": "Organization",
+            "name": "${SITE_NAME}",
+            "logo": { "@type": "ImageObject", "url": "${SITE_URL}/assets/logo.svg" }
+        },
+        "datePublished": "${post.date || today}",
+        "dateModified": "${today}",
+        "mainEntityOfPage": "${SITE_URL}/blog/${post.slug}.html"
+    }
+    </script>
+</head>
+<body>
+    <header class="site-header">
+        <div class="container nav">
+            <a href="../index.html" class="brand"><img src="../assets/logo.svg" alt="${SITE_NAME}" loading="lazy" style="width:32px;height:32px"><span>${SITE_NAME}</span></a>
+            <nav aria-label="القائمة الرئيسية"><ul class="nav-links" id="navLinks">
+                <li><a href="../index.html">الرئيسية</a></li>
+                <li><a href="../blog.html" class="active">المدونة</a></li>
+                <li><a href="../about.html">من نحن</a></li>
+                <li><a href="../contact.html">تواصل معنا</a></li>
+            </ul></nav>
+            <div class="nav-tools"><button id="themeToggle" class="icon-btn" aria-label="تبديل المظهر">🌓</button><button id="menuToggle" class="icon-btn menu-toggle" aria-label="القائمة">☰</button></div>
+        </div>
+    </header>
+
+    <main class="container static-page">
+        <article class="prose">
+            <p><a href="../blog.html">المدونة</a> / ${categoryLabel}</p>
+            <h1>${post.title}</h1>
+            ${post.content}
+        </article>
+    </main>
+
+    <footer class="site-footer"><div class="container"><div class="footer-grid">
+        <div><h4>${SITE_NAME}</h4><p>موقع تحريري عربي يهتم بتقنيات البث الرياضي وتجربة مشاهدة كرة القدم.</p></div>
+        <div><h4>روابط</h4><ul><li><a href="../about.html">من نحن</a></li><li><a href="../terms.html">شروط الاستخدام</a></li><li><a href="../privacy.html">سياسة الخصوصية</a></li><li><a href="../contact.html">تواصل معنا</a></li></ul></div>
+        <div><h4>تابعنا</h4><p>لا توجد حسابات اجتماعية رسمية حالياً.</p></div>
+    </div><div class="copyright">© <span id="year"></span> ${SITE_NAME} — جميع الحقوق محفوظة.</div></div></footer>
+    <script src="../assets/js/posts.js"></script>
+</body>
+</html>`;
+}
+
+window.downloadStaticBlogPage = function(post) {
+    const html = generateStaticBlogHTML(post);
+    const blob = new Blob([html], { type: 'text/html;charset=utf-8;' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = `${post.slug}.html`;
+    a.click();
+    URL.revokeObjectURL(url);
+    toast('تم تنزيل ملف HTML-static. حمّله إلى مجلد blog/', 'success');
+};
 
 /* ---------- Utils ---------- */
 function escapeHTML(s) {

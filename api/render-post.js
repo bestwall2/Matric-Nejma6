@@ -1,9 +1,9 @@
 const fs = require("fs");
 const path = require("path");
+const { getPosts } = require("../lib/store");
 
-const SITE_URL = "https://matricnjm.online";
+const SITE_URL = "https://www.matricnjm.online";
 const SITE_NAME = "Matric Nejma 6";
-const POSTS_FILE = path.join(__dirname, "..", "data", "posts.json");
 const POST_TEMPLATE = path.join(__dirname, "..", "post.html");
 
 const LOGO_URL = `${SITE_URL}/assets/logo.png`;
@@ -19,7 +19,7 @@ function escapeHtml(str) {
     .replace(/</g, "&lt;")
     .replace(/>/g, "&gt;")
     .replace(/"/g, "&quot;")
-    .replace(/'g/g, "&#039;");
+    .replace(/'/g, "&#039;");
 }
 
 function buildMetaTags(post) {
@@ -95,10 +95,9 @@ module.exports = async (req, res) => {
       return serveStaticPost(res);
     }
 
-    let posts = [];
+    let posts;
     try {
-      const raw = fs.readFileSync(POSTS_FILE, "utf8");
-      posts = JSON.parse(raw);
+      posts = await getPosts();
     } catch (_) {
       return serveStaticPost(res);
     }

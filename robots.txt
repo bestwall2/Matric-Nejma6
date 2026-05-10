@@ -3,4 +3,4 @@ Allow: /
 Disallow: /admin.html
 Disallow: /api/
 
-Sitemap: https://matricnjm.online/sitemap.xml
+Sitemap: https://www.matricnjm.online/sitemap.xml

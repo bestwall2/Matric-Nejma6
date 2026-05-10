@@ -8,16 +8,16 @@
     <meta name="keywords" content="مدونة matric nejma, مدونة ماتريك نجمة 6, أخبار كرة القدم, تقنية البث المباشر, تطبيقات أندرويد, كأس العالم 2026">
     <meta name="author" content="Matric Nejma 6">
     <meta name="robots" content="index, follow">
-    <link rel="canonical" href="https://matricnjm.online/blog.html">
+    <link rel="canonical" href="https://www.matricnjm.online/blog.html">
     <meta name="theme-color" content="#e11d48">
     <link rel="icon" type="image/svg+xml" href="assets/logo.svg">
 
     <!-- Open Graph -->
     <meta property="og:type" content="website">
-    <meta property="og:url" content="https://matricnjm.online/blog.html">
+    <meta property="og:url" content="https://www.matricnjm.online/blog.html">
     <meta property="og:title" content="مدونة Matric Nejma 6 — أخبار الرياضة والتقنية">
     <meta property="og:description" content="مقالات وأدلة حول البث المباشر، كأس العالم 2026، وأفضل تطبيقات الأندرويد.">
-    <meta property="og:image" content="https://matricnjm.online/assets/logo.png">
+    <meta property="og:image" content="https://www.matricnjm.online/assets/logo.png">
     <meta property="og:site_name" content="Matric Nejma 6">
 
     <!-- Fonts -->
@@ -26,6 +26,18 @@
     <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;700;900&family=Tajawal:wght@500;700;900&display=swap" rel="stylesheet">
 
     <link rel="stylesheet" href="assets/css/blog.css">
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <script src="https://cdn.jsdelivr.net/npm/motion@11.11.13/dist/motion.js"></script>
+    <style>
+        .lucide {
+            width: 1.2em;
+            height: 1.2em;
+            stroke-width: 2.5;
+            vertical-align: middle;
+        }
+        .post-card { opacity: 0; }
+        .hub-hero h1, .hub-hero p, .search-wrap, .chips, .hero-stats { opacity: 0; }
+    </style>
 
     <!-- ============================================================
          Google AdSense — Auto Ads
@@ -43,17 +55,17 @@
         "@context": "https://schema.org",
         "@type": "Blog",
         "name": "مدونة Matric Nejma 6",
-        "url": "https://matricnjm.online/blog.html",
+        "url": "https://www.matricnjm.online/blog.html",
         "description": "أخبار وأدلة حول البث المباشر، كأس العالم 2026، تطبيقات الأندرويد، ونصائح تقنية وقانونية.",
         "publisher": {
             "@type": "Organization",
             "name": "Matric Nejma 6",
             "logo": {
                 "@type": "ImageObject",
-                "url": "https://matricnjm.online/assets/logo.png"
+                "url": "https://www.matricnjm.online/assets/logo.png"
             }
         },
-        "image": "https://matricnjm.online/assets/logo.png"
+        "image": "https://www.matricnjm.online/assets/logo.png"
     }
     </script>
 </head>
@@ -63,7 +75,7 @@
     <header class="site-header">
         <div class="container nav">
             <a href="index.html" class="brand">
-                <img src="assets/logo.svg" alt="Logo" style="width: 32px; height: 32px;">
+                <img src="assets/logo.svg" alt="Logo" loading="lazy" style="width: 32px; height: 32px;">
                 <span>Matric Nejma 6</span>
             </a>
 
@@ -74,12 +86,14 @@
                     <li><a href="blog.html#tech" data-jump="tech">تقنية</a></li>
                     <li><a href="blog.html#sports" data-jump="sports">رياضة</a></li>
                     <li><a href="blog.html#legal" data-jump="legal">قانوني</a></li>
+                    <li><a href="about.html">من نحن</a></li>
+                    <li><a href="contact.html">تواصل معنا</a></li>
                 </ul>
             </nav>
 
             <div class="nav-tools">
-                <button id="themeToggle" class="icon-btn" aria-label="تبديل المظهر" title="الوضع الفاتح / الداكن">🌓</button>
-                <button id="menuToggle" class="icon-btn menu-toggle" aria-label="القائمة">☰</button>
+                <button id="themeToggle" class="icon-btn" aria-label="تبديل المظهر" title="الوضع الفاتح / الداكن"><i data-lucide="moon"></i></button>
+                <button id="menuToggle" class="icon-btn menu-toggle" aria-label="القائمة"><i data-lucide="menu"></i></button>
             </div>
         </div>
     </header>
@@ -93,7 +107,7 @@
 
             <div class="search-wrap">
                 <input id="searchInput" type="search" class="search-input" placeholder="ابحث في المقالات…" aria-label="بحث في المدونة">
-                <span class="search-icon" aria-hidden="true">⌕</span>
+                <span class="search-icon" aria-hidden="true"><i data-lucide="search"></i></span>
             </div>
 
             <div class="chips" role="tablist" aria-label="تصنيفات">
@@ -131,12 +145,58 @@
                     <span class="section-kicker">اختيارات التحرير</span>
                     <h2>أحدث المقالات</h2>
                 </div>
-                <span class="meta" id="postsCount"></span>
+                <span class="meta" id="postsCount">4 مقالات</span>
             </div>
 
             <div class="posts-grid" id="postsGrid" aria-live="polite">
-                <!-- Cards injected by posts.js -->
-                <div class="empty-state"><strong>جاري التحميل…</strong></div>
+                <article class="post-card featured-card" data-static-post data-category="tech">
+                    <a href="blog/matric-nejma6-watch-guide-2026.html" class="post-thumb" aria-label="دليل مشاهدة كرة القدم عبر الإنترنت 2026">
+                        <span class="cat-badge" data-cat="tech">دليل شامل</span>
+                        <img src="https://images.unsplash.com/photo-1551958219-acbc608c6377?auto=format&fit=crop&w=1200&q=80" alt="ملعب كرة قدم قبل مباراة دولية" loading="lazy">
+                    </a>
+                    <div class="post-body">
+                        <h3 class="post-title"><a href="blog/matric-nejma6-watch-guide-2026.html" style="color:inherit">دليل مشاهدة كرة القدم عبر الإنترنت في 2026</a></h3>
+                        <p class="post-excerpt">دليل تحريري متكامل لمشاهدة كرة القدم عبر الإنترنت: كأس العالم 2026، دوري أبطال أوروبا، تطبيقات الأندرويد، تقنيات 4K والبث القانوني الآمن.</p>
+                        <div class="post-tags"><span>دليل شامل</span><span>2026</span><span>بث رياضي</span></div>
+                        <div class="post-meta"><span>10 مايو 2026</span><a class="read-link" href="blog/matric-nejma6-watch-guide-2026.html">اقرأ المقال</a></div>
+                    </div>
+                </article>
+                <article class="post-card" data-static-post data-category="sports">
+                    <a href="blog/world-cup-2026-where-to-watch-4k.html" class="post-thumb" aria-label="أين تشاهد كأس العالم 2026 بجودة 4K؟">
+                        <span class="cat-badge" data-cat="sports">رياضة</span>
+                        <img src="https://images.unsplash.com/photo-1551958219-acbc608c6377?auto=format&fit=crop&w=1200&q=80" alt="ملعب كرة قدم قبل مباراة دولية" loading="lazy">
+                    </a>
+                    <div class="post-body">
+                        <h3 class="post-title"><a href="blog/world-cup-2026-where-to-watch-4k.html" style="color:inherit">أين تشاهد كأس العالم 2026 بجودة 4K؟ دليل تقني وقانوني</a></h3>
+                        <p class="post-excerpt">دليل شامل لمتابعة كأس العالم 2026 بجودة عالية عبر مصادر قانونية، مع شرح متطلبات الإنترنت والأجهزة وتطبيقات البث.</p>
+                        <div class="post-tags"><span>كأس العالم</span><span>4K</span><span>بث رياضي</span></div>
+                        <div class="post-meta"><span>20 أبريل 2026</span><a class="read-link" href="blog/world-cup-2026-where-to-watch-4k.html">اقرأ المقال</a></div>
+                    </div>
+                </article>
+                <article class="post-card" data-static-post data-category="tech">
+                    <a href="blog/best-streaming-apps-2026.html" class="post-thumb" aria-label="أفضل تطبيقات البث المباشر للأندرويد في 2026">
+                        <span class="cat-badge" data-cat="tech">تقنية</span>
+                        <img src="https://images.unsplash.com/photo-1611162617213-7d7a39e9b1d7?auto=format&fit=crop&w=1200&q=80" alt="هاتف يعرض تطبيقات رقمية" loading="lazy">
+                    </a>
+                    <div class="post-body">
+                        <h3 class="post-title"><a href="blog/best-streaming-apps-2026.html" style="color:inherit">أفضل تطبيقات البث المباشر للأندرويد في 2026</a></h3>
+                        <p class="post-excerpt">معايير اختيار تطبيق بث آمن ومستقر للأندرويد: الجودة، الخصوصية، البطارية، ودعم مشاهدة كرة القدم على الهاتف والتلفاز.</p>
+                        <div class="post-tags"><span>أندرويد</span><span>تطبيقات</span><span>خصوصية</span></div>
+                        <div class="post-meta"><span>15 أبريل 2026</span><a class="read-link" href="blog/best-streaming-apps-2026.html">اقرأ المقال</a></div>
+                    </div>
+                </article>
+                <article class="post-card" data-static-post data-category="legal">
+                    <a href="blog/watch-football-legally-online.html" class="post-thumb" aria-label="كيف تشاهد كرة القدم بشكل قانوني عبر الإنترنت؟">
+                        <span class="cat-badge" data-cat="legal">قانوني</span>
+                        <img src="https://images.unsplash.com/photo-1543351611-58f69d7c1781?auto=format&fit=crop&w=1200&q=80" alt="كرة قدم على العشب" loading="lazy">
+                    </a>
+                    <div class="post-body">
+                        <h3 class="post-title"><a href="blog/watch-football-legally-online.html" style="color:inherit">كيف تشاهد كرة القدم بشكل قانوني عبر الإنترنت؟</a></h3>
+                        <p class="post-excerpt">شرح مبسط لحقوق البث ومخاطر الروابط غير المرخصة، مع نصائح لاختيار خدمات قانونية وآمنة للمباريات.</p>
+                        <div class="post-tags"><span>حقوق البث</span><span>أمان</span><span>قانوني</span></div>
+                        <div class="post-meta"><span>8 أبريل 2026</span><a class="read-link" href="blog/watch-football-legally-online.html">اقرأ المقال</a></div>
+                    </div>
+                </article>
             </div>
         </div>
     </main>
@@ -154,17 +214,15 @@
                     <ul>
                         <li><a href="index.html">الرئيسية</a></li>
                         <li><a href="blog.html">المدونة</a></li>
+                        <li><a href="about.html">من نحن</a></li>
                         <li><a href="contact.html">تواصل معنا</a></li>
+                        <li><a href="terms.html">شروط الاستخدام</a></li>
                         <li><a href="privacy.html">سياسة الخصوصية</a></li>
                     </ul>
                 </div>
                 <div>
                     <h4>تابعنا</h4>
-                    <ul>
-                        <li><a href="#" rel="noopener">فيسبوك</a></li>
-                        <li><a href="#" rel="noopener">تويتر / X</a></li>
-                        <li><a href="#" rel="noopener">يوتيوب</a></li>
-                    </ul>
+                    <p>لا توجد حسابات اجتماعية رسمية حالياً.</p>
                 </div>
             </div>
             <div class="copyright">
@@ -173,9 +231,23 @@
         </div>
     </footer>
 
-    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
     <script src="assets/js/posts.js"></script>
     <script>
+        lucide.createIcons();
+        
+        const { animate, inView, stagger } = Motion;
+        
+        // Hero animations
+        animate(".hub-hero h1, .hub-hero p, .search-wrap, .chips, .hero-stats", 
+            { opacity: [0, 1], y: [20, 0] }, 
+            { delay: stagger(0.1), duration: 0.8 }
+        );
+
+        // Grid animations (for static cards)
+        inView(".post-card", ({ target }) => {
+            animate(target, { opacity: [0, 1], y: [30, 0] }, { duration: 0.6 });
+        });
+
         /* Deep-link category filter when navigating with #tech / #sports / #legal */
         (function() {
             const hash = (location.hash || '').replace('#', '');

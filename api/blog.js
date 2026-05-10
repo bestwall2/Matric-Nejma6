@@ -11,15 +11,16 @@ module.exports = async (req, res) => {
     const url = new URL(req.url, `http://${req.headers.host}`);
     const pathname = url.pathname;
 
-    // GET /api/blog/search?q=...
-    if (method === 'GET' && pathname.includes('/search')) {
+    // GET /api/blog or /api/blog/search?q=...
+    if (method === 'GET' && (pathname === '/api/blog' || pathname.includes('/search'))) {
         const q = (url.searchParams.get('q') || '').toLowerCase();
         const category = url.searchParams.get('category');
         const posts = await getPosts();
         
         const filtered = posts.filter(p => {
             if (!p.published && p.published !== undefined) return false;
-            const matchesQuery = !q || p.title.toLowerCase().includes(q) || p.content.toLowerCase().includes(q) || p.tags.some(t => t.toLowerCase().includes(q));
+            const tags = Array.isArray(p.tags) ? p.tags : [];
+            const matchesQuery = !q || (p.title || '').toLowerCase().includes(q) || (p.content || '').toLowerCase().includes(q) || tags.some(t => String(t).toLowerCase().includes(q));
             const matchesCategory = !category || category === 'all' || p.category === category;
             return matchesQuery && matchesCategory;
         });

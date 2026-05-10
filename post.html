@@ -8,7 +8,7 @@
     <meta name="keywords" content="<!--META_KEYWORDS-->مدونة matric nejma 6, مقالات<!--/META_KEYWORDS-->">
     <meta name="author" content="Matric Nejma 6">
     <meta name="robots" content="index, follow">
-    <link rel="canonical" href="<!--META_CANONICAL-->https://matricnjm.online/post.html<!--/META_CANONICAL-->">
+    <link rel="canonical" href="<!--META_CANONICAL-->https://www.matricnjm.online/post.html<!--/META_CANONICAL-->">
     <meta name="theme-color" content="#e11d48">
     <link rel="icon" type="image/svg+xml" href="assets/logo.svg">
 
@@ -33,15 +33,24 @@
          ============================================================
     <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-XXXXXXXXXXXXXXXX"
             crossorigin="anonymous"></script>
-    -->
-</head>
-<body>
+    <link rel="stylesheet" href="assets/css/blog.css">
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <style>
+        .lucide {
+            width: 1.2em;
+            height: 1.2em;
+            stroke-width: 2.5;
+            vertical-align: middle;
+        }
+    </style>
+    </head>
+    <body>
 
     <!-- ===================== HEADER / NAV ===================== -->
     <header class="site-header">
         <div class="container nav">
             <a href="index.html" class="brand">
-                <img src="assets/logo.svg" alt="Logo" style="width: 32px; height: 32px;">
+                <img src="assets/logo.svg" alt="Logo" loading="lazy" style="width: 32px; height: 32px;">
                 <span>Matric Nejma 6</span>
             </a>
 
@@ -52,12 +61,14 @@
                     <li><a href="blog.html#tech">تقنية</a></li>
                     <li><a href="blog.html#sports">رياضة</a></li>
                     <li><a href="blog.html#legal">قانوني</a></li>
+                    <li><a href="about.html">من نحن</a></li>
+                    <li><a href="contact.html">تواصل معنا</a></li>
                 </ul>
             </nav>
 
             <div class="nav-tools">
-                <button id="themeToggle" class="icon-btn" aria-label="تبديل المظهر">🌓</button>
-                <button id="menuToggle" class="icon-btn menu-toggle" aria-label="القائمة">☰</button>
+                <button id="themeToggle" class="icon-btn" aria-label="تبديل المظهر"><i data-lucide="moon"></i></button>
+                <button id="menuToggle" class="icon-btn menu-toggle" aria-label="القائمة"><i data-lucide="menu"></i></button>
             </div>
         </div>
     </header>
@@ -80,17 +91,15 @@
                     <ul>
                         <li><a href="index.html">الرئيسية</a></li>
                         <li><a href="blog.html">المدونة</a></li>
+                        <li><a href="about.html">من نحن</a></li>
                         <li><a href="contact.html">تواصل معنا</a></li>
+                        <li><a href="terms.html">شروط الاستخدام</a></li>
                         <li><a href="privacy.html">سياسة الخصوصية</a></li>
                     </ul>
                 </div>
                 <div>
                     <h4>تابعنا</h4>
-                    <ul>
-                        <li><a href="#" rel="noopener">فيسبوك</a></li>
-                        <li><a href="#" rel="noopener">تويتر / X</a></li>
-                        <li><a href="#" rel="noopener">يوتيوب</a></li>
-                    </ul>
+                    <p>لا توجد حسابات اجتماعية رسمية حالياً.</p>
                 </div>
             </div>
             <div class="copyright">
@@ -101,5 +110,8 @@
 
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
     <script src="assets/js/posts.js"></script>
+    <script>
+        lucide.createIcons();
+    </script>
 </body>
 </html>

@@ -6,7 +6,7 @@
     <title>سياسة الخصوصية — Matric Nejma 6</title>
     <meta name="description" content="سياسة الخصوصية لموقع Matric Nejma 6 (matricnjm.online): البيانات التي نجمعها، استخدام Google AdSense وملفات الكوكيز، وحقوق المستخدم.">
     <meta name="robots" content="index, follow">
-    <link rel="canonical" href="https://matricnjm.online/privacy.html">
+    <link rel="canonical" href="https://www.matricnjm.online/privacy.html">
     <meta name="theme-color" content="#e11d48">
     <link rel="icon" type="image/svg+xml" href="assets/logo.svg">
 
@@ -14,21 +14,31 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;700;900&family=Tajawal:wght@500;700;900&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="assets/css/blog.css">
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <style>
+        .lucide {
+            width: 1.2em;
+            height: 1.2em;
+            stroke-width: 2.5;
+            vertical-align: middle;
+        }
+    </style>
 </head>
 <body>
 
     <header class="site-header">
         <div class="container nav">
-            <a href="index.html" class="brand"><img src="assets/logo.svg" alt="Logo" style="width: 32px; height: 32px;"><span>Matric Nejma 6</span></a>
+            <a href="index.html" class="brand"><img src="assets/logo.svg" alt="Logo" loading="lazy" style="width: 32px; height: 32px;"><span>Matric Nejma 6</span></a>
             <nav><ul class="nav-links" id="navLinks">
                 <li><a href="index.html">الرئيسية</a></li>
                 <li><a href="blog.html">المدونة</a></li>
+                <li><a href="about.html">من نحن</a></li>
                 <li><a href="contact.html">تواصل معنا</a></li>
                 <li><a href="privacy.html" class="active">الخصوصية</a></li>
             </ul></nav>
             <div class="nav-tools">
-                <button id="themeToggle" class="icon-btn" aria-label="تبديل المظهر">🌓</button>
-                <button id="menuToggle" class="icon-btn menu-toggle" aria-label="القائمة">☰</button>
+                <button id="themeToggle" class="icon-btn" aria-label="تبديل المظهر"><i data-lucide="moon"></i></button>
+                <button id="menuToggle" class="icon-btn menu-toggle" aria-label="القائمة"><i data-lucide="menu"></i></button>
             </div>
         </div>
     </header>
@@ -67,19 +77,20 @@
                 <div><h4>روابط سريعة</h4><ul>
                     <li><a href="index.html">الرئيسية</a></li>
                     <li><a href="blog.html">المدونة</a></li>
+                    <li><a href="about.html">من نحن</a></li>
                     <li><a href="contact.html">تواصل معنا</a></li>
+                    <li><a href="terms.html">شروط الاستخدام</a></li>
                     <li><a href="privacy.html">سياسة الخصوصية</a></li>
                 </ul></div>
-                <div><h4>تابعنا</h4><ul>
-                    <li><a href="#" rel="noopener">فيسبوك</a></li>
-                    <li><a href="#" rel="noopener">تويتر / X</a></li>
-                    <li><a href="#" rel="noopener">يوتيوب</a></li>
-                </ul></div>
+                <div><h4>تابعنا</h4><p>لا توجد حسابات اجتماعية رسمية حالياً.</p></div>
             </div>
             <div class="copyright">© <span id="year"></span> Matric Nejma 6 — جميع الحقوق محفوظة.</div>
         </div>
     </footer>
 
     <script src="assets/js/posts.js"></script>
+    <script>
+        lucide.createIcons();
+    </script>
 </body>
 </html>

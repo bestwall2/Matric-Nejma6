@@ -15,7 +15,7 @@
    - POST /api/admin/password        (auth — change password)
    ============================================================ */
 
-require("dotenv").config();
+require("dotenv").config({ quiet: true });
 const fs = require("fs");
 const path = require("path");
 const crypto = require("crypto");
@@ -73,12 +73,14 @@ function ensureAdmin() {
     const envPwd = process.env.ADMIN_PASSWORD;
 
     if (envPwd) {
-      admin = {
-        passwordHash: hashPassword(envPwd),
-        updatedAt: new Date().toISOString(),
-      };
-      writeJSON(ADMIN_FILE, admin);
-      console.log("[admin] Password set from ADMIN_PASSWORD env var.");
+      if (!admin || !verifyPassword(envPwd, admin.passwordHash)) {
+        admin = {
+          passwordHash: hashPassword(envPwd),
+          updatedAt: new Date().toISOString(),
+        };
+        writeJSON(ADMIN_FILE, admin);
+        console.log("[admin] Password set from ADMIN_PASSWORD env var.");
+      }
     } else if (!admin || !admin.passwordHash) {
       admin = {
         passwordHash: hashPassword("admin123"),
@@ -417,13 +419,17 @@ async function handleAPI(req, res, parsed) {
   }
 
   /* ---------- Blog: search ---------- */
-  if (pathname === "/api/blog/search" && method === "GET") {
+  if ((pathname === "/api/blog/search" || pathname === "/api/blog") && method === "GET") {
     const q = (parsed.searchParams.get("q") || "").toLowerCase();
     const category = parsed.searchParams.get("category");
     const posts = await store.getPosts();
     const filtered = posts.filter(p => {
       if (p.published === false) return false;
-      const matchesQ = !q || p.title.toLowerCase().includes(q) || p.content.toLowerCase().includes(q);
+      const tags = Array.isArray(p.tags) ? p.tags : [];
+      const matchesQ = !q
+        || (p.title || "").toLowerCase().includes(q)
+        || (p.content || "").toLowerCase().includes(q)
+        || tags.some(t => String(t).toLowerCase().includes(q));
       const matchesC = !category || category === "all" || p.category === category;
       return matchesQ && matchesC;
     });
@@ -520,11 +526,108 @@ async function handleAPI(req, res, parsed) {
       await store.setJSON('posts', posts);
       return sendJSON(res, 200, { ok: true, post: updated });
     }
-    if (method === "DELETE") {
+if (method === "DELETE") {
       posts.splice(idx, 1);
-      await store.setJSON('posts', posts);
+      await store.setJSON("posts", posts);
       return sendJSON(res, 200, { ok: true });
     }
+  }
+
+  /* ---------- Admin: generate static blog page ---------- */
+  if (pathname === "/api/admin/posts/generate-static" && method === "POST") {
+    let body;
+    try {
+      body = await readBody(req, 1024 * 300);
+    } catch (e) {
+      return sendError(res, 400, e.message);
+    }
+    const { post } = body;
+    if (!post || !post.slug || !post.title) {
+      return sendError(res, 400, "بيانات المقال غير مكتملة");
+    }
+    
+    const SITE_URL = "https://www.matricnjm.online";
+    const SITE_NAME = "Matric Nejma 6";
+    const today = new Date().toISOString().slice(0, 10);
+    const categoryLabels = { tech: "تقنية", sports: "رياضة", legal: "法律ي" };
+    const category = post.category || "tech";
+    const categoryLabel = categoryLabels[category] || category;
+    const image = post.image || "https://images.unsplash.com/photo-1518770660439-4636190af475?auto=format&fit=crop&w=1200&q=80";
+    
+    const html = `<!DOCTYPE html>
+<html dir="rtl" lang="ar">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>${post.title} — ${SITE_NAME}</title>
+    <meta name="description" content="${(post.excerpt || post.title).replace(/"/g, '&quot;')}">
+    <meta name="robots" content="index, follow">
+    <link rel="canonical" href="${SITE_URL}/blog/${post.slug}.html">
+    <meta name="theme-color" content="#e11d48">
+    <link rel="icon" type="image/svg+xml" href="../assets/logo.svg">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;700;900&family=Tajawal:wght@500;700;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="../assets/css/blog.css">
+    <script type="application/ld+json">
+    {
+        "@context": "https://schema.org",
+        "@type": "Article",
+        "headline": "${post.title.replace(/"/g, '&quot;')}",
+        "description": "${(post.excerpt || post.title).replace(/"/g, '&quot;')}",
+        "image": "${image}",
+        "author": { "@type": "Organization", "name": "${post.author || SITE_NAME}" },
+        "publisher": {
+            "@type": "Organization",
+            "name": "${SITE_NAME}",
+            "logo": { "@type": "ImageObject", "url": "${SITE_URL}/assets/logo.svg" }
+        },
+        "datePublished": "${post.date || today}",
+        "dateModified": "${today}",
+        "mainEntityOfPage": "${SITE_URL}/blog/${post.slug}.html"
+    }
+    </script>
+</head>
+<body>
+    <header class="site-header">
+        <div class="container nav">
+            <a href="../index.html" class="brand"><img src="../assets/logo.svg" alt="${SITE_NAME}" loading="lazy" style="width:32px;height:32px"><span>${SITE_NAME}</span></a>
+            <nav aria-label="القائمة الرئيسية"><ul class="nav-links" id="navLinks">
+                <li><a href="../index.html">الرئيسية</a></li>
+                <li><a href="../blog.html" class="active">المدونة</a></li>
+                <li><a href="../about.html">من نحن</a></li>
+                <li><a href="../contact.html">تواصل معنا</a></li>
+            </ul></nav>
+            <div class="nav-tools"><button id="themeToggle" class="icon-btn" aria-label="تبديل المظهر">🌓</button><button id="menuToggle" class="icon-btn menu-toggle" aria-label="القائمة">☰</button></div>
+        </div>
+    </header>
+
+    <main class="container static-page">
+        <article class="prose">
+            <p><a href="../blog.html">المدونة</a> / ${categoryLabel}</p>
+            <h1>${post.title}</h1>
+            ${post.content || '<p>المحتوى...</p>'}
+        </article>
+    </main>
+
+    <footer class="site-footer"><div class="container"><div class="footer-grid">
+        <div><h4>${SITE_NAME}</h4><p>موقع تحريري عربي يهتم بتقنيات البث الرياضي وتجربة مشاهدة كرة القدم.</p></div>
+        <div><h4>روابط</h4><ul><li><a href="../about.html">من نحن</a></li><li><a href="../terms.html">شروط الاستخدام</a></li><li><a href="../privacy.html">سياسة الخصوصية</a></li><li><a href="../contact.html">تواصل معنا</a></li></ul></div>
+        <div><h4>تابعنا</h4><p>لا توجد حسابات اجتماعية رسمية حالياً.</p></div>
+    </div><div class="copyright">© <span id="year"></span> ${SITE_NAME} — جميع الحقوق محفوظة.</div></div></footer>
+    <script src="../assets/js/posts.js"></script>
+</body>
+</html>`;
+
+    const blogDir = path.join(ROOT, "blog");
+    if (!fs.existsSync(blogDir)) {
+      fs.mkdirSync(blogDir, { recursive: true });
+    }
+    
+    const filePath = path.join(blogDir, `${post.slug}.html`);
+    fs.writeFileSync(filePath, html, "utf8");
+    
+    return sendJSON(res, 200, { ok: true, file: `/blog/${post.slug}.html`, url: `${SITE_URL}/blog/${post.slug}.html` });
   }
 
   /* ---------- Admin: change password ---------- */

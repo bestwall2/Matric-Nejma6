@@ -1,14 +1,16 @@
-const fs = require("fs");
-const path = require("path");
-
-const SITE_URL = "https://matricnjm.online";
-const POSTS_FILE = path.join(__dirname, "..", "data", "posts.json");
+const SITE_URL = "https://www.matricnjm.online";
 
 const STATIC_PAGES = [
   { loc: "/", priority: 1.0, changefreq: "weekly" },
   { loc: "/blog.html", priority: 0.9, changefreq: "weekly" },
+  { loc: "/blog/matric-nejma6-watch-guide-2026.html", priority: 0.9, changefreq: "monthly" },
+  { loc: "/blog/world-cup-2026-where-to-watch-4k.html", priority: 0.8, changefreq: "monthly" },
+  { loc: "/blog/best-streaming-apps-2026.html", priority: 0.8, changefreq: "monthly" },
+  { loc: "/blog/watch-football-legally-online.html", priority: 0.8, changefreq: "monthly" },
+  { loc: "/about.html", priority: 0.6, changefreq: "monthly" },
   { loc: "/contact.html", priority: 0.5, changefreq: "monthly" },
   { loc: "/privacy.html", priority: 0.3, changefreq: "monthly" },
+  { loc: "/terms.html", priority: 0.3, changefreq: "monthly" },
 ];
 
 function escapeXml(str) {
@@ -22,24 +24,7 @@ function escapeXml(str) {
 
 module.exports = async (req, res) => {
   try {
-    let posts = [];
-    try {
-      const raw = fs.readFileSync(POSTS_FILE, "utf8");
-      posts = JSON.parse(raw);
-    } catch (_) {}
-
-    const today = new Date().toISOString().slice(0, 10);
-
     const urls = [...STATIC_PAGES];
-
-    for (const post of posts) {
-      urls.push({
-        loc: `/post.html?slug=${encodeURIComponent(post.slug)}`,
-        priority: 0.8,
-        changefreq: "monthly",
-        lastmod: post.date || today,
-      });
-    }
 
     const xml = `<?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">

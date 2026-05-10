@@ -6,7 +6,7 @@
     <title>تواصل معنا — Matric Nejma 6</title>
     <meta name="description" content="تواصل مع فريق Matric Nejma 6 (matricnjm.online) لإرسال الاستفسارات، الشراكات، أو الإبلاغ عن مشكلة.">
     <meta name="robots" content="index, follow">
-    <link rel="canonical" href="https://matricnjm.online/contact.html">
+    <link rel="canonical" href="https://www.matricnjm.online/contact.html">
     <meta name="theme-color" content="#e11d48">
     <link rel="icon" type="image/svg+xml" href="assets/logo.svg">
 
@@ -14,79 +14,261 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;700;900&family=Tajawal:wght@500;700;900&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="assets/css/blog.css">
+    <script src="https://unpkg.com/lucide@latest"></script>
 
     <style>
-        .contact-form { display: grid; gap: .9rem; margin-top: 1rem; }
-        .contact-form label { font-weight: 700; font-size: .9rem; color: var(--text); }
+        .lucide {
+            width: 1.2em;
+            height: 1.2em;
+            stroke-width: 2.5;
+            vertical-align: middle;
+        }
+        .contact-page {
+            display: flex !important;
+            justify-content: center !important;
+            align-items: center;
+            width: 100% !important;
+            max-width: none !important;
+            margin: 0 !important;
+            padding: 2rem 0 3rem !important;
+            box-sizing: border-box;
+            direction: ltr;
+            float: none;
+        }
+        .contact-content {
+            width: 90% !important;
+            max-width: 600px !important;
+            margin: 0 auto !important;
+            direction: rtl;
+            text-align: right;
+            float: none;
+        }
+        .contact-page h1 {
+            font-family: var(--font-display);
+            font-weight: 900;
+            font-size: clamp(1.7rem, 3vw, 2.4rem);
+            margin: 0 0 1rem;
+        }
+        .contact-page h2 {
+            font-family: var(--font-display);
+            font-weight: 800;
+            font-size: 1.3rem;
+            margin: 1.6rem 0 .6rem;
+            color: var(--brand-red);
+        }
+        .contact-page p {
+            color: var(--text-muted);
+            overflow-wrap: anywhere;
+        }
+        .contact-form { 
+            display: grid; 
+            gap: .9rem; 
+            margin-top: 1rem; 
+            grid-template-columns: 1fr; 
+            width: 100%; 
+            max-width: 100%; 
+            margin-left: 0; 
+            margin-right: 0;
+            float: none;
+        }
+        .contact-form > div { 
+            display: flex; 
+            flex-direction: column; 
+            max-width: 100%; 
+        }
+        .contact-form label { 
+            font-weight: 700; 
+            font-size: .9rem; 
+            color: var(--text); 
+            margin-bottom: .35rem; 
+        }
         .contact-form input, .contact-form textarea {
-            width: 100%; padding: .8rem 1rem; border-radius: 10px;
-            border: 1px solid var(--border); background: var(--surface);
-            color: var(--text); font-family: inherit; font-size: 1rem; outline: none;
+            width: 100%; 
+            max-width: 100%; 
+            padding: .8rem 1rem; 
+            border-radius: 10px;
+            border: 1px solid var(--border); 
+            background: var(--surface);
+            color: var(--text); 
+            font-family: inherit; 
+            font-size: 1rem; 
+            outline: none;
             transition: border-color .2s, box-shadow .2s;
+            box-sizing: border-box;
+            min-width: 0;
         }
         .contact-form input:focus, .contact-form textarea:focus {
             border-color: var(--brand-red);
             box-shadow: 0 0 0 3px rgba(225, 29, 72, .18);
         }
-        .contact-form textarea { min-height: 140px; resize: vertical; }
-        .submit-btn {
-            justify-self: start; padding: .85rem 1.6rem; border: 0; border-radius: 10px;
-            background: var(--brand-red); color: white; font-weight: 800; cursor: pointer;
-            transition: transform .15s, box-shadow .15s;
+        .contact-form textarea { 
+            min-height: 140px; 
+            resize: vertical; 
         }
-        .submit-btn:hover { transform: translateY(-1px); box-shadow: 0 8px 20px rgba(225, 29, 72, .35); }
-        .submit-btn:disabled { opacity: .65; cursor: wait; transform: none; box-shadow: none; }
-        .form-note { color: var(--text-soft); font-size: .85rem; }
+        .submit-btn {
+            padding: .85rem 1.6rem; 
+            border: 0; 
+            border-radius: 10px;
+            background: var(--brand-red); 
+            color: white; 
+            font-weight: 800; 
+            cursor: pointer;
+            transition: transform .15s, box-shadow .15s; 
+            width: auto;
+        }
+        .submit-btn:hover { 
+            transform: translateY(-1px); 
+            box-shadow: 0 8px 20px rgba(225, 29, 72, .35); 
+        }
+        .submit-btn:disabled { 
+            opacity: .65; 
+            cursor: wait; 
+            transform: none; 
+            box-shadow: none; 
+        }
+        .form-note { 
+            color: var(--text-soft); 
+            font-size: .85rem; 
+            margin-top: .5rem; 
+        }
+        .contact-form > button,
+        .contact-form > .form-note {
+            grid-column: 1 / -1;
+        }
+
+        @media (min-width: 600px) {
+            .contact-form { 
+                grid-template-columns: 1fr; 
+                width: 100%; 
+                max-width: 100%; 
+                margin-left: 0; 
+                margin-right: 0;
+            }
+            .contact-form > div:nth-child(1) { 
+                grid-column: 1 / -1; 
+            }
+            .contact-form > div:nth-child(2) { 
+                grid-column: 1 / -1; 
+            }
+            .contact-form > div:nth-child(3) { 
+                grid-column: 1 / -1; 
+            }
+            .contact-form > div:nth-child(4) { 
+                grid-column: 1 / -1; 
+            }
+            .submit-btn { 
+                width: auto; 
+            }
+        }
+
+        @media (max-width: 768px) {
+            .contact-page {
+                display: block !important;
+                width: 100% !important;
+                max-width: none !important;
+                margin: 0 !important;
+                padding: 1.5rem 1rem 2.5rem !important;
+                direction: rtl;
+            }
+            .contact-content,
+            .contact-form,
+            .contact-form > div {
+                width: 100% !important;
+                max-width: none !important;
+                margin-left: 0 !important;
+                margin-right: 0 !important;
+                float: none !important;
+            }
+            .contact-form {
+                grid-template-columns: minmax(0, 1fr) !important;
+            }
+            .contact-form > div,
+            .contact-form > button,
+            .contact-form > .form-note {
+                grid-column: 1 / -1 !important;
+            }
+            .contact-form input,
+            .contact-form textarea,
+            .submit-btn {
+                width: 100% !important;
+                max-width: 100% !important;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .contact-page { 
+                padding: 1.5rem .9rem; 
+            }
+            .contact-form input, .contact-form textarea { 
+                font-size: .95rem; 
+                padding: .7rem .85rem; 
+            }
+            .submit-btn { 
+                width: 100%; 
+            }
+            .static-page h1 { 
+                font-size: 1.6rem; 
+            }
+            .static-page h2 { 
+                font-size: 1.15rem; 
+            }
+            .static-page p { 
+                font-size: .95rem; 
+            }
+        }
     </style>
 </head>
-<body>
+<body style="min-height: 100vh; overflow-x: hidden;">
 
     <header class="site-header">
         <div class="container nav">
-            <a href="index.html" class="brand"><img src="assets/logo.svg" alt="Logo" style="width: 32px; height: 32px;"><span>Matric Nejma 6</span></a>
+            <a href="index.html" class="brand"><img src="assets/logo.svg" alt="Logo" loading="lazy" style="width: 32px; height: 32px;"><span>Matric Nejma 6</span></a>
             <nav><ul class="nav-links" id="navLinks">
                 <li><a href="index.html">الرئيسية</a></li>
                 <li><a href="blog.html">المدونة</a></li>
+                <li><a href="about.html">من نحن</a></li>
                 <li><a href="contact.html" class="active">تواصل معنا</a></li>
                 <li><a href="privacy.html">الخصوصية</a></li>
             </ul></nav>
             <div class="nav-tools">
-                <button id="themeToggle" class="icon-btn" aria-label="تبديل المظهر">🌓</button>
-                <button id="menuToggle" class="icon-btn menu-toggle" aria-label="القائمة">☰</button>
+                <button id="themeToggle" class="icon-btn" aria-label="تبديل المظهر"><i data-lucide="moon"></i></button>
+                <button id="menuToggle" class="icon-btn menu-toggle" aria-label="القائمة"><i data-lucide="menu"></i></button>
             </div>
         </div>
     </header>
 
-    <main class="container static-page">
-        <h1>تواصل معنا</h1>
-        <p>يسعدنا تواصلكم معنا لأي استفسار، اقتراح، طلب شراكة، أو الإبلاغ عن مشكلة في الموقع أو التطبيق. سنرد عليكم في أقرب وقت ممكن.</p>
+    <main class="contact-page">
+        <div class="contact-content">
+            <h1>تواصل معنا</h1>
+            <p>يسعدنا تواصلكم معنا لأي استفسار، اقتراح، طلب شراكة، أو الإبلاغ عن مشكلة في الموقع أو التطبيق. سنرد عليكم في أقرب وقت ممكن.</p>
 
-        <h2>البريد الإلكتروني</h2>
-        <p><a href="mailto:contact@matricnjm.online">contact@matricnjm.online</a></p>
+            <h2>البريد الإلكتروني</h2>
+            <p><a href="mailto:contact@matricnjm.online">contact@matricnjm.online</a></p>
 
-        <h2>أرسل لنا رسالة</h2>
-        <form id="contactForm" class="contact-form" novalidate>
-            <div>
-                <label for="name">الاسم الكامل</label>
-                <input id="name" name="name" type="text" required placeholder="اكتب اسمك هنا">
-            </div>
-            <div>
-                <label for="email">البريد الإلكتروني</label>
-                <input id="email" name="email" type="email" required placeholder="example@email.com">
-            </div>
-            <div>
-                <label for="subject">الموضوع</label>
-                <input id="subject" name="subject" type="text" required placeholder="عنوان الرسالة">
-            </div>
-            <div>
-                <label for="message">الرسالة</label>
-                <textarea id="message" name="message" required placeholder="اكتب رسالتك هنا..."></textarea>
-            </div>
-            <!-- Honeypot anti-spam field (must remain empty) -->
-            <input type="text" name="website" tabindex="-1" autocomplete="off" style="position:absolute;left:-9999px;opacity:0;height:0;" aria-hidden="true">
-            <button class="submit-btn" type="submit" id="submitBtn">إرسال الرسالة</button>
-            <p id="formStatus" class="form-note" role="status"></p>
-        </form>
+            <h2>أرسل لنا رسالة</h2>
+            <form id="contactForm" class="contact-form" novalidate>
+                <div>
+                    <label for="name">الاسم الكامل</label>
+                    <input id="name" name="name" type="text" required placeholder="اكتب اسمك هنا">
+                </div>
+                <div>
+                    <label for="email">البريد الإلكتروني</label>
+                    <input id="email" name="email" type="email" required placeholder="example@email.com">
+                </div>
+                <div>
+                    <label for="subject">الموضوع</label>
+                    <input id="subject" name="subject" type="text" required placeholder="عنوان الرسالة">
+                </div>
+                <div>
+                    <label for="message">الرسالة</label>
+                    <textarea id="message" name="message" required placeholder="اكتب رسالتك هنا..."></textarea>
+                </div>
+                <!-- Honeypot anti-spam field (must remain empty) -->
+                <input type="text" name="website" tabindex="-1" autocomplete="off" style="position:absolute;left:-9999px;opacity:0;height:0;" aria-hidden="true">
+                <button class="submit-btn" type="submit" id="submitBtn">إرسال الرسالة</button>
+                <p id="formStatus" class="form-note" role="status"></p>
+            </form>
+        </div>
 
         <script>
             (function () {
@@ -132,19 +314,20 @@
                 <div><h4>روابط سريعة</h4><ul>
                     <li><a href="index.html">الرئيسية</a></li>
                     <li><a href="blog.html">المدونة</a></li>
+                    <li><a href="about.html">من نحن</a></li>
                     <li><a href="contact.html">تواصل معنا</a></li>
+                    <li><a href="terms.html">شروط الاستخدام</a></li>
                     <li><a href="privacy.html">سياسة الخصوصية</a></li>
                 </ul></div>
-                <div><h4>تابعنا</h4><ul>
-                    <li><a href="#" rel="noopener">فيسبوك</a></li>
-                    <li><a href="#" rel="noopener">تويتر / X</a></li>
-                    <li><a href="#" rel="noopener">يوتيوب</a></li>
-                </ul></div>
+                <div><h4>تابعنا</h4><p>لا توجد حسابات سوشيال ميديا مفعلة حالياً.</p></div>
             </div>
             <div class="copyright">© <span id="year"></span> Matric Nejma 6 — جميع الحقوق محفوظة.</div>
         </div>
     </footer>
 
     <script src="assets/js/posts.js"></script>
+    <script>
+        lucide.createIcons();
+    </script>
 </body>
 </html>

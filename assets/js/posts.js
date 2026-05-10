@@ -7,7 +7,7 @@
    =========================================================== */
 
 const SITE_NAME = 'Matric Nejma 6';
-const SITE_URL = 'https://matricnjm.online';
+const SITE_URL = 'https://www.matricnjm.online';
 
 /* ---------- Utilities ---------- */
 const fmtDate = (iso) => {
@@ -31,6 +31,8 @@ const slugify = (str) => str
     .replace(/[^\p{L}\p{N}]+/gu, '-')
     .replace(/^-+|-+$/g, '');
 
+const articleUrl = (slug) => `blog/${encodeURIComponent(slug)}.html`;
+
 const getQueryParam = (key) => new URLSearchParams(window.location.search).get(key);
 
 let _supabaseClient = null;
@@ -53,6 +55,16 @@ function getSupabase() {
 }
 
 const fetchPosts = async () => {
+    const apiUrls = ['/api/blog/search', '/api/blog'];
+    for (const url of apiUrls) {
+        try {
+            const res = await fetch(url, { cache: 'no-store' });
+            if (!res.ok) continue;
+            const payload = await res.json();
+            if (Array.isArray(payload.posts)) return payload.posts;
+        } catch (_) {}
+    }
+
     const client = getSupabase();
     if (client) {
         const { data, error } = await client
@@ -77,10 +89,42 @@ async function initHub() {
     const search = document.getElementById('searchInput');
     const chips = document.querySelectorAll('[data-chip]');
     const counter = document.getElementById('postsCount');
+    const staticCards = Array.from(grid.querySelectorAll('[data-static-post]'));
 
     let posts = [];
     let activeCat = 'all';
     let query = '';
+
+    if (staticCards.length) {
+        const renderStatic = () => {
+            const q = query.trim().toLowerCase();
+            let shown = 0;
+            staticCards.forEach(card => {
+                const matchesCat = activeCat === 'all' || card.dataset.category === activeCat;
+                const matchesQ = !q || card.textContent.toLowerCase().includes(q);
+                const visible = matchesCat && matchesQ;
+                card.style.display = visible ? '' : 'none';
+                if (visible) shown += 1;
+            });
+            if (counter) counter.textContent = `${shown} مقال`;
+        };
+        if (search) {
+            search.addEventListener('input', (e) => {
+                query = e.target.value;
+                renderStatic();
+            });
+        }
+        chips.forEach(chip => {
+            chip.addEventListener('click', () => {
+                chips.forEach(c => c.classList.remove('active'));
+                chip.classList.add('active');
+                activeCat = chip.dataset.chip;
+                renderStatic();
+            });
+        });
+        renderStatic();
+        return;
+    }
 
     try {
         posts = await fetchPosts();
@@ -110,13 +154,13 @@ async function initHub() {
 
         const cards = filtered.map((p, idx) => `
             <article class="post-card ${idx === 0 ? 'featured-card' : ''}">
-                <a href="post.html?slug=${encodeURIComponent(p.slug)}" class="post-thumb" aria-label="${p.title}">
+                <a href="${articleUrl(p.slug)}" class="post-thumb" aria-label="${p.title}">
                     <span class="cat-badge" data-cat="${p.category}">${p.categoryLabel || p.category}</span>
                     <img src="${p.image}" alt="${p.title}" loading="lazy" />
                 </a>
                 <div class="post-body">
                     <h3 class="post-title">
-                        <a href="post.html?slug=${encodeURIComponent(p.slug)}" style="color:inherit">${p.title}</a>
+                        <a href="${articleUrl(p.slug)}" style="color:inherit">${p.title}</a>
                     </h3>
                     <p class="post-excerpt">${p.excerpt}</p>
                     <div class="post-tags" aria-label="وسوم المقال">
@@ -124,7 +168,7 @@ async function initHub() {
                     </div>
                     <div class="post-meta">
                         <span>${fmtDate(p.date)}</span>
-                        <a class="read-link" href="post.html?slug=${encodeURIComponent(p.slug)}">اقرأ المقال</a>
+                        <a class="read-link" href="${articleUrl(p.slug)}">اقرأ المقال</a>
                     </div>
                 </div>
             </article>
@@ -151,6 +195,12 @@ async function initHub() {
         }
 
         grid.innerHTML = cards.join('');
+        
+        // Trigger animations for new cards
+        if (window.Motion) {
+            const { animate, stagger } = Motion;
+            animate(".post-card", { opacity: [0, 1], y: [20, 0] }, { delay: stagger(0.05), duration: 0.5 });
+        }
     };
 
     /* Search */
@@ -334,13 +384,13 @@ function buildRelated(currentPost, allPosts) {
 
     grid.innerHTML = related.map(p => `
         <article class="post-card">
-            <a href="post.html?slug=${encodeURIComponent(p.slug)}" class="post-thumb">
+            <a href="${articleUrl(p.slug)}" class="post-thumb">
                 <span class="cat-badge" data-cat="${p.category}">${p.categoryLabel || p.category}</span>
                 <img src="${p.image}" alt="${p.title}" loading="lazy" />
             </a>
             <div class="post-body">
                 <h3 class="post-title">
-                    <a href="post.html?slug=${encodeURIComponent(p.slug)}" style="color:inherit">${p.title}</a>
+                    <a href="${articleUrl(p.slug)}" style="color:inherit">${p.title}</a>
                 </h3>
                 <p class="post-excerpt">${p.excerpt}</p>
                 <div class="post-tags" aria-label="وسوم المقال">
@@ -348,11 +398,16 @@ function buildRelated(currentPost, allPosts) {
                 </div>
                 <div class="post-meta">
                     <span>${fmtDate(p.date)}</span>
-                    <a class="read-link" href="post.html?slug=${encodeURIComponent(p.slug)}">اقرأ المقال</a>
+                    <a class="read-link" href="${articleUrl(p.slug)}">اقرأ المقال</a>
                 </div>
             </div>
         </article>
     `).join('');
+
+    if (window.Motion) {
+        const { animate, stagger } = Motion;
+        animate("#relatedGrid .post-card", { opacity: [0, 1], y: [20, 0] }, { delay: stagger(0.1), duration: 0.5 });
+    }
 }
 
 function setMeta(name, content) {
@@ -408,6 +463,15 @@ function injectArticleSchema(post, readingTime) {
    Shared UI: mobile menu, theme toggle, current year
    =========================================================== */
 function initShared() {
+    const header = document.querySelector('.site-header');
+    window.addEventListener('scroll', () => {
+        if (window.scrollY > 50) {
+            header.classList.add('scrolled');
+        } else {
+            header.classList.remove('scrolled');
+        }
+    });
+
     const toggle = document.getElementById('menuToggle');
     const links = document.getElementById('navLinks');
     if (toggle && links) {
@@ -477,7 +541,7 @@ async function renderComments(post) {
     commentsSection.className = 'comments-section container';
     commentsSection.style.marginTop = '3rem';
     commentsSection.innerHTML = `
-        <h2 style="margin-bottom: 1.5rem;">💬 التعليقات</h2>
+        <h2 style="margin-bottom: 1.5rem;"><i data-lucide="message-square"></i> التعليقات</h2>
         <div id="commentsList" class="comments-list">
             ${(post.comments || []).filter(c => c.approved).map(c => `
                 <div class="comment-item" style="background: var(--surface); padding: 1rem; border-radius: 10px; margin-bottom: 1rem; border: 1px solid var(--border);">
@@ -505,6 +569,7 @@ async function renderComments(post) {
         </div>
     `;
     article.appendChild(commentsSection);
+    if (window.lucide) lucide.createIcons();
 
     document.getElementById('commentForm').addEventListener('submit', async (e) => {
         e.preventDefault();
