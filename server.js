@@ -209,10 +209,10 @@ const CLIENT_ENV_PAGES = ['admin.html', 'post.html', 'contact.html', 'blog.html'
 
 function injectClientEnv(html) {
     const env = {
-        SUPABASE_URL: process.env.PUBLIC_SUPABASE_URL || '',
-        SUPABASE_ANON_KEY: process.env.PUBLIC_SUPABASE_ANON_KEY || '',
-        OPENROUTER_API_KEY: process.env.PUBLIC_OPENROUTER_API_KEY || '',
-        UNSPLASH_ACCESS_KEY: process.env.PUBLIC_UNSPLASH_ACCESS_KEY || '',
+        SUPABASE_URL: process.env.PUBLIC_SUPABASE_URL || process.env.SUPABASE_URL || '',
+        SUPABASE_ANON_KEY: process.env.PUBLIC_SUPABASE_ANON_KEY || process.env.SUPABASE_ANON_KEY || '',
+        OPENROUTER_API_KEY: process.env.PUBLIC_OPENROUTER_API_KEY || process.env.OPENROUTER_API_KEY || '',
+        UNSPLASH_ACCESS_KEY: process.env.PUBLIC_UNSPLASH_ACCESS_KEY || process.env.UNSPLASH_ACCESS_KEY || '',
     };
     const script = `<script>window.__ENV__=${JSON.stringify(env)}</script>`;
     return html.replace('</head>', script + '</head>');
