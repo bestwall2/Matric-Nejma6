@@ -54,4 +54,9 @@
     <priority>0.4</priority>
     <changefreq>monthly</changefreq>
   </url>
+  <url>
+    <loc>https://www.matricnjm.online/post.html</loc>
+    <priority>0.3</priority>
+    <changefreq>monthly</changefreq>
+  </url>
 </urlset>

@@ -132,10 +132,16 @@ module.exports = async (req, res) => {
 
 function serveStaticPost(res) {
   try {
-    const data = fs.readFileSync(POST_TEMPLATE);
+    let data = fs.readFileSync(POST_TEMPLATE, "utf8");
+    // Add noindex to prevent indexing of slug-less template page
+    data = data.replace(
+      "</title>",
+      '</title>\n    <meta name="robots" content="noindex, nofollow">'
+    );
     res.writeHead(200, {
       "Content-Type": "text/html; charset=utf-8",
       "Content-Length": Buffer.byteLength(data),
+      "Cache-Control": "noindex, nofollow",
     });
     res.end(data);
   } catch (_) {
